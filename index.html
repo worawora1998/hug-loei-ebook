@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#10a56c" />
+  <meta name="description" content="HUG LOEI E-Book - ของฝาก ของต้อน ออนซอนเลย" />
+  <title>HUG LOEI E-Book</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="preload" as="image" href="previews/page-001.jpg" fetchpriority="high" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="config.js"></script>
+</head>
+<body>
+  <div class="intro" id="intro" aria-hidden="true">
+    <div class="intro-orbit"></div>
+    <div class="intro-card">
+      <img class="intro-logo" src="assets/logos/ui/hug-loei-main.png" alt="HUG LOEI" />
+      <strong><span>HUG</span> LOEI</strong>
+      <p>ของฝาก ของต้อน ออนซอนเลย</p>
+      <div class="intro-line"><i></i><i></i><i></i></div>
+    </div>
+  </div>
+
+  <div class="app" id="app">
+    <header class="toolbar" aria-label="เครื่องมืออ่าน E-Book">
+      <div class="brand">
+        <button class="icon-btn mobile-only menu-btn" id="tocBtn" type="button" aria-label="เปิดสารบัญ">☰</button>
+        <img class="main-brand-logo" src="assets/logos/mini/hug-loei-main.png" alt="HUG LOEI" />
+        <div class="brand-copy">
+          <strong><span>HUG</span> LOEI</strong>
+          <span id="sectionTitle">ของฝาก ของต้อน • หน้าแรก</span>
+        </div>
+      </div>
+
+      <div class="nav-controls">
+        <button class="icon-btn" id="prevBtn" type="button" aria-label="หน้าก่อนหน้า">‹</button>
+        <label class="page-box" aria-label="ไปยังหน้า">
+          <input id="pageInput" type="number" min="1" max="212" inputmode="numeric" value="1" />
+          <span id="pageTotalLabel">/ 212</span>
+        </label>
+        <button class="icon-btn" id="nextBtn" type="button" aria-label="หน้าถัดไป">›</button>
+      </div>
+
+      <div class="zoom-controls">
+        <button class="icon-btn" id="zoomOutBtn" type="button" aria-label="ซูมออก">−</button>
+        <button class="zoom-value" id="fitBtn" type="button" title="กลับเป็นขนาดพอดีจอ">พอดีจอ</button>
+        <button class="icon-btn" id="zoomInBtn" type="button" aria-label="ซูมเข้า">+</button>
+        <a class="update-pdf-btn" href="update.html" target="_blank" rel="noopener" aria-label="อัปเดตไฟล์ PDF" title="อัปเดต / เปลี่ยนไฟล์ PDF"><span aria-hidden="true">⇧</span><b>อัปเดต PDF</b></a>
+        <button class="icon-btn utility-btn" id="overviewBtn" type="button" aria-label="ดูภาพรวมทุกหน้า" title="ภาพรวมทุกหน้า">▦</button>
+        <button class="icon-btn utility-btn desktop-only" id="favoriteBtn" type="button" aria-label="บันทึกหน้านี้" title="บันทึกหน้านี้">☆</button>
+        <button class="quality-btn desktop-only" id="qualityBtn" type="button" aria-label="คุณภาพภาพ" title="เลือกคุณภาพภาพ">AUTO</button>
+        <button class="icon-btn utility-btn desktop-only" id="soundBtn" type="button" aria-label="เสียงเปิดกระดาษ" title="เสียงเปิดกระดาษ">♪</button>
+        <button class="icon-btn share-btn desktop-only" id="shareBtn" type="button" aria-label="แชร์ลิงก์หน้าปัจจุบัน" title="แชร์หน้าปัจจุบัน">↗</button>
+        <button class="icon-btn desktop-only" id="fullscreenBtn" type="button" aria-label="เต็มจอ">⛶</button>
+      </div>
+
+      <div class="toolbar-progress" aria-hidden="true"><span id="progressFill"></span></div>
+    </header>
+
+    <main class="reader-layout">
+      <section class="reader-stage" id="readerStage" aria-label="พื้นที่อ่าน E-Book">
+        <div class="ambient-orbs" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="sky-decor" aria-hidden="true">
+          <span class="spark s1">✦</span><span class="spark s2">✦</span><span class="spark s3">✦</span>
+          <span class="pin p1">●</span><span class="pin p2">●</span>
+        </div>
+
+        <button class="organizer-corner" id="organizerCorner" type="button" aria-label="เปิดช่องทางของหน่วยงานผู้จัดทำ" title="หน่วยงานผู้จัดทำ">
+          <img src="assets/logos/ui/loei-province.png" alt="สำนักงานจังหวัดเลย" loading="lazy" fetchpriority="low" />
+          <img src="assets/logos/ui/loei-culture.png" alt="สำนักงานวัฒนธรรมจังหวัดเลย" loading="lazy" fetchpriority="low" />
+          <img class="wide-logo" src="assets/logos/ui/tourism-fund.png" alt="กองทุนเพื่อส่งเสริมการท่องเที่ยวไทย" loading="lazy" fetchpriority="low" />
+        </button>
+
+        <div class="book-scroll" id="bookScroll">
+          <div class="book-sizer" id="bookSizer">
+            <div class="book-scale" id="bookScale">
+              <div class="book cover-mode" id="book">
+                <article class="page-slot left-page" id="leftSlot" aria-live="polite">
+                  <img id="leftImg" alt="" draggable="false" decoding="async" />
+                  <div class="paper-gloss" aria-hidden="true"></div>
+                  <div class="paper-fiber" aria-hidden="true"></div>
+                  <div class="hotspot-layer" id="leftHotspots"></div>
+                </article>
+
+                <article class="page-slot right-page" id="rightSlot" aria-live="polite">
+                  <img id="rightImg" alt="" draggable="false" decoding="async" />
+                  <div class="paper-gloss" aria-hidden="true"></div>
+                  <div class="paper-fiber" aria-hidden="true"></div>
+                  <div class="hotspot-layer" id="rightHotspots"></div>
+                </article>
+
+                <div class="flip-sheet" id="flipSheet" aria-hidden="true">
+                  <div class="flip-face flip-front"><img id="flipFrontImg" alt="" draggable="false" /></div>
+                  <div class="flip-face flip-back"><img id="flipBackImg" alt="" draggable="false" /></div>
+                  <div class="curl-ribs" id="curlRibs" aria-hidden="true">
+                    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                  </div>
+                  <div class="curl-shadow" id="curlShadow"></div>
+                  <div class="curl-light" id="curlLight"></div>
+                  <div class="curl-edge" id="curlEdge"></div>
+                </div>
+
+                <div class="book-floor-shadow" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="edge-nav edge-prev" id="edgePrev" type="button" aria-label="หน้าก่อนหน้า"></button>
+        <button class="edge-nav edge-next" id="edgeNext" type="button" aria-label="หน้าถัดไป"></button>
+
+        <div class="mobile-tab-rail mobile-only" id="mobileTabRail" aria-label="ที่คั่นหน้าแบบมือถือ"></div>
+        <div class="mobile-section-pill mobile-only" id="mobileSectionPill">หน้าแรก</div>
+        <div class="network-badge" id="networkBadge" hidden>โหมดประหยัดเน็ต</div>
+        <div class="loading-badge" id="loadingBadge" role="status">กำลังเตรียมหน้า…</div>
+      </section>
+
+      <aside class="bookmark-rail desktop-only" aria-label="ที่คั่นสารบัญ">
+        <div class="rail-title"><span>ที่คั่น</span><small>เลือกเพื่อข้ามหน้า</small></div>
+        <div id="bookmarkTabs" class="bookmark-tabs"></div>
+      </aside>
+    </main>
+  </div>
+
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+  <aside class="toc-drawer" id="tocDrawer" aria-label="สารบัญ E-Book" aria-hidden="true">
+    <div class="drawer-head">
+      <div>
+        <strong>สารบัญ HUG LOEI</strong>
+        <span>เลือกหัวข้อเพื่อเปิดหน้าโดยตรง</span>
+      </div>
+      <button class="icon-btn" id="closeDrawerBtn" type="button" aria-label="ปิดสารบัญ">×</button>
+    </div>
+    <div class="drawer-list" id="drawerList"></div>
+    <div class="drawer-tools mobile-only">
+      <button id="mobileFavoriteBtn" type="button">☆ บันทึกหน้านี้</button>
+      <button id="mobileQualityBtn" type="button">คุณภาพ: AUTO</button>
+      <button id="mobileSoundBtn" type="button">♪ เสียงกระดาษ: ปิด</button>
+    </div>
+    <button class="toc-page-link" id="openTocPageBtn" type="button">เปิดหน้าสารบัญจริง • หน้า 3</button>
+    <a class="admin-link" href="update.html" target="_blank" rel="noopener">⚙ อัปเดต / เปลี่ยนไฟล์ PDF</a>
+  </aside>
+
+  <div class="panel-backdrop" id="panelBackdrop"></div>
+  <section class="contact-panel" id="contactPanel" aria-hidden="true" aria-label="ช่องทางติดต่อ">
+    <header>
+      <div><strong>หน่วยงานผู้จัดทำ</strong><span>เว็บไซต์และช่องทางติดต่ออย่างเป็นทางการ</span></div>
+      <button class="icon-btn" id="closeContactBtn" type="button" aria-label="ปิด">×</button>
+    </header>
+    <div class="contact-list">
+      <article class="contact-card">
+        <img src="assets/logos/ui/loei-province.png" alt="สำนักงานจังหวัดเลย" loading="lazy" fetchpriority="low" />
+        <div><h3>สำนักงานจังหวัดเลย</h3><p>จังหวัดเลย</p>
+          <nav><a href="https://www.loei.go.th/" target="_blank" rel="noopener noreferrer">เว็บไซต์หลัก ↗</a><a href="https://ww2.loei.go.th/frontpage" target="_blank" rel="noopener noreferrer">เว็บไซต์จังหวัด ↗</a></nav>
+        </div>
+      </article>
+      <article class="contact-card">
+        <img src="assets/logos/ui/loei-culture.png" alt="สำนักงานวัฒนธรรมจังหวัดเลย" loading="lazy" fetchpriority="low" />
+        <div><h3>สำนักงานวัฒนธรรมจังหวัดเลย</h3><p>กระทรวงวัฒนธรรม</p>
+          <nav><a href="https://loei.m-culture.go.th/th" target="_blank" rel="noopener noreferrer">เว็บไซต์ ↗</a><a href="https://www.facebook.com/loei.cul/reels/" target="_blank" rel="noopener noreferrer">Facebook ↗</a></nav>
+        </div>
+      </article>
+      <article class="contact-card fund-card">
+        <img src="assets/logos/ui/tourism-fund.png" alt="กองทุนเพื่อส่งเสริมการท่องเที่ยวไทย" loading="lazy" fetchpriority="low" />
+        <div><h3>กองทุนเพื่อส่งเสริมการท่องเที่ยวไทย</h3><p>Thailand’s Tourism Promotion Fund</p>
+          <nav><a href="https://www.thailandtourismfund.go.th/" target="_blank" rel="noopener noreferrer">เว็บไซต์ ↗</a></nav>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <div class="overview" id="overview" aria-hidden="true">
+    <div class="overview-dialog">
+      <header class="overview-head">
+        <div><strong>ภาพรวม E-Book</strong><span>เลือกหน้าได้ทันที • โหลดภาพย่อเท่าที่จำเป็น</span></div>
+        <div class="overview-actions">
+          <button class="filter-btn" id="favoriteFilterBtn" type="button">☆ หน้าที่บันทึก</button>
+          <button class="icon-btn" id="closeOverviewBtn" type="button" aria-label="ปิด">×</button>
+        </div>
+      </header>
+      <div class="overview-sections" id="overviewSections"></div>
+      <div class="thumb-grid" id="thumbGrid"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+HUG LOEI E-Book — Production deployment (ฐาน V3.1 เท่านั้น)
+
+ชื่อเว็บไซต์: HUG LOEI E-Book
+Slug ที่แนะนำ: hug-loei-ebook
+Region: Singapore
+
+ไฟล์หน้าเว็บ index.html / styles.css / app.js เป็น V3.1 เดิม ไม่ได้เปลี่ยน UI หรือ animation
+ไฟล์ที่เพิ่มมีไว้สำหรับ deployment และ persistent PDF update เท่านั้น:
+- server_production.py
+- render.yaml
+
+Production server จะเก็บ pages / previews / thumbs / config.js บน persistent disk
+เพื่อให้การอัปโหลด PDF ใหม่จาก update.html ไม่หายเมื่อ service restart/redeploy
+
+ต้องตั้ง HUG_LOEI_ADMIN_KEY เป็นรหัสลับก่อนเปิดการอัปเดตจากอินเทอร์เน็ต
+ห้ามแชร์ Admin Key ในลิงก์สาธารณะ

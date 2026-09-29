@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: hug-loei-ebook
+    runtime: python
+    region: singapore
+    plan: 0.5c-512mb
+    buildCommand: pip install -r requirements.txt
+    startCommand: python server_production.py
+    healthCheckPath: /api/status
+    autoDeployTrigger: commit
+    envVars:
+      - key: HUG_LOEI_DATA_DIR
+        value: /var/data/hug-loei
+      - key: HUG_LOEI_MAX_UPLOAD_MB
+        value: "800"
+      - key: HUG_LOEI_ADMIN_KEY
+        sync: false
+    disk:
+      name: hug-loei-data
+      mountPath: /var/data
+      sizeGB: 2

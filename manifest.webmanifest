@@ -1,0 +1,10 @@
+{
+  "name": "HUG LOEI E-Book",
+  "short_name": "HUG LOEI",
+  "description": "ของฝาก ของต้อน ออนซอนเลย",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#dff1f7",
+  "theme_color": "#10a56c",
+  "lang": "th"
+}

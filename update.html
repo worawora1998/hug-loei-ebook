@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#10a56c" />
+  <title>อัปเดต PDF • HUG LOEI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="update.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="back" href="index.html">← กลับไป E-Book</a>
+    <div class="title"><img src="assets/logos/mini/hug-loei-main.png" alt="HUG LOEI" /><div><b><span>HUG</span> LOEI</b><small>PDF Update Center</small></div></div>
+    <div class="status-pill" id="serverStatus">กำลังตรวจสอบระบบ…</div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow">ADMIN • UPDATE E-BOOK</span>
+        <h1>อัปโหลด PDF เวอร์ชันใหม่<br><em>โดยไม่บีบอัดภาพต้นฉบับซ้ำ</em></h1>
+        <p>ระบบนี้ออกแบบมาสำหรับไฟล์ HUG LOEI ที่แต่ละหน้าเป็นภาพ JPEG เต็มหน้าเหมือน PDF ต้นฉบับปัจจุบัน โดยจะดึง JPEG ที่ฝังใน PDF ออกมาโดยตรงแบบ byte-for-byte แล้วสร้างเฉพาะภาพ Preview ขนาดเบาสำหรับอินเทอร์เน็ตช้าแยกอีกชุดหนึ่ง</p>
+      </div>
+      <div class="quality-card">
+        <strong>QUALITY SAFE</strong>
+        <span>Full page = Original JPEG</span>
+        <span>Preview = โหลดไว</span>
+        <span>ไม่มีการเขียนทับจนกว่าจะตรวจครบทุกหน้า</span>
+      </div>
+    </section>
+
+    <section class="update-grid">
+      <article class="upload-card">
+        <header><div><h2>1. เลือกไฟล์ PDF ใหม่</h2><p>ลากไฟล์มาวาง หรือกดเลือกไฟล์จากเครื่อง</p></div><span class="step">01</span></header>
+        <label class="dropzone" id="dropzone">
+          <input id="pdfInput" type="file" accept="application/pdf,.pdf" />
+          <div class="drop-icon">PDF</div>
+          <strong id="fileTitle">เลือกไฟล์ PDF</strong>
+          <span id="fileMeta">รองรับไฟล์ขนาดใหญ่ • ระบบไม่ส่งไฟล์ไปบริการภายนอก</span>
+          <button type="button" id="chooseBtn">เลือกไฟล์</button>
+        </label>
+        <div class="preview-wrap" id="previewWrap" hidden>
+          <iframe id="pdfPreview" title="ตัวอย่าง PDF ที่เลือก"></iframe>
+        </div>
+      </article>
+
+      <article class="settings-card">
+        <header><div><h2>2. ตั้งค่าการอัปเดต</h2><p>ค่าที่เหมาะกับเว็บไซต์ชุดนี้ถูกเลือกไว้แล้ว</p></div><span class="step">02</span></header>
+        <div class="field">
+          <label for="adminKey">Admin Key <small>(เว้นว่างได้เมื่อรันในเครื่อง)</small></label>
+          <input id="adminKey" type="password" autocomplete="off" placeholder="ใส่คีย์เมื่ออัปเดตจากเซิร์ฟเวอร์จริง" />
+        </div>
+        <label class="check"><input id="appendCover" type="checkbox" checked /><span><b>ต่อท้ายด้วยหน้าปิดเดิม</b><small>ใช้ไฟล์หน้าปิดที่แนบไว้ใน V3 เป็นหน้าสุดท้ายอัตโนมัติ</small></span></label>
+        <label class="check"><input id="storeSource" type="checkbox" /><span><b>เก็บ PDF ต้นฉบับไว้บนเซิร์ฟเวอร์</b><small>ใช้พื้นที่เพิ่มตามขนาด PDF แต่สะดวกสำหรับสำรองไฟล์</small></span></label>
+        <div class="guardrail"><b>ระบบรักษาความคมชัดอย่างไร?</b><p>ถ้าหน้าใดไม่ใช่ภาพ JPEG เต็มหน้าเพียงภาพเดียว ระบบจะ <strong>หยุดการอัปเดต</strong> แทนการแปลงหรือบีบอัดใหม่ เพื่อไม่ให้คุณภาพลดลงโดยไม่รู้ตัว</p></div>
+        <button class="update-btn" id="updateBtn" type="button" disabled>อัปเดต E-Book ตอนนี้</button>
+        <div class="progress" id="progress" hidden><i></i><span id="progressText">กำลังตรวจสอบและดึงภาพต้นฉบับ…</span></div>
+        <div class="result" id="result" hidden></div>
+      </article>
+    </section>
+
+    <section class="how-card">
+      <h2>ถ้าเว็บไซต์ถูกอัปขึ้น Static Hosting</h2>
+      <p>เว็บ Static เช่น GitHub Pages / Netlify แบบไฟล์ล้วน ไม่อนุญาตให้หน้าเว็บเขียนทับไฟล์บนเซิร์ฟเวอร์เองโดยตรง เพื่อความปลอดภัย หน้า Update นี้จึงทำงานเต็มรูปแบบเมื่อเปิดผ่าน <code>server.py</code> ที่แนบมา หรือเมื่อเชื่อม API ฝั่งเซิร์ฟเวอร์ของคุณ</p>
+      <div class="commands"><code>pip install -r requirements.txt</code><code>python server.py</code><code>เปิด http://localhost:8000/update.html</code></div>
+    </section>
+
+    <section class="org-strip">
+      <span>จัดทำโดย</span>
+      <img src="assets/logos/ui/loei-province.png" alt="สำนักงานจังหวัดเลย" />
+      <img src="assets/logos/ui/loei-culture.png" alt="สำนักงานวัฒนธรรมจังหวัดเลย" />
+      <img class="wide" src="assets/logos/ui/tourism-fund.png" alt="กองทุนเพื่อส่งเสริมการท่องเที่ยวไทย" />
+    </section>
+  </main>
+
+  <script src="update.js" defer></script>
+</body>
+</html>
