@@ -42,6 +42,9 @@ jobs:
                 await page.goto(base+'?page=home&qa='+viewport.name,{waitUntil:'domcontentloaded',timeout:60000});
                 await page.waitForSelector('.poster-six-card',{timeout:30000});
                 const home=await page.evaluate(()=>({posters:document.querySelectorAll('.poster-six-card').length,icons:document.querySelectorAll('.shortcut-v4 .category-icon').length,shortcuts:document.querySelectorAll('.shortcut-v4').length,overflow:document.documentElement.scrollWidth-window.innerWidth,postertitles:[...document.querySelectorAll('.shortcut-v4 .label-en')].map(x=>x.textContent)}));
+                const spills=await page.evaluate(()=>[...document.querySelectorAll('body *')].filter(el=>{const r=el.getBoundingClientRect();return r.width>0&&(r.right>window.innerWidth+6||r.left< -10)}).slice(0,20).map(el=>({tag:el.tagName,cl:(el.className?.baseVal||el.className||'').toString().slice(0,95),text:(el.textContent||'').trim().slice(0,55),x:Math.round(el.getBoundingClientRect().x),right:Math.round(el.getBoundingClientRect().right),width:Math.round(el.getBoundingClientRect().width)})));
+                console.log('OVERFLOW_DIAGNOSTICS '+viewport.name,JSON.stringify(spills));
+                await page.screenshot({path:'/tmp/portfolio-v4-results/home-'+viewport.name+'-before.png',fullPage:true});
                 assert.equal(home.posters,6,'Missing six homepage poster cards '+viewport.name);
                 assert.equal(home.icons,15,'Missing 15 home category icons '+viewport.name);
                 assert.equal(home.shortcuts,15,'Missing 15 home category links '+viewport.name);
