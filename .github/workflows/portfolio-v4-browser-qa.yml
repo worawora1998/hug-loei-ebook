@@ -54,8 +54,9 @@ jobs:
                 await page.evaluate(()=>{document.querySelectorAll('.poster-six-card img').forEach(i=>i.loading='eager')});
                 await new Promise(resolve=>setTimeout(resolve,4500));
                 const imageStats=await page.evaluate(()=>[...document.querySelectorAll('.poster-six-card .art-image')].map(x=>({loaded:x.complete&&x.naturalWidth>0,src:x.currentSrc.slice(0,90),naturalWidth:x.naturalWidth})));
+                console.log('POSTER_IMAGE_STATS '+viewport.name,JSON.stringify(imageStats));
                 await page.screenshot({path:'/tmp/portfolio-v4-results/home-'+viewport.name+'.png',fullPage:true});
-                await page.locator('.poster-six-card').first().click();
+                await page.click('.poster-six-card');
                 await page.waitForSelector('.lightbox.open',{timeout:8000});
                 await page.keyboard.press('Escape');
                 assert.equal(await page.$('.lightbox.open'),null,'Escape did not close lightbox');
