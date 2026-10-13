@@ -14,7 +14,7 @@ function u(page,cat){return "?page="+encodeURIComponent(page)+(cat?"&cat="+encod
 function src(id,width){return "https://drive.google.com/thumbnail?id="+encodeURIComponent(id)+"&sz=w"+(width||960)}
 function drive(id){return "https://drive.google.com/file/d/"+encodeURIComponent(id)+"/view"}
 function image(id,alt,width,eager){return "<img class='art-image' data-file='"+clean(id)+"' alt='"+clean(alt)+"' src='"+src(id,width)+"' loading='"+(eager?"eager":"lazy")+"' decoding='async'"+(eager?" fetchpriority='high'":"")+">"}
-function fall(){return "<div class='art-fallback'><strong>ไม่สามารถโหลดภาพได้</strong><span>กดเพื่อเปิดภาพจาก Google Drive ↗</span></div>"}
+function fall(){return "<span class='art-fallback'><strong>ไม่สามารถแสดงภาพตัวอย่างได้</strong><span>ภาพต้นฉบับยังอยู่ใน Google Drive</span></span>"}
 function decor(id,classes){return id?"<img aria-hidden='true' alt='' loading='lazy' class='"+classes+"' src='"+src(id,650)+"'>":""}
 function shell(x){return "<div class='shell page-enter'>"+x+"</div>"}
 function grad(x){return "<span class='gradient-text'>"+x+"</span>"}
