@@ -221,3 +221,7 @@ body::after{background:radial-gradient(ellipse at 88% 7%,rgba(192,172,244,.21),t
 @media(max-width:950px){.category-chip{min-height:47px}.category-chip .rail-text strong{font-size:12px}}
 @media(max-width:700px){.category-chip{min-height:46px;padding:6px 10px}.category-chip .nav-symbol{width:19px;height:19px}.featured-item .featured-label{padding:8px 10px}.featured-bilingual strong{font-size:11px}.featured-bilingual small{font-size:12px}}
 @media(prefers-reduced-motion:reduce){.catalog-card-v4:hover .catalog-mini-icon{transform:none!important}.shortcut-v4:hover .shortcut-icon-wrap{transform:none!important}}
+
+/* Browser QA fix: keep moving marquee inside its own paint boundary */
+.ticker-v4{max-width:100%;overflow:clip;contain:paint;isolation:isolate}
+.ticker-v4 .ticker-track{will-change:transform}
