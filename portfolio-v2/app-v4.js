@@ -103,7 +103,7 @@ return shell(header("MY WORK / 15 CATEGORIES","เลือกดู"+grad("ผ�
 "<section class='section category-list-section'><div class='catalog'>"+cats.map(categoryCard).join("")+"</div></section>")
 }
 
-function artworkCard(it,c,i,featured){var el=featured?"a":"button",action=featured?"href='"+u("gallery",c.key)+"'":"type='button' data-light-index='"+i+"'",css=featured?"masonry-item featured-item reveal":"masonry-item gallery-item reveal";return "<"+el+" class='"+css+"' "+action+" aria-label='"+(featured?"ดูหมวด ":"ขยายภาพ ")+clean(c.title)+"'>"+image(it.id,c.title,featured?1150:1080)+fall()+"<span aria-hidden='true' class='image-shine'></span>"+(featured?"<span class='featured-label'>"+clean(c.title)+" <span>↗</span></span>":"")+"</"+el+">"}
+function artworkCard(it,c,i,featured){var el=featured?"a":"button",action=featured?"href='"+u("gallery",c.key)+"'":"type='button' data-light-index='"+i+"'",css=featured?"masonry-item featured-item reveal":"masonry-item gallery-item reveal";return "<"+el+" class='"+css+"' "+action+" aria-label='"+(featured?"ดูหมวด ":"ขยายภาพ ")+clean(c.title)+"'>"+image(it.id,c.title,featured?1150:1080)+fall()+"<span aria-hidden='true' class='image-shine'></span>"+(featured?"<span class='featured-label'><span class='featured-bilingual'><strong>"+clean(c.en)+"</strong><small>"+clean(c.title)+"</small></span><span aria-hidden='true'>↗</span></span>":"")+"</"+el+">"}
 function endSection(){return "<div class='work-end reveal'><div><h2>อยากดูงานแบบอื่นอีกไหมครับ?</h2><p>มีงานหลายแบบให้เลือกดูครับ กดเลือกหมวดที่สนใจได้เลย</p></div>"+btn("ดูหมวดทั้งหมด ↗",u("categories"))+"</div>"}
 function featured(){
 return shell(header("SELECTED WORKS","ผลงาน"+grad("ที่อยากให้ลองดู"),"ผมเลือกงานจากทั้ง 15 หมวดมาให้ดูเป็นตัวอย่างก่อนครับ ถ้าชอบแนวไหนก็กดเข้าไปดูงานในหมวดนั้นต่อได้เลย",true)+
@@ -115,7 +115,7 @@ featuredData.map(function(w,i){var c=cats.find(function(x){return x.key===w.key}
 function categoryRail(active){
 return "<div class='category-nav-box'><div class='category-nav-title'>อยากดูหมวดอื่น? เลือกจากแถบนี้ได้เลยครับ →</div>"+
 "<div class='category-scroll'><nav class='category-chips' aria-label='เลือกหมวดผลงาน'>"+
-cats.map(function(c){return "<a class='category-chip' "+(active===c.key?"aria-current='page' ":"")+"href='"+u("gallery",c.key)+"'>"+iconSVG(c.key,"nav-symbol")+"<span>"+clean(c.en)+"</span></a>"}).join("")+
+cats.map(function(c){return "<a class='category-chip' "+(active===c.key?"aria-current='page' ":"")+"href='"+u("gallery",c.key)+"'>"+iconSVG(c.key,"nav-symbol")+"<span class='rail-text'><strong>"+clean(c.en)+"</strong><small>"+clean(c.title)+"</small></span></a>"}).join("")+
 "</nav></div></div>"
 }
 function gallery(){
@@ -148,7 +148,7 @@ var contacts=[
 {name:"LINE",value:"worachit98",url:"https://line.me/ti/p/~worachit98",icon:socialIcon("line","06C755","LINE")},
 {name:"INSTAGRAM",value:"@wora_chit98",url:"https://www.instagram.com/wora_chit98/",icon:socialIcon("instagram","E4405F","IG")},
 {name:"Facebook ส่วนตัว",value:"Worachit Pulaiyaw",url:"https://www.facebook.com/WORACHIT1998",icon:socialIcon("facebook","0866FF","f")},
-{name:"Facebook Page",value:"เพจผลงานของผม",url:"https://www.facebook.com/suksansrin8668",icon:socialIcon("facebook","0866FF","f")},
+{name:"Facebook Page",value:"เปิด Facebook Page",url:"https://www.facebook.com/suksansrin8668",icon:socialIcon("facebook","0866FF","f")},
 {name:"โทรศัพท์",value:"082-872-3646",url:"tel:0828723646",icon:"<span class='contact-icon' style='background:#e5f5ff;color:#236fa9' aria-hidden='true'>☎</span>"}
 ];
 var cards=contacts.map(function(c){return "<a class='contact-card' "+(c.url.indexOf("http")===0?"target='_blank' rel='noopener noreferrer' ":"")+"href='"+clean(c.url)+"'>"+c.icon+"<span><small>"+c.name+"</small><strong>"+clean(c.value)+"</strong></span></a>"}).join("");
