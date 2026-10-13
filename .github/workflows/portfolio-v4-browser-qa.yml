@@ -1,0 +1,87 @@
+name: Portfolio V4 Browser QA
+on:
+  push:
+    branches: [portfolio-v2-site]
+    paths:
+      - .github/workflows/portfolio-v4-browser-qa.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  visual-ux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install headless browser test
+        run: |
+          mkdir -p /tmp/portfolio-v4-qa
+          npm install --prefix /tmp/portfolio-v4-qa puppeteer-core@24.18.0 --no-audit --no-fund
+          which google-chrome || which chromium || which chromium-browser
+      - name: Run desktop and mobile checks
+        run: |
+          mkdir -p /tmp/portfolio-v4-results
+          node <<'NODE'
+          const fs=require('fs');
+          const cp=require('child_process');
+          const assert=require('assert');
+          const puppeteer=require('/tmp/portfolio-v4-qa/node_modules/puppeteer-core');
+          const chrome=cp.execSync('which google-chrome || which chromium || which chromium-browser').toString().trim();
+          const base='https://worachit-portfolio-v2.onrender.com/';
+          const log=[];
+          (async()=>{
+            const browser=await puppeteer.launch({headless:true,executablePath:chrome,args:['--no-sandbox','--disable-dev-shm-usage']});
+            try{
+              for(const viewport of [{name:'desktop',width:1440,height:900},{name:'mobile',width:390,height:844}]){
+                const page=await browser.newPage();
+                await page.setViewport({width:viewport.width,height:viewport.height,deviceScaleFactor:1});
+                const errors=[];page.on('pageerror',err=>errors.push(err.message));
+                await page.goto(base+'?page=home&qa='+viewport.name,{waitUntil:'domcontentloaded',timeout:60000});
+                await page.waitForSelector('.poster-six-card',{timeout:30000});
+                const home=await page.evaluate(()=>({posters:document.querySelectorAll('.poster-six-card').length,icons:document.querySelectorAll('.shortcut-v4 .category-icon').length,shortcuts:document.querySelectorAll('.shortcut-v4').length,overflow:document.documentElement.scrollWidth-window.innerWidth,postertitles:[...document.querySelectorAll('.shortcut-v4 .label-en')].map(x=>x.textContent)}));
+                assert.equal(home.posters,6,'Missing six homepage poster cards '+viewport.name);
+                assert.equal(home.icons,15,'Missing 15 home category icons '+viewport.name);
+                assert.equal(home.shortcuts,15,'Missing 15 home category links '+viewport.name);
+                assert(home.overflow<12,'Horizontal scroll overflow '+viewport.name+' '+home.overflow);
+                await page.evaluate(()=>{document.querySelectorAll('.poster-six-card img').forEach(i=>i.loading='eager')});
+                await new Promise(resolve=>setTimeout(resolve,4500));
+                const imageStats=await page.evaluate(()=>[...document.querySelectorAll('.poster-six-card .art-image')].map(x=>({loaded:x.complete&&x.naturalWidth>0,src:x.currentSrc.slice(0,90),naturalWidth:x.naturalWidth})));
+                await page.screenshot({path:'/tmp/portfolio-v4-results/home-'+viewport.name+'.png',fullPage:true});
+                await page.locator('.poster-six-card').first().click();
+                await page.waitForSelector('.lightbox.open',{timeout:8000});
+                await page.keyboard.press('Escape');
+                assert.equal(await page.$('.lightbox.open'),null,'Escape did not close lightbox');
+                await page.goto(base+'?page=gallery&cat=poster',{waitUntil:'domcontentloaded',timeout:60000});
+                await page.waitForSelector('.gallery-item[data-light-index]',{timeout:30000});
+                const gallery=await page.evaluate(()=>({cards:document.querySelectorAll('.gallery-item[data-light-index]').length,rails:document.querySelectorAll('.category-chip').length,overflow:document.documentElement.scrollWidth-window.innerWidth}));
+                assert.equal(gallery.cards,20,'Poster gallery missing images');
+                assert.equal(gallery.rails,15,'Gallery category navigation missing');
+                assert(gallery.overflow<12,'Poster gallery overflow '+gallery.overflow);
+                await page.screenshot({path:'/tmp/portfolio-v4-results/poster-'+viewport.name+'.png',fullPage:true});
+                await page.goto(base+'?page=about',{waitUntil:'domcontentloaded',timeout:60000});
+                await page.waitForSelector('.contact-card',{timeout:30000});
+                const contact=await page.evaluate(()=>({links:[...document.querySelectorAll('.contact-card')].map(x=>x.href),name:document.querySelector('.about-content h2')?.textContent||'',overflow:document.documentElement.scrollWidth-window.innerWidth}));
+                assert.equal(contact.links.length,5,'Missing contact links');
+                assert(contact.links.includes('https://www.facebook.com/WORACHIT1998'),'Missing FB profile');
+                assert(contact.links.includes('https://www.facebook.com/suksansrin8668'),'Missing FB page');
+                assert(contact.name.includes('สุข'),'Missing owner name');
+                assert(contact.overflow<12,'About overflow '+contact.overflow);
+                await page.screenshot({path:'/tmp/portfolio-v4-results/about-'+viewport.name+'.png',fullPage:true});
+                assert.equal(errors.length,0,'Runtime JavaScript errors: '+errors.join(' / '));
+                log.push({viewport:viewport.name,home,gallery,contact,errors,images:imageStats});
+                console.log('PASSED '+viewport.name,JSON.stringify(log[log.length-1]));
+                await page.close();
+              }
+              fs.writeFileSync('/tmp/portfolio-v4-results/qa.json',JSON.stringify(log,null,2));
+            }finally{await browser.close()}
+          })().catch(e=>{console.error('QA FAILED:',e.stack||e);process.exit(1)});
+          NODE
+      - name: Upload screenshots and QA report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-v4-browser-screenshots
+          path: /tmp/portfolio-v4-results
