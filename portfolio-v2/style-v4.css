@@ -192,3 +192,32 @@ body::after{background:radial-gradient(ellipse at 88% 7%,rgba(192,172,244,.21),t
  .page-hero:after{animation:none!important}
  .shortcut-v4:hover{transform:none!important}
 }
+
+
+/* V4 refinement: bilingual rhythm, page-specific art direction and touch usability */
+.category-chip .rail-text{display:flex;align-items:flex-start;flex-direction:column;line-height:1.22;gap:3px}
+.category-chip .rail-text strong{font-weight:800;letter-spacing:.025em;font-size:12px}
+.category-chip .rail-text small{font-size:12px;font-weight:450;color:#817a92}
+.category-chip[aria-current="page"] .rail-text small{color:#e4ddf9}
+.category-chip .nav-symbol{width:23px;height:23px}
+.category-chip{min-height:51px;padding:7px 13px}
+.featured-item .featured-label{display:flex;align-items:center;gap:12px;padding:9px 13px}
+.featured-bilingual{display:flex;flex-direction:column;align-items:flex-start;line-height:1.22;gap:3px}
+.featured-bilingual strong{font-size:13px;letter-spacing:.06em;font-weight:850}
+.featured-bilingual small{font-size:13px;color:#eadffa;font-weight:400}
+.route-selected .page-hero{background:linear-gradient(118deg,#fff 8%,#fff3fb 55%,#e7eeff 100%)}
+.route-categories .page-hero{background:linear-gradient(120deg,#fff 9%,#f4eeff 61%,#e9f6ff 100%)}
+.route-gallery .page-hero{background:linear-gradient(116deg,#fff 13%,#eff6ff 60%,#f7efff 100%)}
+.route-about .page-hero{background:linear-gradient(116deg,#fff 13%,#f7f0ff 60%,#e9faff 100%)}
+.route-selected .page-hero:before{border-color:#ffc5e36c}
+.route-gallery .page-hero:before{border-color:#bbdcff88}
+.route-about .page-hero:before{border-color:#e2c3fa74}
+.catalog-card-v4:hover .catalog-mini-icon{background:var(--shine);color:#fff;transform:rotate(-5deg) scale(1.05)}
+.catalog-mini-icon{transition:transform .3s,background .3s,color .3s}
+.gallery-art-section{position:relative}
+.gallery-art-section:after{content:"";position:absolute;z-index:-1;width:35%;height:26%;right:-6%;top:2%;border-radius:50%;background:radial-gradient(ellipse,#f0e4ff77,transparent 73%);pointer-events:none}
+.shortcut-v4 .label-en{color:#29213b}
+.shortcut-v4:hover .label-en{color:#6f36c6}
+@media(max-width:950px){.category-chip{min-height:47px}.category-chip .rail-text strong{font-size:12px}}
+@media(max-width:700px){.category-chip{min-height:46px;padding:6px 10px}.category-chip .nav-symbol{width:19px;height:19px}.featured-item .featured-label{padding:8px 10px}.featured-bilingual strong{font-size:11px}.featured-bilingual small{font-size:12px}}
+@media(prefers-reduced-motion:reduce){.catalog-card-v4:hover .catalog-mini-icon{transform:none!important}.shortcut-v4:hover .shortcut-icon-wrap{transform:none!important}}
