@@ -4,6 +4,8 @@ on:
     branches: [portfolio-v2-site]
     paths:
       - .github/workflows/portfolio-v4-browser-qa.yml
+      - portfolio-v2/style-v4.css
+      - portfolio-v2/app-v4.js
   workflow_dispatch:
 permissions:
   contents: read
@@ -88,3 +90,5 @@ jobs:
         with:
           name: portfolio-v4-browser-screenshots
           path: /tmp/portfolio-v4-results
+
+# V4 browser regression rerun after marquee overflow fix.
