@@ -19,7 +19,7 @@ function decor(id,classes){return id?"<img aria-hidden='true' alt='' loading='la
 function shell(x){return "<div class='shell page-enter'>"+x+"</div>"}
 function grad(x){return "<span class='gradient-text'>"+x+"</span>"}
 function btn(label,link,kind){return "<a class='btn "+(kind||"primary")+"' href='"+clean(link)+"'>"+label+"</a>"}
-function header(en,title,description,panel){return "<header class='"+(panel?"page-hero":"page-head")+"'><div class='"+(panel?"page-head":"")+"'><div class='eyebrow'>"+en+"</div><h1 class='section-title'>"+title+"</h1><p class='section-sub'>"+description+"</p></div>"+(panel?decor(assets[6],"decor parallax-decor"):"")+"</header>"}
+function header(en,title,description,panel){return "<header class='"+(panel?"page-hero":"page-head")+"'><div class='"+(panel?"page-head":"")+"'><div class='eyebrow'>"+en+"</div><h1 class='section-title'>"+title+"</h1><p class='section-sub'>"+description+"</p></div>"+(panel?decor(assets[page==="about"?8:page==="selected"?3:page==="gallery"?9:6],"decor parallax-decor"):"")+"</header>"}
 function title(en,text,link){return "<header class='section-kicker'><div><div class='eyebrow'>"+en+"</div><h2 class='section-title'>"+text+"</h2></div>"+(link?btn("ดูทั้งหมด ↗",link,"soft"):"")+"</header>"}
 var skillData=[
 {code:"Ps",name:"Photoshop",desc:"งานภาพ / รีทัช",color:"#31A8FF",bg:"#E6F7FF",glow:"#31A8FF40",icon:"photoshop"},
@@ -188,6 +188,7 @@ document.addEventListener("keydown",function(e){if(!lb||!lb.classList.contains("
 mount.addEventListener("click",function(e){var homePoster=e.target.closest("[data-home-poster]");if(homePoster){lightItems=groups.poster||[];openLight(Number(homePoster.dataset.homePoster));return}var b=e.target.closest("[data-light-index]");if(!b)return;var n=Number(b.dataset.lightIndex);if(b.classList.contains("has-fallback")){window.open(drive(lightItems[n].id),"_blank","noopener");return}openLight(n)});
 var menu=document.getElementById("menuToggle"),nav=document.getElementById("siteNav");if(menu&&nav){menu.addEventListener("click",function(){var opened=nav.classList.toggle("open");menu.setAttribute("aria-expanded",opened?"true":"false");menu.textContent=opened?"×":"☰"})}
 var contents=page==="home"?home():page==="selected"?featured():page==="categories"?categories():page==="gallery"?gallery():about();
+document.body.classList.add("route-"+page);
 mount.innerHTML=contents;
 document.querySelectorAll("[data-nav]").forEach(function(el){var currentNav=page==="gallery"?"categories":page;if(el.dataset.nav===currentNav)el.setAttribute("aria-current","page");else el.removeAttribute("aria-current")});
 if(page==="gallery"){var active=document.querySelector(".category-chip[aria-current='page']");if(active&&active.scrollIntoView)active.scrollIntoView({block:"nearest",inline:"center"})}
