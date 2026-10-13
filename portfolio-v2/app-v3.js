@@ -28,7 +28,7 @@ var skillData=[
 {code:"Pr",name:"Premiere Pro",desc:"ตัดต่อวิดีโอ",color:"#8275F8",bg:"#F0EAFF",glow:"#8275F840",icon:"premierepro"},
 {code:"Ae",name:"After Effects",desc:"โมชั่นกราฟิก",color:"#BD71F1",bg:"#F8EAFF",glow:"#BD71F140",icon:"aftereffects"}
 ];
-function skillCards(){return "<div class='skill-grid'>"+skillData.map(function(x,i){return "<article class='skill-card reveal' style='--skill:"+x.color+";--skillbg:"+x.bg+";--skillglow:"+x.glow+";transition-delay:"+(i*45)+"ms'><div class='skill-logo'><img class='brand-img' alt='Adobe "+clean(x.name)+"' src='https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/"+x.icon+"/"+x.icon+"-original.svg' loading='lazy'><span class='skill-backup'>"+x.code+"</span></div><span class='skill-name'>"+x.name+"</span><span class='skill-caption'>"+x.desc+"</span></article>"}).join("")+"</div>"}
+function skillCards(){return "<div class='skill-grid'>"+skillData.map(function(x,i){return "<article class='skill-card reveal' style='--skill:"+x.color+";--skillbg:"+x.bg+";--skillglow:"+x.glow+";transition-delay:"+(i*45)+"ms'><div class='skill-logo'><img class='brand-img' alt='Adobe "+clean(x.name)+"' src='"+(x.icon==="lightroom"?"https://www.adobe.com/cc-shared/assets/img/product-icons/svg/lightroom.svg":"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/"+x.icon+"/"+x.icon+"-original.svg")+"' loading='lazy'><span class='skill-backup'>"+x.code+"</span></div><span class='skill-name'>"+x.name+"</span><span class='skill-caption'>"+x.desc+"</span></article>"}).join("")+"</div>"}
 function item(cat){return (groups[cat]||[])[0]}
 function home(){
 var homeKeys=["poster","lineup","logo"],homeWorks=homeKeys.map(item);
