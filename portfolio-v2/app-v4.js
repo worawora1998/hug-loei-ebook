@@ -56,7 +56,7 @@ function labelPair(c,variant){
 
 function item(cat){return (groups[cat]||[])[0]}
 function home(){
-var p=groups.poster||[],indexes=[0,2,4,7,10,15].filter(function(i){return !!p[i]});
+var p=groups.poster||[],indexes=[0,2,4,7,8,10].filter(function(i){return !!p[i]});
 var heroVisual="<div class='hero-stage hero-stage-v4' aria-hidden='true'>"+
   "<div class='profile-halo'></div>"+
   "<div class='profile-cutout'>"+image(profiles[0]||profiles[1],"",850,true)+fall()+"</div>"+
@@ -79,7 +79,7 @@ var previews="<section class='section first-look' id='first-look'>"+
  "<p class='section-sub quick-note'>เลือกมาให้ดู 6 ภาพก่อนครับ คลิกที่ภาพเพื่อดูใหญ่ได้เลย</p>"+
  "<div class='poster-six-grid'>"+
  indexes.map(function(i,index){return "<button type='button' class='poster-six-card reveal' data-home-poster='"+i+"' aria-label='ขยายตัวอย่างโปสเตอร์ที่ "+(index+1)+"'>"+
- "<span class='poster-six-image'>"+image(p[i].id,"ตัวอย่างโปสเตอร์ที่ "+(index+1),1050,index<2)+fall()+"</span>"+
+ "<span class='poster-six-image'>"+image(p[i].id,"ตัวอย่างโปสเตอร์ที่ "+(index+1),900,index<2)+fall()+"</span>"+
  "<span class='poster-six-action'>ดูภาพใหญ่ ↗</span></button>"}).join("")+
  "</div></section>";
 var skills="<section class='section skill-section-v4'>"+title("MY ADOBE TOOLS","โปรแกรมที่ผมใช้งาน")+"<p class='section-sub skills-intro'>งานกราฟิกผมใช้ Photoshop กับ Illustrator เป็นหลัก ส่วนงานภาพถ่ายใช้ Lightroom ครับ</p>"+skillCards()+"</section>";
