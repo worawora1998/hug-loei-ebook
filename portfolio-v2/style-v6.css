@@ -1,0 +1,163 @@
+/* Portfolio V6 — home category image preview + complete contact design */
+.shortcuts-v6{
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:15px;
+  align-items:stretch;
+}
+.shortcuts-v6 .shortcut-visual{
+  position:relative;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;
+  min-width:0;min-height:0;padding:9px 9px 12px;gap:0;
+  border:1px solid #e4ddec;border-radius:23px;
+  background:linear-gradient(151deg,#fff 0%,#fff 62%,#f9f5ff 100%);
+  box-shadow:0 12px 35px #53417913;
+  overflow:hidden;isolation:isolate;
+  transition:transform .3s cubic-bezier(.2,.8,.25,1),box-shadow .3s,border-color .25s;
+}
+.shortcuts-v6 .shortcut-visual:hover{
+  transform:translateY(-6px);border-color:#c8b1f7;
+  box-shadow:0 23px 48px #604c9430;
+}
+.shortcut-visual .shortcut-preview{
+  position:relative;display:grid;place-items:center;width:100%;
+  aspect-ratio:4/3;flex:none;
+  border:1px solid #e9e1f0;border-radius:16px;overflow:hidden;
+  background:radial-gradient(ellipse at 72% 18%,#f1dfff,#f1effc 58%,#e8f7ff 100%);
+}
+.shortcut-visual .shortcut-preview::after{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:linear-gradient(134deg,#ffffff5e 0%,transparent 34%,transparent 75%,#9170ff13);
+}
+.shortcut-visual .shortcut-preview .art-image{
+  display:block;position:absolute;inset:0;width:100%;height:100%;
+  object-fit:contain;object-position:center;padding:4px;
+  transition:transform .38s ease,filter .3s ease;
+  background:transparent;
+}
+.shortcut-visual:hover .shortcut-preview .art-image{transform:scale(1.05);filter:saturate(1.08)}
+.shortcut-visual .shortcut-preview .shortcut-icon-wrap{
+  position:absolute;top:9px;left:9px;z-index:3;width:42px;height:42px;
+  border-radius:12px;border:1px solid #e5ddf1;
+  display:grid;place-items:center;
+  background:#fffffff0;color:#7d4bd4;
+  box-shadow:0 5px 20px #37234a2c;
+  backdrop-filter:blur(9px);
+}
+.shortcut-visual .shortcut-preview .shortcut-icon-wrap svg{width:25px;height:25px}
+.shortcut-visual:hover .shortcut-preview .shortcut-icon-wrap{
+  background:var(--shine);color:white;transform:rotate(-5deg) scale(1.035)
+}
+.shortcut-visual .shortcut-details{
+  position:relative;display:flex;align-items:center;justify-content:space-between;
+  width:100%;min-width:0;flex:1;gap:8px;padding:14px 6px 4px;
+}
+.shortcut-visual .shortcut-details .bilingual{
+  display:flex;flex-direction:column;gap:4px;flex:1;min-width:0;
+}
+.shortcut-visual .shortcut-details .label-en{
+  font-size:clamp(13px,1.14vw,17px);font-weight:850;
+  line-height:1.21;letter-spacing:.004em;overflow-wrap:anywhere;
+  color:#29213b;
+}
+.shortcut-visual:hover .shortcut-details .label-en{color:#6f36c6}
+.shortcut-visual .shortcut-details .label-th{
+  font-size:14px;line-height:1.36;color:#716c80;
+}
+.shortcut-visual .shortcut-details .shortcut-arrow{
+  position:static;flex:none;display:grid;place-items:center;margin-left:auto;
+  width:30px;height:30px;border-radius:10px;
+  background:#f1eaff;color:#8b55d6;font-size:17px;
+  transition:transform .22s,background .22s,color .22s;
+}
+.shortcut-visual:hover .shortcut-details .shortcut-arrow{
+  transform:translate(2px,-2px);background:#8752df;color:#fff;
+}
+.shortcut-visual .shortcut-preview .art-fallback{
+  z-index:2;position:relative;min-height:100%;padding:14px 8px;font-size:12px;
+}
+.home-contact-panel{
+  grid-template-columns:minmax(0,.90fr) minmax(0,1.10fr);
+  gap:clamp(20px,4vw,58px);
+}
+.home-contact-intro{position:relative;z-index:2;min-width:0}
+.home-contact-intro p{font-size:18px;line-height:1.65;max-width:510px}
+.home-contact-about{
+  display:inline-flex;align-items:center;margin-top:19px;
+  border:1px solid #ffffff60;padding:11px 17px;border-radius:13px;
+  color:#fff;font-size:15px;font-weight:600;transition:transform .25s,background .25s;
+}
+.home-contact-about:hover{transform:translateY(-3px);background:#ffffff20}
+.home-contact-links{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.home-contact-links .home-contact-item{
+  display:flex;align-items:center;gap:11px;position:relative;
+  padding:13px 14px;min-width:0;min-height:86px;
+  border:1px solid #ffffff36;background:#ffffff10;color:#fff;
+  border-radius:17px;font-weight:400;
+  box-shadow:0 8px 22px #0e0b2015;
+  transition:transform .25s,background .25s,border-color .25s,box-shadow .25s;
+}
+.home-contact-links .home-contact-item:hover{
+  background:#ffffff24;color:#fff;border-color:#ffffff91;
+  transform:translateY(-4px);box-shadow:0 15px 30px #0f0b2f4d;
+}
+.home-contact-links .home-contact-item:last-child{
+  grid-column:1/-1;background:#ffffff10;color:#fff;font-weight:400;
+}
+.home-contact-links .home-contact-item:last-child:hover{background:#ffffff24}
+.home-contact-item .contact-icon{
+  display:grid;place-items:center;flex:none;
+  height:45px;width:45px;border-radius:14px;background:white;
+  box-shadow:0 6px 18px #08081734;
+}
+.home-contact-item .contact-icon .social-img{height:26px;width:26px;object-fit:contain}
+.home-contact-item .phone-icon{background:#e9f5ff;color:#276ca7}
+.home-contact-item .phone-icon svg{height:26px;width:26px}
+.home-contact-details{display:flex;flex-direction:column;min-width:0;flex:1;gap:4px;line-height:1.3}
+.home-contact-details small{
+  display:block;color:#ded2ed;font-size:12px;line-height:1.2;font-weight:500
+}
+.home-contact-details strong{
+  font-size:clamp(14px,1.23vw,17px);font-weight:650;
+  line-height:1.32;overflow-wrap:anywhere;word-break:normal;
+}
+.home-contact-arrow{margin-left:auto;font-size:17px;color:#dccbf1;transition:transform .25s}
+.home-contact-item:hover .home-contact-arrow{transform:translate(2px,-2px)}
+@media(max-width:1250px){
+ .shortcuts-v6{grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
+}
+@media(max-width:950px){
+ .shortcuts-v6{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .home-contact-panel{grid-template-columns:1fr}
+ .home-contact-links{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:700px){
+ .shortcuts-v6{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+ .shortcuts-v6 .shortcut-visual{padding:6px 6px 10px;border-radius:17px}
+ .shortcut-visual .shortcut-preview{aspect-ratio:4/3;border-radius:12px}
+ .shortcut-visual .shortcut-preview .shortcut-icon-wrap{width:37px;height:37px;top:7px;left:7px}
+ .shortcut-visual .shortcut-preview .shortcut-icon-wrap svg{width:22px;height:22px}
+ .shortcut-visual .shortcut-details{padding:10px 4px 2px;gap:6px}
+ .shortcut-visual .shortcut-details .label-en{font-size:14px}
+ .shortcut-visual .shortcut-details .label-th{font-size:13px}
+ .shortcut-visual .shortcut-details .shortcut-arrow{height:27px;width:27px;font-size:15px}
+}
+@media(max-width:560px){
+ .home-contact-links{grid-template-columns:1fr}
+ .home-contact-links .home-contact-item:last-child{grid-column:auto}
+ .home-contact-panel{gap:23px}
+ .home-contact-intro p{font-size:16px}
+ .home-contact-links .home-contact-item{min-height:72px}
+}
+@media(max-width:420px){
+ .shortcuts-v6{gap:8px}
+ .shortcut-visual .shortcut-preview{aspect-ratio:1.08}
+ .shortcut-visual .shortcut-details .label-en{font-size:13px}
+ .shortcut-visual .shortcut-details .label-th{font-size:12px}
+ .shortcut-visual .shortcut-details .shortcut-arrow{width:25px;height:25px}
+}
+@media(prefers-reduced-motion:reduce){
+ .shortcuts-v6 .shortcut-visual:hover,
+ .shortcut-visual:hover .shortcut-preview .art-image,
+ .shortcut-visual:hover .shortcut-icon-wrap,
+ .home-contact-links .home-contact-item:hover,
+ .home-contact-about:hover{transform:none!important}
+}
