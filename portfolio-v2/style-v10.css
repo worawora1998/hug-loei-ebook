@@ -200,3 +200,12 @@ body{background-color:#0c0e10!important}
  #v10ReadingProgress{transition:none}
  .v10-pcard,.v10-package-nav a,.ed-art-frame img,.ed-category-image img{transition:none!important}
 }
+
+/* V11: requested hero typography; suppress the underline embellishment completely */
+.ed-hero h1 em:after,.v11-hero-title em:after{display:none!important;content:none!important;background:none!important}
+.v11-hero-title{font-size:clamp(43px,5.5vw,91px)!important;line-height:1.05!important;letter-spacing:-.07em!important;white-space:normal!important;overflow-wrap:normal!important}
+.v11-hero-title em{display:inline-block;white-space:nowrap}
+.ed-about-photo img.art-image{object-fit:cover!important;object-position:center 37%!important}
+@media(max-width:960px){.v11-hero-title{font-size:clamp(55px,9vw,88px)!important}}
+@media(max-width:700px){.v11-hero-title{font-size:clamp(41px,9.3vw,66px)!important}}
+@media(max-width:390px){.v11-hero-title{font-size:clamp(36px,9.1vw,53px)!important}}
