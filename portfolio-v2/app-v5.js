@@ -9,14 +9,14 @@ var query=new URLSearchParams(window.location.search),requested=query.get("page"
 if(["home","selected","categories","gallery","about"].indexOf(page)<0)page="home";
 var key=query.get("cat")||"poster",current=cats.find(function(x){return x.key===key})||cats[0];
 var lightItems=[],lightIndex=0,focusBefore=null,touchX=0;
-var preloadImages=new Map();function preloadNear(i){if(!lightItems.length)return;[-1,1].forEach(function(offset){var it=lightItems[(i+offset+lightItems.length)%lightItems.length];if(!it)return;var url=src(it.id,1080);if(preloadImages.has(url))return;var im=new Image();im.decoding='async';im.src=url;preloadImages.set(url,im);if(preloadImages.size>24)preloadImages.delete(preloadImages.keys().next().value)})}
+var preloadImages=new Map();function preloadNear(i){if(!lightItems.length)return;[-1,1].forEach(function(offset){var it=lightItems[(i+offset+lightItems.length)%lightItems.length];if(!it)return;var url=src(it.id,850);if(preloadImages.has(url))return;var im=new Image();im.decoding='async';im.src=url;preloadImages.set(url,im);if(preloadImages.size>24)preloadImages.delete(preloadImages.keys().next().value)})}
 function clean(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
 function u(page,cat){return "?page="+encodeURIComponent(page)+(cat?"&cat="+encodeURIComponent(cat):"")}
 function src(id,width){return "https://drive.google.com/thumbnail?id="+encodeURIComponent(id)+"&sz=w"+(width||960)}
 function drive(id){return "https://drive.google.com/file/d/"+encodeURIComponent(id)+"/view"}
 function image(id,alt,width,eager){return "<img class='art-image' data-file='"+clean(id)+"' alt='"+clean(alt)+"' src='"+src(id,width)+"' loading='"+(eager?"eager":"lazy")+"' decoding='async'"+(eager?" fetchpriority='high'":"")+">"}
 function fall(){return "<span class='art-fallback'><strong>ไม่สามารถแสดงภาพตัวอย่างได้</strong><span>ภาพต้นฉบับยังอยู่ใน Google Drive</span></span>"}
-function decor(id,classes){return id?"<img aria-hidden='true' alt='' loading='lazy' class='"+classes+"' src='"+src(id,650)+"'>":""}
+function decor(id,classes){return id?"<img aria-hidden='true' alt='' loading='lazy' class='"+classes+"' src='"+src(id,460)+"'>":""}
 function shell(x){return "<div class='shell page-enter'>"+x+"</div>"}
 function grad(x){return "<span class='gradient-text'>"+x+"</span>"}
 function btn(label,link,kind){return "<a class='btn "+(kind||"primary")+"' href='"+clean(link)+"'>"+label+"</a>"}
@@ -80,7 +80,7 @@ var previews="<section class='section first-look' id='first-look'>"+
  "<p class='section-sub quick-note'>เลือกมาให้ดู 6 ภาพก่อนครับ คลิกที่ภาพเพื่อดูใหญ่ได้เลย</p>"+
  "<div class='poster-six-grid'>"+
  indexes.map(function(i,index){return "<button type='button' class='poster-six-card reveal' data-home-poster='"+i+"' aria-label='ขยายตัวอย่างโปสเตอร์ที่ "+(index+1)+"'>"+
- "<span class='poster-six-image'>"+image(p[i].id,"ตัวอย่างโปสเตอร์ที่ "+(index+1),900,index<2)+fall()+"</span>"+
+ "<span class='poster-six-image'>"+image(p[i].id,"ตัวอย่างโปสเตอร์ที่ "+(index+1),780,index<2)+fall()+"</span>"+
  "<span class='poster-six-action'>ดูภาพใหญ่ ↗</span></button>"}).join("")+
  "</div></section>";
 var skills="<section class='section skill-section-v4'>"+title("MY ADOBE TOOLS","โปรแกรมที่ผมใช้งาน")+"<p class='section-sub skills-intro'>งานกราฟิกผมใช้ Photoshop กับ Illustrator เป็นหลัก ส่วนงานภาพถ่ายใช้ Lightroom ครับ</p>"+skillCards()+"</section>";
@@ -94,7 +94,7 @@ var homeContact="<section class='section home-contact' id='home-contact'><div cl
 function categoryCard(c,i){
 var it=item(c.key);
 return "<a class='catalog-card catalog-card-v4 reveal' style='transition-delay:"+(i%3*65)+"ms' href='"+u("gallery",c.key)+"' aria-label='"+clean(c.en+" "+c.title)+"'>"+
-"<div class='catalog-thumb'>"+image(it.id,c.title,750)+fall()+"</div>"+
+"<div class='catalog-thumb'>"+image(it.id,c.title,550)+fall()+"</div>"+
 "<div class='catalog-info'><span class='catalog-mini-icon'>"+iconSVG(c.key)+"</span>"+
 labelPair(c,"catalog-bilingual")+"<span class='catalog-desc'>"+clean(c.desc)+"</span>"+
 "<span class='catalog-go'>ดูผลงาน <span aria-hidden='true'>↗</span></span></div></a>"
@@ -104,7 +104,7 @@ return shell(header("MY WORK / 15 CATEGORIES","เลือกดู"+grad("ผ�
 "<section class='section category-list-section'><div class='catalog'>"+cats.map(categoryCard).join("")+"</div></section>")
 }
 
-function artworkCard(it,c,i,featured){var el=featured?"a":"button",action=featured?"href='"+u("gallery",c.key)+"'":"type='button' data-light-index='"+i+"'",css=featured?"masonry-item featured-item reveal":"masonry-item gallery-item reveal";return "<"+el+" class='"+css+"' "+action+" aria-label='"+(featured?"ดูหมวด ":"ขยายภาพ ")+clean(c.title)+"'>"+image(it.id,c.title,featured?1150:1080)+fall()+"<span aria-hidden='true' class='image-shine'></span>"+(featured?"<span class='featured-label'><span class='featured-bilingual'><strong>"+clean(c.en)+"</strong><small>"+clean(c.title)+"</small></span><span aria-hidden='true'>↗</span></span>":"")+"</"+el+">"}
+function artworkCard(it,c,i,featured){var el=featured?"a":"button",action=featured?"href='"+u("gallery",c.key)+"'":"type='button' data-light-index='"+i+"'",css=featured?"masonry-item featured-item reveal":"masonry-item gallery-item reveal";return "<"+el+" class='"+css+"' "+action+" aria-label='"+(featured?"ดูหมวด ":"ขยายภาพ ")+clean(c.title)+"'>"+image(it.id,c.title,featured?900:850)+fall()+"<span aria-hidden='true' class='image-shine'></span>"+(featured?"<span class='featured-label'><span class='featured-bilingual'><strong>"+clean(c.en)+"</strong><small>"+clean(c.title)+"</small></span><span aria-hidden='true'>↗</span></span>":"")+"</"+el+">"}
 function endSection(){return "<div class='work-end reveal'><div><h2>อยากดูงานแบบอื่นอีกไหมครับ?</h2><p>มีงานหลายแบบให้เลือกดูครับ กดเลือกหมวดที่สนใจได้เลย</p></div>"+btn("ดูหมวดทั้งหมด ↗",u("categories"))+"</div>"}
 function featured(){
 return shell(header("SELECTED WORKS","ผลงาน"+grad("ที่อยากให้ลองดู"),"ผมเลือกงานจากทั้ง 15 หมวดมาให้ดูเป็นตัวอย่างก่อนครับ ถ้าชอบแนวไหนก็กดเข้าไปดูงานในหมวดนั้นต่อได้เลย",true)+
@@ -177,7 +177,7 @@ if(im.id==="lbImage"){lb.classList.add("image-failed");document.getElementById("
 document.addEventListener("error",function(ev){var t=ev.target;if(!t||t.tagName!=="IMG")return;if(t.classList.contains("art-image"))imageError(t);else if(t.classList.contains("brand-img"))t.parentElement.classList.add("is-fallback");else if(t.classList.contains("social-img")){t.style.display="none";var b=t.nextElementSibling;if(b){b.classList.remove("sr-only");b.style.fontWeight="900";b.style.fontSize="14px"}}},true);
 var lb=document.getElementById("lightbox"),lbImg=document.getElementById("lbImage"),lbInner=document.getElementById("lbInner");
 function openLight(i){if(!lb||!lightItems.length)return;lightIndex=(i+lightItems.length)%lightItems.length;var it=lightItems[lightIndex];
-if(!lb.classList.contains("open"))focusBefore=document.activeElement;lb.classList.remove("zoomed","image-failed");document.getElementById("lbZoom").setAttribute("aria-pressed","false");lbImg.dataset.file=it.id;lbImg.dataset.retry="0";var cached=preloadImages.get(src(it.id,1080));var existing=document.querySelector("img.art-image[data-file=\u0022"+it.id+"\u0022]");var ready=existing&&existing.complete&&existing.naturalWidth?existing.currentSrc||existing.src:null;lbImg.src=ready||(cached&&cached.complete&&cached.naturalWidth?cached.src:src(it.id,900));preloadNear(lightIndex);lbImg.alt="ภาพผลงานขนาดใหญ่";lb.classList.add("open");document.body.classList.add("is-modal");
+if(!lb.classList.contains("open"))focusBefore=document.activeElement;lb.classList.remove("zoomed","image-failed");document.getElementById("lbZoom").setAttribute("aria-pressed","false");lbImg.dataset.file=it.id;lbImg.dataset.retry="0";var cached=preloadImages.get(src(it.id,850));var existing=document.querySelector("img.art-image[data-file=\u0022"+it.id+"\u0022]");var ready=existing&&existing.complete&&existing.naturalWidth?existing.currentSrc||existing.src:null;lbImg.src=ready||(cached&&cached.complete&&cached.naturalWidth?cached.src:src(it.id,850));preloadNear(lightIndex);lbImg.alt="ภาพผลงานขนาดใหญ่";lb.classList.add("open");document.body.classList.add("is-modal");
 document.getElementById("lbPrev").style.display=lightItems.length>1?"grid":"none";document.getElementById("lbNext").style.display=lightItems.length>1?"grid":"none";document.getElementById("lbClose").focus()}
 function closeLight(){if(!lb)return;lb.classList.remove("open","zoomed","image-failed");document.body.classList.remove("is-modal");if(focusBefore&&focusBefore.focus)focusBefore.focus()}
 function changeLight(n){if(lb&&lb.classList.contains("open")&&lightItems.length>1)openLight(lightIndex+n)}
