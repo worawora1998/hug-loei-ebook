@@ -168,12 +168,55 @@ return shell(
 "<nav class='pricing-jump' aria-label='เลือกดูแพ็กเกจ'><a href='#general'>01 <b>ภาพโฆษณาทั่วไป</b><span>เริ่ม 300 บาท ↗</span></a><a href='#concert'>02 <b>โปสเตอร์คอนเสิร์ต</b><span>เริ่ม 600 บาท ↗</span></a><a href='#terms'>03 <b>เงื่อนไขการจ้างงาน</b><span>อ่านก่อนสั่งงาน ↗</span></a></nav>"+
 block("01","ภาพโฆษณาทั่วไป","GENERAL ADVERTISING","สำหรับร้านค้า สินค้า ร้านอาหาร คาเฟ่ หรือภาพลงโซเชียล เลือกได้ตั้งแต่ 1–30 ภาพ",general,"general",generalExamples)+
 block("02","โปสเตอร์คอนเสิร์ตและอีเวนต์","CONCERT & ENTERTAINMENT","มีโปสเตอร์หลัก 1 ภาพ และสามารถเพิ่มภาพโปรโมตในธีมเดียวกันได้ เหมาะกับงานดนตรี ผับ บาร์ และงาน DJ / MC",concert,"concert",concertExamples)+
-"<div class='pricing-special reveal'><div><div class='eyebrow'>LARGE PROJECT</div><h2>ต้องการงานจำนวนมาก?</h2><p>ถ้าเป็นคอนเสิร์ตใหญ่ เทศกาลดนตรี หรือมีภาพที่ต้องทำเยอะ ส่งรายละเอียดมาให้ผมประเมินราคาเหมารวมได้ครับ</p></div>"+directLine("ทัก LINE สอบถามราคา ↗")+"</div>"+
+"<div class='pricing-special reveal'><div><div class='eyebrow'>LARGE PROJECT</div><h2>งานอื่นที่ไม่มีราคาแพ็กเกจ?</h2><p>งานโลโก้ รีทัช วิดีโอ หรือโปรเจกต์ที่มีรายละเอียดพิเศษ สามารถทักมาสอบถามราคาและกำหนดส่งตามลักษณะงานได้ครับ</p></div>"+directLine("ทัก LINE สอบถามราคา ↗")+"</div>"+
 "<section class='section pricing-terms reveal' id='terms'><div class='eyebrow'>BEFORE WE START</div><h2>เงื่อนไขการจ้างงาน</h2><p class='pricing-terms-intro'>อ่านส่วนนี้ก่อนเริ่มงานสักนิดนะครับ จะได้เข้าใจตรงกัน</p><div class='pricing-terms-grid'>"+terms.map(function(t,i){return "<article class='pricing-term'><span>"+String(i+1).padStart(2,"0")+"</span><div><h3>"+t[0]+"</h3><p>"+t[1]+"</p></div></article>"}).join("")+"</div></section>"+
 "<section class='pricing-end reveal'><div class='eyebrow'>LET'S WORK TOGETHER</div><h2>มีงานที่อยากให้ผมช่วยออกแบบไหมครับ?</h2><p>ส่งรายละเอียดมาคุยกันก่อนได้เลยครับ จะสั่งงานเป็นภาพ เป็นแพ็กเกจ หรือเหมาทั้งโปรเจกต์ก็ได้</p><div class='pricing-end-actions'>"+directLine("ทัก LINE สอบถามราคา ↗")+btn("ดูขั้นตอนจ้างงาน",u("services"),"soft")+"</div></section>"
 )
 }
-function services(){return shell(header("DESIGN SERVICES","บริการ"+grad("ออกแบบ"),"รับออกแบบกราฟิกออนไลน์ทั่วประเทศ",true)+directLine("ทัก LINE คุยงาน ↗"))}
+
+function services(){
+var offers=[
+ {name:"โปสเตอร์คอนเสิร์ต / ศิลปิน / DJ / MC",desc:"โปสเตอร์คอนเสิร์ต งานผับ บาร์ และงานอีเวนต์ พร้อมภาพโปรโมตในธีมเดียวกัน",key:"poster",gallery:"poster",badge:"งานที่เชี่ยวชาญ"},
+ {name:"ภาพโฆษณา Facebook / Instagram / TikTok",desc:"ภาพลงโซเชียลสำหรับโฆษณาสินค้า บริการ และประชาสัมพันธ์ธุรกิจ",key:"promo",gallery:"promo"},
+ {name:"ภาพโปรโมชันร้านค้า / ร้านอาหาร / คาเฟ่",desc:"งานโปรโมชัน ลดราคา เมนูใหม่ และภาพประชาสัมพันธ์ร้านค้า",key:"night",gallery:"night"},
+ {name:"ออกแบบโลโก้ / แบรนด์",desc:"โลโก้และกราฟิกสำหรับสร้างภาพลักษณ์ของร้านค้าและแบรนด์",key:"logo",gallery:"logo"},
+ {name:"ปก Facebook / YouTube / แบนเนอร์",desc:"ภาพปกและแบนเนอร์สำหรับช่องทางออนไลน์ต่าง ๆ",key:"cover",gallery:"cover"},
+ {name:"ป้ายโฆษณา / เมนูอาหาร / สิ่งพิมพ์",desc:"ออกแบบไฟล์สำหรับป้าย เมนู และงานพิมพ์ โดยไม่รวมบริการผลิตจริง",key:"sign",gallery:"sign"},
+ {name:"ปกหนังสือ / E-Book",desc:"ออกแบบหน้าปกหนังสือและสื่อสำหรับอ่านออนไลน์",key:"book",gallery:"book"},
+ {name:"ตกแต่งภาพ / รีทัช / ตัดต่อภาพ",desc:"ปรับแสง สี ผิวภาพ และจัดองค์ประกอบภาพสำหรับการใช้งานตามบรีฟ",key:"product"},
+ {name:"ลายเสื้อ / สินค้าที่ระลึก",desc:"ออกแบบลายเสื้อและลวดลายสินค้าเพื่อให้นำไฟล์ไปผลิตต่อได้",key:"apparel",gallery:"apparel"},
+ {name:"แผนผังงานอีเวนต์ / ประชาสัมพันธ์",desc:"แผนผังพื้นที่งานและสื่อประชาสัมพันธ์กิจกรรม",key:"event",gallery:"event"},
+ {name:"โมชั่นกราฟิก / วิดีโอ / ตัดต่อคลิป",desc:"รับงานวิดีโอและโมชั่นกราฟิกโดยมีทีมช่วยดำเนินการ ประเมินราคาตามรายละเอียด",key:"youtube"},
+ {name:"งานกราฟิกอื่น ๆ ตามบรีฟ",desc:"มีไอเดียหรืองานออกแบบประเภทอื่น ทักมาสอบถามรายละเอียดก่อนได้ครับ",key:"product"}
+];
+var steps=[
+ ["ทักมาคุยรายละเอียด","ส่งข้อความ สิ่งที่อยากได้ รูป โลโก้ และภาพอ้างอิงทาง LINE หรือช่องทางติดต่อที่สะดวก"],
+ ["สรุปงานและตกลงราคา","ประเมินราคา จำนวนภาพ ระยะเวลา และคิวงานให้ชัดเจนก่อนเริ่ม"],
+ ["มัดจำก่อนเริ่มงาน","ชำระมัดจำอย่างน้อย 50% หรือชำระเต็มจำนวนได้ตามสะดวก"],
+ ["ออกแบบและตรวจแก้","ส่งภาพตัวอย่างให้ตรวจ แก้ไขฟรีไม่จำกัดรอบภายในรายละเอียดงานเดิม"],
+ ["ยืนยันแบบและรับไฟล์","เมื่อคอนเฟิร์มแบบและชำระยอดที่เหลือแล้ว ส่งไฟล์ผ่าน Google Drive หรือแชท"]
+];
+var faq=[
+ ["ออกแบบภาพทั่วไปใช้เวลากี่วัน?","ประมาณ 1–2 วันต่อภาพหลังได้รับรายละเอียดครบถ้วน งานจำนวนมากหรือหลายโปรเจกต์จะแจ้งกำหนดส่งตามคิวที่มีอยู่"],
+ ["รับงานด่วนไหม มีค่าใช้จ่ายเพิ่มหรือเปล่า?","รับงานด่วนโดยไม่มีค่าบริการเพิ่มเติม แต่ต้องตรวจสอบคิวงานและกำหนดส่งก่อนรับงาน"],
+ ["แก้ไขงานได้กี่ครั้ง?","แก้ไขฟรีไม่จำกัดรอบภายในบรีฟเดิม หากเปลี่ยนคอนเซปต์ใหม่ทั้งหมด จะประเมินราคาใหม่หรือคิดเพิ่มประมาณ 50% ของราคางานเดิมตามรายละเอียดและตกลงก่อนแก้"],
+ ["ต้องมัดจำเท่าไร และจ่ายส่วนที่เหลือตอนไหน?","มัดจำอย่างน้อย 50% ก่อนเริ่มงาน หรือชำระเต็มจำนวนได้ เมื่อแบบเสร็จและลูกค้ายืนยันแล้ว ให้ชำระยอดที่เหลือก่อนรับไฟล์สมบูรณ์"],
+ ["ถ้ายกเลิกงานหลังเริ่มออกแบบแล้ว คืนมัดจำไหม?","เมื่อเริ่มดำเนินงานแล้ว หากลูกค้ายกเลิกจะไม่คืนเงินมัดจำตามข้อตกลงก่อนเริ่มงาน"],
+ ["ลูกค้าจะได้รับไฟล์อะไร?","ได้รับ JPG / PNG คุณภาพสูง และไฟล์ต้นฉบับ PSD หรือ AI ตามโปรแกรมที่ใช้ สำหรับงานวิดีโอหรือโมชั่นให้ตกลงรูปแบบไฟล์ก่อนเริ่มงาน"],
+ ["ทำป้าย เสื้อ หรือสิ่งพิมพ์จริงให้ด้วยไหม?","รับเฉพาะออกแบบและส่งไฟล์สำหรับนำไปผลิตต่อ ไม่รวมการพิมพ์ ผลิตเสื้อ หรือผลิตชิ้นงานจริง และไม่รับออกแบบเว็บไซต์"],
+ ["งานโลโก้ รีทัช หรือวิดีโอมีราคาเท่าไร?","งานที่ไม่อยู่ในแพ็กเกจราคาจะประเมินตามรายละเอียดและขอบเขตงาน ทักมาสอบถามราคาได้โดยตรง"]
+];
+return shell(
+header("DESIGN SERVICES / WHAT I DO","บริการ"+grad("ออกแบบกราฟิก"),"รับออกแบบตั้งแต่โปสเตอร์คอนเสิร์ต งานอีเวนต์ ไปจนถึงภาพโฆษณาสำหรับร้านค้าและธุรกิจ รับงานออนไลน์ทั่วประเทศ",true)+
+"<section class='section services-intro reveal'><div class='services-intro-badge'>FREELANCE GRAPHIC DESIGNER · SINCE 2017</div><h2>งานหลักคือโปสเตอร์คอนเสิร์ต<br><span class='gradient-text'>แต่งานกราฟิกแบบอื่นก็รับครับ</span></h2><p>ผมสุข (Suk) รับออกแบบไฟล์งานตามโจทย์ของลูกค้า โดยเน้นพูดคุยรายละเอียดกับนักออกแบบโดยตรง ไม่ต้องกรอกแบบฟอร์มหรือสมัครสมาชิก</p><div class='services-intro-actions'>"+btn("ดูโปสเตอร์ที่ผ่านมา ↗",u("gallery","poster"))+directLine("ทัก LINE คุยงาน ↗","soft")+"</div></section>"+
+"<section class='section'><div class='section-kicker'><div><div class='eyebrow'>DESIGN CATEGORIES</div><h2 class='section-title'>งานที่"+grad("รับออกแบบ")+"</h2></div></div><div class='services-grid'>"+
+offers.map(function(o,i){return "<article class='service-card reveal'><div class='service-card-top'><span class='service-card-icon'>"+iconSVG(o.key)+"</span><span class='service-card-number'>"+String(i+1).padStart(2,"0")+"</span></div>"+(o.badge?"<span class='service-card-badge'>"+o.badge+"</span>":"")+"<h3>"+o.name+"</h3><p>"+o.desc+"</p><div class='service-card-bottom'>"+(o.gallery?"<a href='"+u("gallery",o.gallery)+"'>ดูผลงานที่มี ↗</a>":"<a href='"+u("about")+"#contact'>ทักสอบถาม ↗</a>")+"</div></article>"}).join("")+
+"</div><div class='service-scope'><strong>ขอบเขตบริการ</strong><p>รับออกแบบไฟล์เท่านั้น ไม่รวมการพิมพ์หรือผลิตชิ้นงานจริง และไม่รับออกแบบเว็บไซต์ ส่วนงานวิดีโอ/โมชั่นกราฟิกมีทีมช่วยดำเนินการ ทั้งหมดสามารถสอบถามราคาและคิวงานได้ก่อนตัดสินใจครับ</p></div></section>"+
+"<section class='section service-workflow' id='workflow'><div class='section-kicker'><div><div class='eyebrow'>HOW IT WORKS</div><h2 class='section-title'>ขั้นตอน"+grad("การจ้างงาน")+"</h2></div></div><div class='workflow-grid'>"+steps.map(function(x,i){return "<article class='workflow-card reveal'><span>"+String(i+1).padStart(2,"0")+"</span><h3>"+x[0]+"</h3><p>"+x[1]+"</p></article>"}).join("")+"</div></section>"+
+"<section class='section service-faq' id='faq'><div class='section-kicker'><div><div class='eyebrow'>FREQUENTLY ASKED QUESTIONS</div><h2 class='section-title'>คำถาม"+grad("ที่พบบ่อย")+"</h2></div></div><div class='faq-list'>"+faq.map(function(q){return "<details class='faq-item'><summary>"+q[0]+"<span aria-hidden='true'>+</span></summary><p>"+q[1]+"</p></details>"}).join("")+"</div></section>"+
+"<section class='pricing-end reveal'><div class='eyebrow'>LET'S WORK TOGETHER</div><h2>มีงานออกแบบที่อยากให้ช่วยไหมครับ?</h2><p>ทักมาคุยรายละเอียดกันก่อนได้เลยครับ รับงานออนไลน์ทั่วประเทศ ติดต่อได้ทุกวัน ตอบกลับเมื่อสะดวก</p><div class='pricing-end-actions'>"+directLine("ทัก LINE คุยงาน ↗")+btn("ดูราคาแพ็กเกจ",u("pricing"),"soft")+"</div></section>"
+);
+}
 function categoryCard(c,i){
 var it=item(c.key);
 return "<a class='catalog-card catalog-card-v4 reveal' style='transition-delay:"+(i%3*65)+"ms' href='"+u("gallery",c.key)+"' aria-label='"+clean(c.en+" "+c.title)+"'>"+
@@ -227,7 +270,7 @@ function socialIcon(icon,color,backup){
 function about(){
 var portrait=profiles[1]||profiles[0];
 var bio="<section class='section about-layout'><div class='about-portrait reveal'>"+image(portrait,"รูปผม สุข วรชิต ภูลายยาว",1100)+fall()+"</div>"+
-"<div class='about-content reveal'><div class='eyebrow'>HELLO, I'M SUKH</div>"+
+"<div class='about-content reveal'><div class='eyebrow'>HELLO, I'M SUK</div>"+
 "<h2>สวัสดีครับ ผม<br>"+grad('&quot;สุข&quot; วรชิต ภูลายยาว')+"</h2>"+
 "<p>ผมทำงานด้านกราฟิกดีไซน์มาตั้งแต่ปี 2017 ครับ หลัก ๆ จะเป็นงานโปสเตอร์คอนเสิร์ต โลโก้ ภาพโฆษณา และงานออกแบบอื่น ๆ ที่เห็นในเว็บนี้เลยครับ</p>"+
 "<p>ผมทำงานในฐานะ Freelance Graphic Designer รับงานออนไลน์ทั่วประเทศ รวมถึงลูกค้าคนไทยในต่างประเทศ สามารถพูดคุยรายละเอียดและตกลงขอบเขตงานกันได้โดยตรงครับ</p>"+
