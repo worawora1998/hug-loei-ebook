@@ -9,7 +9,7 @@
 .v19-film{position:absolute;left:0;width:100%;overflow:hidden;display:flex;align-items:center;z-index:2;-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 9%,#000 91%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0%,#000 9%,#000 91%,transparent 100%)}
 .v19-film.top{top:11%;height:clamp(135px,31vh,290px);transform:rotate(-3deg) scale(1.07)}
 .v19-film.bottom{bottom:8%;height:clamp(135px,31vh,290px);transform:rotate(3deg) scale(1.07)}
-.v19-film-track{display:flex;align-items:center;gap:16px;width:max-content;animation:v19Reel 29s linear infinite;will-change:transform}
+.v19-film-track{display:flex;align-items:center;gap:16px;padding-right:16px;width:max-content;animation:v19Reel 29s linear infinite;will-change:transform}
 .v19-film.bottom .v19-film-track{animation-direction:reverse;animation-duration:34s}
 .v19-film-card{position:relative;flex:0 0 clamp(118px,13vw,184px);height:clamp(128px,26vh,235px);padding:6px;border-radius:13px;background:#fafaff;box-shadow:0 15px 24px #09072585,0 0 0 1px #ffffff40;overflow:hidden;transform:rotate(var(--angle,0deg))}
 .v19-film-card:nth-child(3n+1){--angle:-2.2deg}.v19-film-card:nth-child(3n){--angle:2deg}
@@ -32,7 +32,22 @@ html.v19-loading{overflow:hidden}html.v19-loading body{overflow:hidden}
 html.v19-loading #site-header,html.v19-loading #app,html.v19-loading .site-footer{visibility:hidden!important}
 html.v19-loaded #site-header,html.v19-loaded #app,html.v19-loaded .site-footer{visibility:visible!important}
 html.v19-loaded #app .page-enter{animation:v19PageEnter .62s ease both}
-html.v19-intro-seen #v19-intro{display:none!important}
+
+/* Quick return visits show a minimal branded loader, never the old website or a blank white page. */
+html.v19-intro-seen #v19-intro,.v19-intro-fast{background:#f4f2ff!important;color:#4030de!important}
+html.v19-intro-seen .v19-film,.v19-intro-fast .v19-film,
+html.v19-intro-seen .v19-intro-top,.v19-intro-fast .v19-intro-top,
+html.v19-intro-seen .v19-intro-skip,.v19-intro-fast .v19-intro-skip,
+html.v19-intro-seen #v19-intro::before,.v19-intro-fast::before,
+html.v19-intro-seen #v19-intro::after,.v19-intro-fast::after{display:none!important}
+html.v19-intro-seen .v19-intro-center,.v19-intro-fast .v19-intro-center{background:none;box-shadow:none;text-shadow:none}
+html.v19-intro-seen .v19-intro-center h1,.v19-intro-fast .v19-intro-center h1{font-size:clamp(36px,6vw,63px);color:#4030de!important}
+html.v19-intro-seen .v19-intro-center h1 span,.v19-intro-fast .v19-intro-center h1 span{color:#688e13}
+html.v19-intro-seen .v19-intro-center p,.v19-intro-fast .v19-intro-center p{color:#4a43a1!important;font-size:10px}
+html.v19-intro-seen .v19-intro-kicker,.v19-intro-fast .v19-intro-kicker{display:none}
+html.v19-intro-seen .v19-intro-bar,.v19-intro-fast .v19-intro-bar{height:3px;background:#d7d3f0}
+html.v19-intro-seen .v19-intro-bar::before,.v19-intro-fast .v19-intro-bar::before{background:#4d39ef;animation:v19Progress 1.4s ease-in-out infinite alternate}
+
 @keyframes v19Reel{0%{transform:translate3d(0,0,0)}100%{transform:translate3d(-50%,0,0)}}
 @keyframes v19SlowRing{50%{transform:translate(35px,45px) rotate(80deg)}}
 @keyframes v19Spin{to{transform:rotate(360deg)}}
