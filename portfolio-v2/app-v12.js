@@ -91,7 +91,7 @@ var works="<section class='b12-section b12-featured'><div class='b12-section-top
 var kinds=[["poster","โปสเตอร์คอนเสิร์ต","CONCERT POSTERS","✳"],["product","ภาพโฆษณา","ADVERTISING","↗"],["logo","โลโก้และแบรนด์","BRAND IDENTITY","✦"],["lineup","ตารางศิลปิน","EVENT LINEUP","◉"],["cover","ภาพปกออนไลน์","SOCIAL MEDIA","✿"],["promo","งานโปรโมชัน","PROMOTIONS","★"]];
 var categories="<section class='b12-section b12-collection'><div class='b12-section-top'><span>02 / WORK CATEGORIES</span><span>CHOOSE YOUR INTEREST ↘</span></div><div class='b12-section-heading'><div><h2>งานหลากหลาย<br><em>สไตล์เดียวกัน.</em></h2><p>เลือกประเภทงานที่สนใจ แล้วดูภาพจริงในแต่ละหมวดได้เลย</p></div>"+btn("ครบทั้ง 15 หมวด ↗",u("categories"),"soft")+"</div><div class='b12-categories'>"+kinds.map(function(c,i){var art=item(c[0]);return "<a class='b12-cat' href='"+u("gallery",c[0])+"'><span class='b12-cat-index'>0"+(i+1)+"/</span><span class='b12-cat-pic'>"+(art?image(art.id,c[1],450):"")+"</span><span class='b12-cat-name'><b>"+c[1]+"</b><small>"+c[2]+"</small></span><span class='b12-cat-arrow'>↗</span></a>"}).join("")+"</div></section>";
 var about="<section class='b12-about-banner'><div><span class='b12-overline'>03 / NICE TO MEET YOU!</span><h2>ดีไซน์ดี ๆ เริ่มจาก<br><em>การคุยกัน.</em></h2><p>ทำงานร่วมกันแบบตรงไปตรงมา อธิบายบรีฟได้ง่าย ส่งตัวอย่างที่ชอบมาได้เลยครับ</p>"+btn("ทำความรู้จักผม ↗",u("about"),"soft")+"</div><div class='b12-about-photo'><span class='b12-about-sun'>✳</span>"+image('1xdVr4OBE2O1dKQz724wRGNm4tKW7pzf8',"รูปต้นฉบับของนักออกแบบ",950)+"<span class='b12-about-label'>HELLO, I'M SUK!</span></div></section>";
-var fees="<section class='b12-price-banner'><div><span>04 / SIMPLE & CLEAR PRICING</span><h2>มีไอเดียแล้ว<br><em>เริ่มงานกันเลย!</em></h2><p>ภาพโฆษณาเริ่มต้น 300 บาท · โปสเตอร์คอนเสิร์ตเริ่มต้น 600 บาท</p></div>"+btn("ดูแพ็กเกจราคา ↗",u("pricing"))+"</section>";
+var fees="<section class='b12-price-banner'><div><span>04 / SIMPLE & CLEAR PRICING</span><h2>มีไอเดียแล้ว<br><em>เริ่มงานกันเลย!</em></h2><p>ภาพโฆษณาเริ่มต้น "+(D.pricePackages&&D.pricePackages.general?D.pricePackages.general[0][1].toLocaleString("th-TH"):"300")+" บาท · โปสเตอร์คอนเสิร์ตเริ่มต้น "+(D.pricePackages&&D.pricePackages.concert?D.pricePackages.concert[0][1].toLocaleString("th-TH"):"600")+" บาท</p></div>"+btn("ดูแพ็กเกจราคา ↗",u("pricing"))+"</section>";
 var contact="<section class='b12-ending'><div><span>HAVE SOMETHING IN MIND?</span><h2>มาออกแบบ<br><em>อะไรสนุก ๆ กัน!</em></h2><p>พูดคุยรายละเอียดและขอประเมินราคาก่อนได้เลยครับ</p></div>"+directLine("LINE · ทักมาคุยกัน ↗","line-link")+"</section>";
 return shell(intro+ribbon+works+categories+about+fees+contact)
 }
@@ -202,7 +202,7 @@ cats.map(function(c){return "<a class='category-chip' "+(active===c.key?"aria-cu
 function gallery(){
 var works=groups[current.key]||[];lightItems=works;
 var intro="<section class='ed-gallery-title'><div class='ed-gallery-breadcrumb'><a href='"+u("selected")+"'>ผลงาน</a><span>/</span><a href='"+u("categories")+"'>หมวดทั้งหมด</a><span>/</span><strong>"+clean(current.title)+"</strong></div><span class='ed-section-label'>"+clean(current.en)+" / PORTFOLIO</span><h1>"+clean(current.en)+"</h1><p>"+clean(current.title)+" · "+clean(current.desc)+"</p></section>"+categoryRail(current.key);
-var cards=current.key==="mascot"?
+var cards=!works.length?"<div class='ed-empty-gallery'>ยังไม่มีผลงานในหมวดนี้ สามารถเพิ่มได้จากระบบจัดการเว็บไซต์</div>":current.key==="mascot"?
 "<div class='mascot-showcase'><button class='mascot-display gallery-item' type='button' data-light-index='0' aria-label='ขยายภาพมาสคอต'>"+image(works[0].id,"ผลงานมาสคอต",1750)+fall()+"</button><div class='mascot-info'><h3>งานออกแบบมาสคอต</h3><p>ตัวอย่างงานออกแบบตัวละคร</p></div></div>":
 "<div class='portfolio-masonry gallery-masonry'>"+works.map(function(w,i){return artworkCard(w,current,i,false)}).join("")+"</div>";
 return shell(intro+"<section class='ed-archive ed-gallery-archive'>"+cards+"<div class='ed-archive-bottom'>"+btn("ดูหมวดผลงานอื่น ↗",u("categories"),"soft")+"</div></section>")
@@ -234,6 +234,7 @@ function apply(){els.forEach(function(el){var r=el.getBoundingClientRect();if(r.
 window.addEventListener("scroll",function(){if(!busy){busy=true;window.requestAnimationFrame(apply)}},{passive:true});apply()}
 function imageError(im){
 if(!im.classList.contains("art-image"))return;var n=Number(im.dataset.retry||0),id=im.dataset.file;
+if(/^assets\/uploads\//.test(id)){if(im.id==="lbImage"){lb.classList.add("image-failed");document.getElementById("lbSource").href=drive(id)}else{im.parentElement.classList.add("has-fallback")}return}
 if(n===0){im.dataset.retry="1";im.src="https://lh3.googleusercontent.com/d/"+encodeURIComponent(id)+"=w1600";return}
 if(n===1){im.dataset.retry="2";im.src="https://drive.google.com/uc?export=view&id="+encodeURIComponent(id);return}
 if(im.id==="lbImage"){lb.classList.add("image-failed");document.getElementById("lbSource").href=drive(id);return}im.parentElement.classList.add("has-fallback");if(im.parentElement.tagName==="A"&&im.parentElement.classList.contains("hero-work"))im.parentElement.href=drive(id)}
