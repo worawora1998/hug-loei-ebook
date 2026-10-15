@@ -25,17 +25,16 @@ function header(en,title,description,panel){return "<header class='"+(panel?"pag
 function title(en,text,link){return "<header class='section-kicker'><div><div class='eyebrow'>"+en+"</div><h2 class='section-title'>"+text+"</h2></div>"+(link?btn("ดูทั้งหมด ↗",link,"soft"):"")+"</header>"}
 
 var skillData=[
-{code:"Ps",name:"Photoshop",desc:"ออกแบบภาพและรีทัช",type:"primary",fg:"#31A8FF",bg:"#001E36"},
-{code:"Ai",name:"Illustrator",desc:"เวกเตอร์และโลโก้",type:"primary",fg:"#FF9A00",bg:"#330000"},
-{code:"Lr",name:"Lightroom",desc:"ปรับแต่งภาพถ่าย",type:"primary",fg:"#31C5F4",bg:"#001E36"},
-{code:"Pr",name:"Premiere Pro",desc:"ตัดต่อวิดีโอ",type:"support",fg:"#9999FF",bg:"#00005B"},
-{code:"Ae",name:"After Effects",desc:"โมชั่นกราฟิก",type:"support",fg:"#9999FF",bg:"#00005B"},
-{code:"Cc",name:"CapCut",desc:"ตัดต่อคลิปสั้น",type:"support",fg:"#FFFFFF",bg:"#17191D"}];
-function skillCards(){return "<div class='studio-tools'><div class='studio-tools-main'><div class='tool-group-title'><span>01 / MAIN WORKFLOW</span><strong>เครื่องมือหลัก</strong></div><div class='studio-tool-grid'>"+
- skillData.filter(function(x){return x.type==="primary"}).map(function(x){return "<article class='studio-tool'><span class='tool-mark' style='--tool-bg:"+x.bg+";--tool-fg:"+x.fg+"'>"+x.code+"</span><div><strong>"+x.name+"</strong><small>"+x.desc+"</small></div></article>"}).join("")+"</div></div>"+
- "<div class='studio-tools-support'><div class='tool-group-title'><span>02 / TEAM SUPPORT</span><strong>งานตัดต่อและโมชั่น</strong></div><p>สำหรับงานวิดีโอและโมชั่นกราฟิก มีทีมงานร่วมดูแลการผลิต</p><div class='studio-tool-grid studio-tool-small'>"+
- skillData.filter(function(x){return x.type==="support"}).map(function(x){return "<article class='studio-tool'><span class='tool-mark' style='--tool-bg:"+x.bg+";--tool-fg:"+x.fg+"'>"+(x.code==="Cc"?"<svg viewBox='0 0 32 32' aria-hidden='true'><path d='M6 9H26V13H6ZM7 23L25 10M7 10L25 23M6 19H26V23H6Z' stroke='currentColor' stroke-width='2.8' fill='none' stroke-linejoin='round'/></svg>":x.code)+"</span><div><strong>"+x.name+"</strong><small>"+x.desc+"</small></div></article>"}).join("")+"</div></div></div>"}
-
+{code:"Ps",name:"Photoshop",desc:"ออกแบบภาพและรีทัช",type:"primary",fg:"#31A8FF",bg:"#001E36",logo:"1opWMCoijL-jrBQ91eigI_Dww7ky6D6LZ"},
+{code:"Ai",name:"Illustrator",desc:"เวกเตอร์และโลโก้",type:"primary",fg:"#FF9A00",bg:"#330000",logo:"1Tr3UOGGNvg-nxMOHouz1GOHrphtooXOe"},
+{code:"Lr",name:"Lightroom",desc:"ปรับแต่งภาพถ่าย",type:"primary",fg:"#31C5F4",bg:"#001E36",logo:"1GuI8hX0E3WLym9pd3Y-Fr4i2NOlp0owV"},
+{code:"Pr",name:"Premiere Pro",desc:"ตัดต่อวิดีโอ",type:"support",fg:"#9999FF",bg:"#00005B",logo:"1x_jBr7xHDuNrHA_aQOzvokID5MnMpDK1"},
+{code:"Ae",name:"After Effects",desc:"โมชั่นกราฟิก",type:"support",fg:"#9999FF",bg:"#00005B",logo:"1U7Z2rQ2YZ6PuFLbHpmWkryZ1uDOVEGtv"},
+{code:"Cc",name:"CapCut",desc:"ตัดต่อคลิปสั้น",type:"support",fg:"#FFFFFF",bg:"#17191D",logo:"1iqetNGg8XETcMgBmfHYwLsxsiV4UPKd2"}];
+function skillCards(){
+function card(x){return "<article class='studio-tool logo-tool'><div class='logo-tool-image'><img src='https://lh3.googleusercontent.com/d/"+x.logo+"=w320' alt='โลโก้ "+x.name+"' loading='lazy' decoding='async' width='88' height='86' onerror=\"if(this.dataset.retry)return;this.dataset.retry='1';this.src='https://drive.google.com/thumbnail?id="+x.logo+"&sz=w320'\"/></div><strong>"+x.name+"</strong><small>"+x.desc+"</small></article>"}
+return "<div class='studio-tools studio-real-logos'><div class='studio-tools-main'><div class='tool-group-title'><span>01 / MAIN DESIGN TOOLS</span><strong>เครื่องมือออกแบบหลัก</strong></div><div class='studio-tool-grid'>"+skillData.filter(function(x){return x.type==="primary"}).map(card).join("")+"</div></div>"+
+"<div class='studio-tools-support'><div class='tool-group-title'><span>02 / VIDEO & MOTION SUPPORT</span><strong>งานวิดีโอและโมชั่น</strong></div><p>มีทีมงานร่วมดูแลการตัดต่อและงานโมชั่นกราฟิก</p><div class='studio-tool-grid studio-tool-small'>"+skillData.filter(function(x){return x.type==="support"}).map(card).join("")+"</div></div></div>"}
 var iconShapes={
 poster:'<rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M8 7h8M8 11h8M8 15h5"/>',
 lineup:'<circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M16 7h5M16 11h5M18 15h3"/>',
