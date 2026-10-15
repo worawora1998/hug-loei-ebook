@@ -143,12 +143,39 @@ let layout=elem("div","price-groups");const def={general:["General Ads","ภา�
 for(const type of ["general","concert"]){let c=elem("section","price-card "+type);append(c,elem("h3",null,def[type][0]),elem("p","helper",def[type][1]));let rows=db.pricePackages[type]||defaults[type];rows.forEach((p,i)=>{let line=elem("div","price-item"),label=elem("label",null,p[0]+" ภาพ"),inp=elem("input");inp.type="number";inp.min="1";inp.max="10000000";inp.step="1";inp.value=p[1];inp.setAttribute("aria-label","ราคา "+def[type][0]+" "+p[0]+" ภาพ");inp.addEventListener("input",()=>{let v=Number(inp.value);p[1]=inp.value.trim()!==""&&Number.isSafeInteger(v)&&v>0?v:NaN;pending();if(!Number.isSafeInteger(p[1]))setStatus("กรุณาใส่ราคาเป็นจำนวนเต็มมากกว่า 0 ก่อนเผยแพร่","error")});append(line,label,inp);c.append(line)});layout.append(c)}panel.append(layout);panel.append(append(box("คำแนะนำ"),elem("p","helper","ราคาทั้งหมดเป็นเงินบาท ระบบคำนวณแสดงราคาและจำนวนภาพจากข้อมูลนี้โดยอัตโนมัติ หลังบันทึกแล้ว Render จะเผยแพร่แพ็กเกจใหม่")))
 }
 function renderSettings(){
-db.siteSettings=db.siteSettings||{};let s=db.siteSettings;
-let wrap=elem("div","settings-grid"),intro=box("ข้อมูลแนะนำตัว"),contacts=box("ช่องทางติดต่อ");append(intro,
-field("คำอธิบายหน้าแรก",s.heroDescription||"ผมสุข วรชิต ภูลายยาว นักออกแบบกราฟิกฟรีแลนซ์ รับออกแบบโปสเตอร์คอนเสิร์ต งานโฆษณา และสื่อออนไลน์",v=>s.heroDescription=v,true),
-field("คำอธิบายหน้าเกี่ยวกับฉัน",s.aboutDescription||"ผมทำงานด้านกราฟิกดีไซน์มาตั้งแต่ปี 2017 โดยเน้นโปสเตอร์คอนเสิร์ต งานอีเวนต์ ภาพโฆษณา และสื่อประชาสัมพันธ์ รับงานออนไลน์ทั้งในประเทศไทยและต่างประเทศ",v=>s.aboutDescription=v,true));
-append(contacts,field("LINE ID สำหรับรับงาน",s.lineId||"worachit98",v=>s.lineId=v),elem("p","helper","เปลี่ยน LINE ID เฉพาะเมื่อคุณตรวจสอบลิงก์จริงแล้ว ระบบจะเปลี่ยนปุ่ม LINE หลักและข้อความในหน้าเกี่ยวกับ"));
-let profile=box("รูปโปรไฟล์ของฉัน");let currentPhoto=s.profileImageId||"1xdVr4OBE2O1dKQz724wRGNm4tKW7pzf8";let preview=imageNode(currentPhoto,"รูปโปรไฟล์ปัจจุบัน");preview.className="profile-preview";append(profile,preview,elem("p","helper","ใช้รูปต้นฉบับที่มีอยู่ หรือเปลี่ยนเป็น JPG / PNG / WebP จากเครื่อง ไฟล์ไม่เกิน 5 MB"));let uploadPicker=elem("input");uploadPicker.type="file";uploadPicker.accept="image/jpeg,image/png,image/webp";let change=button("เปลี่ยนรูปโปรไฟล์ ↗",async()=>uploadImage(uploadPicker.files[0],"รูปโปรไฟล์","profile"),"btn btn-blue");append(profile,uploadPicker,change);append(wrap,intro,contacts,profile);panel.append(wrap)
+db.siteSettings=db.siteSettings||{};let s=db.siteSettings;let wrap=elem("div","settings-grid");
+let intro=box("01 / ข้อความและรายละเอียดหน้าเว็บ");
+const fields=[
+["ข้อความทักทายหน้าแรก","greeting","สวัสดีครับ! ยินดีต้อนรับสู่พอร์ตของผม"],
+["ข้อความตัวใหญ่ใต้หัวข้อ","heroTagline","งานกราฟิกที่สนุก มีสไตล์ และตอบโจทย์การใช้งานจริง"],
+["คำอธิบายหน้าแรก","heroDescription","ผมสุข วรชิต ภูลายยาว นักออกแบบกราฟิกฟรีแลนซ์ รับออกแบบโปสเตอร์คอนเสิร์ต งานโฆษณา และสื่อออนไลน์"],
+["ข้อความเล็กใต้ปุ่ม","heroNote","ทำงานออนไลน์ · รับงานทั่วประเทศ · ตั้งแต่ปี 2017"],
+["หัวข้อแนะนำตัว","aboutTitle","ยินดีที่รู้จักครับ!"],
+["ข้อความแนะนำตัว","aboutDescription","ผมทำงานด้านกราฟิกดีไซน์มาตั้งแต่ปี 2017 โดยเน้นโปสเตอร์คอนเสิร์ต งานอีเวนต์ ภาพโฆษณา และสื่อประชาสัมพันธ์ รับงานออนไลน์ทั้งในประเทศไทยและต่างประเทศ"],
+["หัวข้อหน้าเกี่ยวกับ","aboutSubtitle","นักออกแบบกราฟิกอิสระ ที่ชอบเปลี่ยนโจทย์ให้กลายเป็นงานภาพที่ชัดเจนและมีเอกลักษณ์"],
+["คำอธิบายหน้าบริการ","servicesIntro","รับออกแบบกราฟิกสำหรับงานบันเทิง ธุรกิจ และสื่อออนไลน์ ด้วยแนวทางที่เหมาะกับแต่ละโปรเจกต์"],
+["หัวข้อชวนคุยหน้าแรก","contactHeadline","มาออกแบบอะไรสนุก ๆ กัน!"],
+["ข้อความแนะนำการติดต่อ","contactIntro","เลือกช่องทางติดต่อที่สะดวก หรือทัก LINE เพื่อคุยเรื่องงานได้โดยตรง"],
+["คำโปรยท้ายเว็บไซต์","footerNote","Portfolio ของสุข"]
+];
+fields.forEach(([label,key,fallback])=>intro.append(field(label,s[key]||fallback,v=>s[key]=v,key==="heroDescription"||key==="aboutDescription"||key==="servicesIntro")));
+wrap.append(intro);
+let contact=box("02 / ช่องทางติดต่อ");
+[["LINE ID","lineId","worachit98"],["Facebook ส่วนตัว (ลิงก์เต็ม)","facebookPersonal","https://www.facebook.com/WORACHIT1998"],["Facebook Page (ลิงก์เต็ม)","facebookPage","https://www.facebook.com/suksansrin8668"],["Instagram (ลิงก์เต็ม)","instagram","https://www.instagram.com/wora_chit98/"],["เบอร์โทรศัพท์","phone","082-872-3646"],["ชื่อแสดงใน Facebook","contactName","Worachit Pulaiyaw"]].forEach(([label,key,val])=>contact.append(field(label,s[key]||val,v=>s[key]=v)));
+append(contact,elem("p","helper","URL ต้องขึ้นต้นด้วย https:// เพื่อป้องกันลิงก์ผิดพลาด ตรวจสอบก่อนเผยแพร่"));wrap.append(contact);
+function photoUploader(parent,title,key,value,target){
+ let block=box(title),preview=imageNode(value,title);preview.className="profile-preview";append(block,preview,elem("p","helper","รองรับ JPG, PNG, WebP ไม่เกิน 5 MB ต่อภาพ"));
+ let file=elem("input");file.type="file";file.accept="image/png,image/jpeg,image/webp";append(block,file,button("เลือกอัปโหลดโลโก้ / รูปใหม่ ↗",()=>uploadImage(file.files[0],title,target),"btn btn-blue"));parent.append(block)
+}
+photoUploader(wrap,"03 / โลโก้เว็บไซต์ (ด้านบน)", "siteLogoId",s.siteLogoId||"1opWMCoijL-jrBQ91eigI_Dww7ky6D6LZ","siteLogo");
+photoUploader(wrap,"04 / รูปโปรไฟล์", "profileImageId",s.profileImageId||"1xdVr4OBE2O1dKQz724wRGNm4tKW7pzf8","profile");
+let logo=box("05 / โลโก้โปรแกรม (หน้าเกี่ยวกับ)");
+append(logo,elem("p","helper","แตะเลือกโปรแกรม แล้วอัปโหลดโลโก้ใหม่ โลโก้เดิมจะยังอยู่จนกว่าจะกดเผยแพร่"));let logos=elem("div","v17-logo-grid");
+const defaultsLogo={Ps:"1opWMCoijL-jrBQ91eigI_Dww7ky6D6LZ",Ai:"1Tr3UOGGNvg-nxMOHouz1GOHrphtooXOe",Lr:"1GuI8hX0E3WLym9pd3Y-Fr4i2NOlp0owV",Pr:"1x_jBr7xHDuNrHA_aQOzvokID5MnMpDK1",Ae:"1U7Z2rQ2YZ6PuFLbHpmWkryZ1uDOVEGtv",Cc:"1iqetNGg8XETcMgBmfHYwLsxsiV4UPKd2"};
+for(const [code,id] of Object.entries(defaultsLogo)){
+ let tile=elem("div","v17-logo-tile");tile.append(imageNode((s.toolLogos||{})[code]||id,code),elem("strong",null,code));let input=elem("input");input.type="file";input.accept="image/png,image/jpeg,image/webp";
+ tile.append(input,button("เปลี่ยนโลโก้",()=>uploadImage(input.files[0],"โลโก้ "+code,"tool:"+code),"mini-btn"));logos.append(tile)}
+logo.append(logos);wrap.append(logo);panel.append(wrap)
 }
 function switchTab(name){current=name;setStatus("");refresh();window.scrollTo({top:0,behavior:"auto"})}
 function utf8Base64(text){let bytes=new TextEncoder().encode(text),binary="";for(let i=0;i<bytes.length;i+=16384)binary+=String.fromCharCode(...bytes.subarray(i,i+16384));return btoa(binary)}
@@ -159,6 +186,7 @@ async function login(){if(busy)return;if(window.WorachitPin&&!(await window.Wora
 async function publish(){if(busy)return;if(!dirty){setStatus("ยังไม่มีการแก้ไขใหม่ที่ต้องเผยแพร่");return}
 const line=String(db.siteSettings?.lineId||"worachit98");if(!/^[a-zA-Z0-9_.~-]{2,100}$/.test(line)){setStatus("รูปแบบ LINE ID ไม่ถูกต้อง","error");return}
 for(const key of ["general","concert"]){let rows=db.pricePackages?.[key]||defaults[key];if(rows.some(x=>!Number.isSafeInteger(x[1])||x[1]<=0)){setStatus("กรุณาตรวจสอบราคาแพ็กเกจทั้งหมด","error");return}}
+for(const field of ["facebookPersonal","facebookPage","instagram"]){let v=db.siteSettings?.[field];if(v&&(!/^https:\/\//i.test(v)||v.length>350)){setStatus("ลิงก์ "+field+" ต้องขึ้นต้นด้วย https:// และไม่ยาวเกินไป","error");return}}
 if(!confirm("เผยแพร่การแก้ไขขึ้นเว็บไซต์จริงผ่าน GitHub?"))return;busy=true;$("publishBtn").disabled=true;$("publishBtn").textContent="กำลังเผยแพร่...";
 try{db.categories.forEach(x=>x.count=(db.groups[x.key]||[]).length);let json=JSON.stringify(db).replace(/</g,"\\u003c");let re=/(<script id="portfolio-data" type="application\/json">)[\s\S]*?(<\/script>)/;if(!re.test(snapshot))throw Error("ไม่พบจุดเก็บข้อมูล");
 let updated=snapshot.replace(re,(_,a,b)=>a+json+b);
@@ -170,7 +198,7 @@ const allowed={"image/jpeg":"jpg","image/png":"png","image/webp":"webp"};const e
 busy=true;setStatus("กำลังอัปโหลดภาพไป GitHub...");try{const binary=await new Promise((resolve,reject)=>{let reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(",")[1]);reader.onerror=()=>reject(Error("อ่านไฟล์ไม่ได้"));reader.readAsDataURL(file)});
 const filename=Date.now()+"-"+Math.random().toString(36).slice(2,10)+"."+ext,path=UPLOAD_DIR+filename;
 await github("repos/"+OWNER+"/"+REPO+"/contents/"+path,{method:"PUT",body:JSON.stringify({message:"Upload portfolio artwork via WORACHIT ADMIN",content:binary,branch:BRANCH})});
-let item={id:"assets/uploads/"+filename,name:(name||file.name).trim().slice(0,180),type:file.type};if(target==="profile"){db.siteSettings=db.siteSettings||{};db.siteSettings.profileImageId=item.id}else{db.groups[currentCategory]=db.groups[currentCategory]||[];db.groups[currentCategory].unshift(item)}pending();setStatus("อัปโหลดรูปสำเร็จ! กด “เผยแพร่การเปลี่ยนแปลง” เพื่อแสดงบนเว็บไซต์","success");refresh();
+let item={id:"assets/uploads/"+filename,name:(name||file.name).trim().slice(0,180),type:file.type};if(target==="profile"){db.siteSettings=db.siteSettings||{};db.siteSettings.profileImageId=item.id}else if(target==="siteLogo"){db.siteSettings=db.siteSettings||{};db.siteSettings.siteLogoId=item.id}else if(target.startsWith("tool:")){db.siteSettings=db.siteSettings||{};db.siteSettings.toolLogos=db.siteSettings.toolLogos||{};db.siteSettings.toolLogos[target.slice(5)]=item.id}else{db.groups[currentCategory]=db.groups[currentCategory]||[];db.groups[currentCategory].unshift(item)}pending();setStatus("อัปโหลดรูปสำเร็จ! กด “เผยแพร่การเปลี่ยนแปลง” เพื่อแสดงบนเว็บไซต์","success");refresh();
 }catch(e){setStatus("อัปโหลดไม่สำเร็จ: "+e.message,"error")}finally{busy=false}}
 $("loginBtn").addEventListener("click",login);$("token").addEventListener("keydown",e=>{if(e.key==="Enter")login()});
 $("publishBtn").addEventListener("click",publish);$("logoutBtn").addEventListener("click",()=>{if(dirty&&!confirm("มีข้อมูลที่ยังไม่ได้เผยแพร่ ต้องการออกจากระบบหรือไม่?"))return;access="";snapshot="";fileSha="";db=null;dirty=false;dashboard.hidden=true;overlay.hidden=false;setStatus("");$("loginError").textContent="";$("token").value=""});
