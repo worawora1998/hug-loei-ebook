@@ -9,8 +9,8 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://drive.google.com https://lh3.googleusercontent.com https://raw.githubusercontent.com data: blob:; connect-src https://api.github.com; base-uri 'none'; form-action 'none'; object-src 'none'">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="./admin.css?v=20261015b">
-<script src="./admin.js?v=20261015b" defer></script>
+<link rel="stylesheet" href="./admin.css?v=20261015-v15">
+<script src="./admin.js?v=20261015-v15" defer></script>
 </head>
 <body>
 <a class="skip" href="#content">ข้ามไปยังเนื้อหา</a>
@@ -24,12 +24,12 @@
       <p>จัดการรูปผลงาน หมวดงาน ราคา และข้อความบนเว็บไซต์ โดยใช้บัญชี GitHub ที่มีสิทธิ์แก้ไข Repository เท่านั้น</p>
       <label class="field-label" for="token">GitHub Fine-grained Personal Access Token</label>
       <input type="password" id="token" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="github_pat_••••••••••" aria-describedby="tokenHint">
-      <p id="tokenHint" class="help">Token ใช้เฉพาะในหน้านี้ ส่งไปที่ api.github.com เท่านั้น และไม่บันทึกไว้ในเครื่องหรือในโค้ดเว็บไซต์</p>
+      <a class="token-setup-link" target="_blank" rel="noopener noreferrer" href="https://github.com/settings/personal-access-tokens/new?name=WORACHIT-ADMIN&description=Edit+portfolio+website&target_name=worawora1998&expires_in=30&contents=write">ตั้งค่าสิทธิ์ GitHub ครั้งแรก ↗</a><p id="tokenHint" class="help">Token ใช้เฉพาะในหน้านี้ ส่งไปที่ api.github.com เท่านั้น และไม่บันทึกไว้ในเครื่องหรือในโค้ดเว็บไซต์</p>
       <button class="btn btn-blue full" type="button" id="loginBtn">เชื่อมต่อ GitHub <span>↗</span></button>
       <p class="login-error" id="loginError" role="alert"></p>
       <details class="token-help"><summary>สร้าง Token ฟรีอย่างไร?</summary>
         <p>ไปที่ GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token เลือก Repository <b>hug-loei-ebook</b> เฉพาะรายการนี้ กำหนดสิทธิ์ <b>Contents: Read and write</b> แล้วตั้งวันหมดอายุสั้น ๆ คัดลอก Token มาใส่ด้านบน</p>
-        <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">เปิดหน้า GitHub เพื่อสร้าง Token ↗</a>
+        <a href="https://github.com/settings/personal-access-tokens/new?name=WORACHIT-ADMIN&description=Edit+portfolio+website&target_name=worawora1998&expires_in=30&contents=write" target="_blank" rel="noopener noreferrer">เปิดหน้าสร้าง Token ที่ตั้งค่าไว้ล่วงหน้า ↗</a>
       </details>
       <a class="back-link" href="../?page=home">← กลับหน้าเว็บไซต์</a>
     </div>
