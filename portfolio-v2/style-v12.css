@@ -291,3 +291,14 @@ a,button{touch-action:manipulation}
 .b12-ribbon-run{animation:none!important}
 .b12-work,.b12-cat,.b12-work-img img{transition:none!important}
 }
+
+/* V13 — authentic uploaded software artwork */
+.studio-real-logos .studio-tool-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.studio-real-logos .logo-tool{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:5px;min-height:175px;padding:18px 10px;background:#f7f7fd!important;border:1px solid #e3e6f2!important;border-radius:17px;transition:transform .2s,border-color .2s}
+.studio-real-logos .logo-tool:hover{transform:translateY(-4px);border-color:#8d83fb!important}
+.studio-real-logos .logo-tool-image{display:grid;place-items:center;width:91px;height:91px;flex:none;margin-bottom:8px}
+.studio-real-logos .logo-tool-image img{width:86px;height:86px;object-fit:contain;display:block;border-radius:15px}
+.studio-real-logos .logo-tool strong{font-size:13px;line-height:1.4;color:#232434!important}
+.studio-real-logos .logo-tool small{font-size:11px;line-height:1.35;color:#777d90!important}
+@media(max-width:700px){.studio-real-logos .studio-tool-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.studio-real-logos .logo-tool{min-height:142px;padding:11px 5px}.studio-real-logos .logo-tool-image{width:65px;height:65px}.studio-real-logos .logo-tool-image img{width:63px;height:63px}.studio-real-logos .logo-tool strong{font-size:11px}.studio-real-logos .logo-tool small{font-size:10px}}
+@media(max-width:380px){.studio-real-logos .studio-tool-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
