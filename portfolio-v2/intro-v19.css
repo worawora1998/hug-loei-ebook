@@ -1,0 +1,75 @@
+/* V19 / opening artwork reel + large kinetic background elements */
+:root{--v19-electric:#4d39ef;--v19-lime:#d6ff48}
+#v19-intro{position:fixed;inset:0;z-index:99990;display:flex;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(ellipse at 70% 30%,#5141d7 0%,#201b5e 47%,#100d31 100%);color:white;isolation:isolate;font-family:'IBM Plex Sans Thai',sans-serif}
+#v19-intro::before{content:"";position:absolute;top:-28%;left:-12%;width:min(58vw,650px);aspect-ratio:1;border:50px solid #d5ff4752;border-radius:50%;animation:v19SlowRing 13s linear infinite;pointer-events:none}
+#v19-intro::after{content:"✳";position:absolute;bottom:-27%;right:-7%;font-size:min(55vw,670px);line-height:1;color:#d5ff4730;animation:v19Spin 24s linear infinite;pointer-events:none}
+.v19-intro-top{position:absolute;top:22px;left:clamp(22px,4vw,70px);right:clamp(22px,4vw,70px);z-index:5;display:flex;justify-content:space-between;align-items:center;font-size:13px;letter-spacing:.16em;font-weight:800}
+.v19-intro-top span:first-child{font-size:17px;letter-spacing:-.03em}.v19-intro-top b{color:var(--v19-lime)}
+.v19-intro-top span:last-child{color:#d4d0ff;font-size:10px}
+.v19-film{position:absolute;left:0;width:100%;overflow:hidden;display:flex;align-items:center;z-index:2;-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 9%,#000 91%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0%,#000 9%,#000 91%,transparent 100%)}
+.v19-film.top{top:11%;height:clamp(135px,31vh,290px);transform:rotate(-3deg) scale(1.07)}
+.v19-film.bottom{bottom:8%;height:clamp(135px,31vh,290px);transform:rotate(3deg) scale(1.07)}
+.v19-film-track{display:flex;align-items:center;gap:16px;width:max-content;animation:v19Reel 29s linear infinite;will-change:transform}
+.v19-film.bottom .v19-film-track{animation-direction:reverse;animation-duration:34s}
+.v19-film-card{position:relative;flex:0 0 clamp(118px,13vw,184px);height:clamp(128px,26vh,235px);padding:6px;border-radius:13px;background:#fafaff;box-shadow:0 15px 24px #09072585,0 0 0 1px #ffffff40;overflow:hidden;transform:rotate(var(--angle,0deg))}
+.v19-film-card:nth-child(3n+1){--angle:-2.2deg}.v19-film-card:nth-child(3n){--angle:2deg}
+.v19-film-card img{width:100%;height:calc(100% - 19px);display:block;object-fit:cover;background:linear-gradient(135deg,#4835e6,#edaf60);border-radius:8px}
+.v19-film-card span{color:#2f3254;display:block;font-size:8px;font-weight:800;letter-spacing:.09em;line-height:18px;text-align:center}
+.v19-image-failed img{opacity:0}.v19-image-failed{background:linear-gradient(135deg,#ded9ff,#d6ff47)}
+.v19-intro-center{position:relative;z-index:4;text-align:center;display:grid;justify-items:center;gap:11px;max-width:850px;width:min(90%,850px);padding:22px 10px 28px;background:linear-gradient(90deg,transparent,#100d38b8 12%,#100d38cd 50%,#100d38b8 88%,transparent);text-shadow:0 5px 30px #09051d}
+.v19-intro-kicker{color:#d5ff47;font-size:clamp(9px,1.2vw,12px);font-weight:850;letter-spacing:.22em;margin:0}
+.v19-intro-center h1{font-size:clamp(49px,9.4vw,142px);letter-spacing:-.085em;line-height:.82;color:#fff;font-weight:900;margin:0 0 3px;white-space:nowrap}
+.v19-intro-center h1 span{color:var(--v19-lime)}
+.v19-intro-center p{font-size:clamp(12px,1.4vw,18px);font-weight:600;color:#e3e2fd;margin:0}
+.v19-intro-bar{height:4px;width:min(240px,65%);border-radius:99px;background:#ffffff30;overflow:hidden;margin-top:7px}
+.v19-intro-bar::before{content:"";display:block;height:100%;width:100%;transform-origin:left;transform:scaleX(0);background:var(--v19-lime);animation:v19Progress 3.2s ease forwards}
+.v19-stage-label{font-size:10px!important;font-weight:750;color:var(--v19-lime)!important;letter-spacing:.14em!important}
+.v19-intro-skip,.v19-intro-retry{position:absolute;bottom:16px;right:clamp(20px,4vw,64px);z-index:8;padding:10px 16px;border-radius:99px;border:1px solid #ffffff50;background:#fff;color:#17143a;font-size:12px;font-family:inherit;font-weight:800;cursor:pointer;transition:transform .2s}
+.v19-intro-skip:hover,.v19-intro-retry:hover{transform:translateY(-3px);background:var(--v19-lime)}
+.v19-intro-retry{right:auto;left:clamp(20px,4vw,64px)}.v19-intro-retry[hidden]{display:none!important}
+.v19-intro-exit{animation:v19Curtain .62s cubic-bezier(.76,.1,.2,1) forwards;pointer-events:none}
+html.v19-loading{overflow:hidden}html.v19-loading body{overflow:hidden}
+html.v19-loading #site-header,html.v19-loading #app,html.v19-loading .site-footer{visibility:hidden!important}
+html.v19-loaded #site-header,html.v19-loaded #app,html.v19-loaded .site-footer{visibility:visible!important}
+html.v19-loaded #app .page-enter{animation:v19PageEnter .62s ease both}
+html.v19-intro-seen #v19-intro{display:none!important}
+@keyframes v19Reel{0%{transform:translate3d(0,0,0)}100%{transform:translate3d(-50%,0,0)}}
+@keyframes v19SlowRing{50%{transform:translate(35px,45px) rotate(80deg)}}
+@keyframes v19Spin{to{transform:rotate(360deg)}}
+@keyframes v19Progress{to{transform:scaleX(1)}}
+@keyframes v19Curtain{0%{transform:translateY(0);opacity:1}100%{transform:translateY(-105%);opacity:1}}
+@keyframes v19PageEnter{from{opacity:.2;transform:translateY(10px)}to{opacity:1;transform:none}}
+/* Floating ambient sculptures on every interior route. */
+body:not(.route-home) #app .page-enter{position:relative;isolation:isolate}
+.v19-art-stage{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;border-radius:inherit}
+.v19-stage-host{position:relative;isolation:isolate}
+.v19-stage-host > :not(.v19-art-stage){position:relative;z-index:1}
+.v19-fx{position:absolute;display:block;will-change:transform;opacity:.75;filter:drop-shadow(0 8px 12px #4533c41a)}
+.v19-fx-ring{width:clamp(190px,25vw,390px);height:clamp(190px,25vw,390px);right:-5%;top:-40px;border:clamp(24px,3.3vw,51px) solid #d4ff4d;border-radius:50%;box-shadow:inset 0 0 0 14px #4936d521,0 14px 45px #3e2ae928;animation:v19FloatRing 14s ease-in-out infinite alternate}
+.v19-fx-star{left:-3%;top:33%;font-size:clamp(160px,22vw,330px);font-weight:900;line-height:.9;color:#573be53d;animation:v19FloatStar 12s ease-in-out infinite alternate}
+.v19-fx-bubble{right:9%;bottom:-90px;width:clamp(160px,20vw,300px);height:clamp(160px,20vw,300px);border-radius:40% 60% 70% 30%;background:radial-gradient(circle at 30% 28%,#e6ff92 5%,#b4fae6 33%,#6a64ec8f 69%,#4f34d8 100%);filter:drop-shadow(0 16px 38px #4f38b336);animation:v19FloatBubble 11s ease-in-out infinite alternate}
+.v19-fx-word{right:2%;top:70%;font-weight:900;font-size:clamp(50px,8vw,135px);letter-spacing:-.08em;line-height:1;white-space:nowrap;-webkit-text-stroke:2px #5140de6e;color:transparent;transform:rotate(-14deg);opacity:.45;animation:v19FloatWord 13s ease-in-out infinite alternate}
+.v19-stage-host:nth-of-type(2n) .v19-fx-ring{right:auto;left:-8%;top:20%}
+.v19-stage-host:nth-of-type(2n) .v19-fx-star{left:auto;right:-4%;top:10%;color:#d1ff4d8c}
+.v19-stage-host:nth-of-type(2n) .v19-fx-bubble{right:2%;bottom:12%}
+.v19-stage-host:nth-of-type(3n) .v19-fx-ring{top:55%;right:-13%;border-color:#c5c0ff}
+.v19-stage-host:nth-of-type(3n) .v19-fx-bubble{bottom:52%;right:18%;background:radial-gradient(circle at 30% 30%,#fff5a5,#b8f458 34%,#5b4de4ba)}
+@keyframes v19FloatRing{to{transform:translate(-44px,58px) rotate(35deg) scale(1.16)}}
+@keyframes v19FloatStar{to{transform:translate(40px,-55px) rotate(37deg) scale(1.12)}}
+@keyframes v19FloatBubble{to{transform:translate(-42px,-76px) rotate(-24deg) scale(1.12)}}
+@keyframes v19FloatWord{to{transform:translate(-30px,-60px) rotate(-7deg)}}
+@media(max-width:730px){
+.v19-film.top{top:15%;height:24vh}.v19-film.bottom{bottom:14%;height:24vh}
+.v19-film-card{flex-basis:110px;height:170px}.v19-film-track{gap:9px}
+.v19-intro-center{padding:26px 8px}
+.v19-intro-center h1{font-size:clamp(42px,11.5vw,86px)}
+.v19-intro-top span:last-child{font-size:8px;text-align:right}
+.v19-fx-ring{width:210px;height:210px;border-width:29px;right:-80px}
+.v19-fx-star{font-size:165px;left:-30px}.v19-fx-bubble{width:160px;height:160px;right:-60px}
+.v19-fx-word{font-size:64px}
+}
+@media(prefers-reduced-motion:reduce){
+.v19-film-track,.v19-intro-bar::before,.v19-fx,#v19-intro::before,#v19-intro::after{animation:none!important}
+.v19-intro-exit{animation:none!important}
+html.v19-loaded #app .page-enter{animation:none!important}
+}
