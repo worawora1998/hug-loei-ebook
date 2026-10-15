@@ -302,3 +302,7 @@ a,button{touch-action:manipulation}
 .studio-real-logos .logo-tool small{font-size:11px;line-height:1.35;color:#777d90!important}
 @media(max-width:700px){.studio-real-logos .studio-tool-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.studio-real-logos .logo-tool{min-height:142px;padding:11px 5px}.studio-real-logos .logo-tool-image{width:65px;height:65px}.studio-real-logos .logo-tool-image img{width:63px;height:63px}.studio-real-logos .logo-tool strong{font-size:11px}.studio-real-logos .logo-tool small{font-size:10px}}
 @media(max-width:380px){.studio-real-logos .studio-tool-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Admin entry is intentionally discreet; GitHub credentials enforce write access. */
+.site-footer .admin-entry-dot{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;width:18px;height:18px;border-radius:50%;margin-left:6px;color:#a7a9b8!important;font-size:10px;vertical-align:middle;transition:color .18s,background .18s}
+.site-footer .admin-entry-dot:hover,.site-footer .admin-entry-dot:focus-visible{background:#e9e8ff;color:#4135ed!important}
