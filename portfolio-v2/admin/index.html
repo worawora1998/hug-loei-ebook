@@ -9,9 +9,9 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://drive.google.com https://lh3.googleusercontent.com https://raw.githubusercontent.com data: blob:; connect-src https://api.github.com; base-uri 'none'; form-action 'none'; object-src 'none'">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="./admin.css?v=20261015-v17">
-<script src="./pin.js?v=20261015-v17" defer></script>
-<script src="./admin.js?v=20261015-v17" defer></script>
+<link rel="stylesheet" href="./admin.css?v=20261015-v18">
+<script src="./pin.js?v=20261015-v18" defer></script>
+<script src="./admin.js?v=20261015-v18" defer></script>
 </head>
 <body>
 <a class="skip" href="#content">ข้ามไปยังเนื้อหา</a>
@@ -25,7 +25,7 @@
       <p>จัดการรูปผลงาน หมวดงาน ราคา และข้อความบนเว็บไซต์ โดยใช้บัญชี GitHub ที่มีสิทธิ์แก้ไข Repository เท่านั้น</p>
       <label class="field-label" for="token">GitHub Fine-grained Personal Access Token</label>
       <input type="password" id="token" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="github_pat_••••••••••" aria-describedby="tokenHint">
-      <a class="token-setup-link" target="_blank" rel="noopener noreferrer" href="https://github.com/settings/personal-access-tokens/new?name=WORACHIT-ADMIN&description=Edit+portfolio+website&target_name=worawora1998&expires_in=30&contents=write">ตั้งค่าสิทธิ์ GitHub ครั้งแรก ↗</a><p id="tokenHint" class="help">เพื่อความปลอดภัย ระบบจะไม่เก็บ Token ไว้หลังปิดหรือรีโหลดหน้านี้ จึงต้องวาง Token ใหม่เมื่อกลับมาเข้า Admin ในครั้งถัดไป Token ถูกส่งตรงไปยัง GitHub API เท่านั้น</p>
+      <a class="token-setup-link" target="_blank" rel="noopener noreferrer" href="https://github.com/settings/personal-access-tokens/new?name=WORACHIT-ADMIN&description=Edit+portfolio+website&target_name=worawora1998&expires_in=30&contents=write">ตั้งค่าสิทธิ์ GitHub ครั้งแรก ↗</a><label class="remember-choice"><input type="checkbox" id="rememberToken" checked> <span>จดจำการเชื่อมต่อบนอุปกรณ์นี้<br><small>เข้ารหัสด้วย PIN 6 หลัก · ไม่ใช้บนเครื่องสาธารณะ</small></span></label><p id="tokenHint" class="help">ครั้งแรกกรอก Token แล้วเชื่อมต่อ จากนั้นเข้าได้ด้วย PIN บนอุปกรณ์เดิมจนกว่า Token จะหมดอายุ คุณลบ Token ที่จำไว้ได้ในตั้งค่า การเข้ารหัสด้วย PIN 6 หลักมีความเสี่ยงหากอุปกรณ์ถูกเข้าถึงโดยผู้ไม่หวังดี</p>
       <button class="btn btn-blue full" type="button" id="loginBtn">เชื่อมต่อ GitHub <span>↗</span></button>
       <p class="login-error" id="loginError" role="alert"></p>
       <details class="token-help"><summary>สร้าง Token ฟรีอย่างไร?</summary>
