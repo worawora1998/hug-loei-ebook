@@ -201,6 +201,9 @@ const filename=Date.now()+"-"+Math.random().toString(36).slice(2,10)+"."+ext,pat
 await github("repos/"+OWNER+"/"+REPO+"/contents/"+path,{method:"PUT",body:JSON.stringify({message:"Upload portfolio artwork via WORACHIT ADMIN",content:binary,branch:BRANCH})});
 let item={id:"assets/uploads/"+filename,name:(name||file.name).trim().slice(0,180),type:file.type};if(target==="profile"){db.siteSettings=db.siteSettings||{};db.siteSettings.profileImageId=item.id}else if(target==="siteLogo"){db.siteSettings=db.siteSettings||{};db.siteSettings.siteLogoId=item.id}else if(target.startsWith("tool:")){db.siteSettings=db.siteSettings||{};db.siteSettings.toolLogos=db.siteSettings.toolLogos||{};db.siteSettings.toolLogos[target.slice(5)]=item.id}else{db.groups[currentCategory]=db.groups[currentCategory]||[];db.groups[currentCategory].unshift(item)}pending();setStatus("อัปโหลดรูปสำเร็จ! กด “เผยแพร่การเปลี่ยนแปลง” เพื่อแสดงบนเว็บไซต์","success");refresh();
 }catch(e){setStatus("อัปโหลดไม่สำเร็จ: "+e.message,"error")}finally{busy=false}}
+if(window.WorachitPin&&window.WorachitPin.has()&&!window.WorachitPin.unlocked()){
+ window.WorachitPin.guard().then(ok=>{if(!ok)window.location.href="../?page=home"})
+}
 $("loginBtn").addEventListener("click",login);$("token").addEventListener("keydown",e=>{if(e.key==="Enter")login()});
 $("publishBtn").addEventListener("click",publish);$("logoutBtn").addEventListener("click",()=>{if(dirty&&!confirm("มีข้อมูลที่ยังไม่ได้เผยแพร่ ต้องการออกจากระบบหรือไม่?"))return;access="";snapshot="";fileSha="";db=null;dirty=false;dashboard.hidden=true;overlay.hidden=false;setStatus("");$("loginError").textContent="";$("token").value=""});
 document.querySelectorAll("[data-tab]").forEach(tab=>tab.addEventListener("click",()=>switchTab(tab.dataset.tab)));
