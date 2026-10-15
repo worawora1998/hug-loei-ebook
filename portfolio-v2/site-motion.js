@@ -2,7 +2,6 @@
 (function(){
 "use strict";
 const reduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-if(reduced)return;
 let observer;
 function init(){
  const app=document.getElementById("app");if(!app||!app.querySelector(".page-enter"))return;
@@ -16,6 +15,20 @@ function init(){
   host.append(a,b);
  });
 
+ /* Large ambient sculptures: animated in normal mode, static in reduced motion mode. */
+ const hosts=app.querySelectorAll(".ed-page-hero,.ed-gallery-title,.ed-archive,.ed-about-layout,.ed-tools-section,.ed-services-list,.ed-contact-section,.ed-service-scope,.ed-contact-end,.v10-package,.v10-price-guide,.portfolio-masonry");
+ let total=0;
+ hosts.forEach(host=>{
+  if(total>=9||host.classList.contains("v19-stage-host"))return;
+  host.classList.add("v19-stage-host");
+  let stage=document.createElement("div");stage.className="v19-art-stage";stage.setAttribute("aria-hidden","true");
+  let ring=document.createElement("span");ring.className="v19-fx v19-fx-ring";
+  let star=document.createElement("span");star.className="v19-fx v19-fx-star";star.textContent="✳";
+  let bubble=document.createElement("span");bubble.className="v19-fx v19-fx-bubble";
+  let word=document.createElement("span");word.className="v19-fx v19-fx-word";word.textContent=total%2===0?"MAKE IT POP":"CREATIVE";
+  stage.append(ring,star,bubble,word);host.append(stage);total++;
+ });
+ if(reduced)return;
  if(observer)observer.disconnect();
  const els=app.querySelectorAll(".b12-section-heading,.b12-work,.b12-cat,.b12-about-banner,.b12-price-banner,.b12-ending,.ed-page-hero,.ed-gallery-title,.ed-about-layout,.ed-about-photo,.ed-about-text,.ed-section-head,.ed-service-row,.ed-contact-card,.ed-services-list,.ed-service-scope,.v10-package,.v10-package-head,.v10-pcard,.v10-price-guide,.catalog-card,.masonry-item,.ed-gallery-breadcrumb,.ed-archive-label,.ed-archive-bottom,.ed-contact-end,.ed-contact-list");
  if("IntersectionObserver" in window){
