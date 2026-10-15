@@ -222,6 +222,20 @@ function photoUploader(parent,title,key,value,target){
  let block=box(title);if(value){let preview=imageNode(value,title);preview.className="profile-preview";block.append(preview)}else block.append(elem("p","helper","ยังไม่ได้ตั้งค่าโลโก้เว็บไซต์ ปัจจุบันแสดงชื่อ WORACHIT เป็นข้อความ"));append(block,elem("p","helper","รองรับ JPG, PNG, WebP ไม่เกิน 5 MB ต่อภาพ"));
  let file=elem("input");file.type="file";file.accept="image/png,image/jpeg,image/webp";append(block,file,button("เลือกอัปโหลดโลโก้ / รูปใหม่ ↗",()=>uploadImage(file.files[0],title,target),"btn btn-blue"));parent.append(block)
 }
+let contactIcons=box("06 / โลโก้ช่องทางติดต่อ");
+append(contactIcons,elem("p","helper","เปลี่ยนโลโก้ LINE / Facebook / Instagram / โทรศัพท์ ได้ด้วยไฟล์ของคุณเอง หากไม่ได้อัปโหลดจะใช้ไอคอนเดิมที่มีอยู่"));
+let contactGrid=elem("div","v18-contact-grid");
+const iconChoices=[["line","LINE"],["facebook","Facebook ส่วนตัว"],["facebookPage","Facebook Page"],["instagram","Instagram"],["phone","โทรศัพท์"]];
+for(const [key,label] of iconChoices){
+ let cell=elem("div","v17-logo-tile");let current=(s.contactLogos||{})[key];
+ if(current)cell.append(imageNode(current,label));else cell.append(elem("div","v18-no-icon","ไอคอนเดิม"));
+ cell.append(elem("strong",null,label));
+ let input=elem("input");input.type="file";input.accept="image/png,image/jpeg,image/webp";
+ append(cell,input,button("เปลี่ยนภาพโลโก้",()=>uploadImage(input.files[0],"โลโก้ "+label,"contact:"+key),"mini-btn"));
+ if(current)cell.append(button("กลับเป็นไอคอนเดิม",()=>{delete s.contactLogos[key];pending();refresh()},"mini-btn"));
+ contactGrid.append(cell)
+}
+contactIcons.append(contactGrid);wrap.append(contactIcons);
 photoUploader(wrap,"03 / โลโก้เว็บไซต์ (ด้านบน)", "siteLogoId",s.siteLogoId||"","siteLogo");
 photoUploader(wrap,"04 / รูปโปรไฟล์", "profileImageId",s.profileImageId||"1xdVr4OBE2O1dKQz724wRGNm4tKW7pzf8","profile");
 let logo=box("05 / โลโก้โปรแกรม (หน้าเกี่ยวกับ)");
@@ -253,7 +267,7 @@ const allowed={"image/jpeg":"jpg","image/png":"png","image/webp":"webp"};const e
 busy=true;setStatus("กำลังอัปโหลดภาพไป GitHub...");try{const binary=await new Promise((resolve,reject)=>{let reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(",")[1]);reader.onerror=()=>reject(Error("อ่านไฟล์ไม่ได้"));reader.readAsDataURL(file)});
 const filename=Date.now()+"-"+Math.random().toString(36).slice(2,10)+"."+ext,path=UPLOAD_DIR+filename;
 await github("repos/"+OWNER+"/"+REPO+"/contents/"+path,{method:"PUT",body:JSON.stringify({message:"Upload portfolio artwork via WORACHIT ADMIN",content:binary,branch:BRANCH})});
-let item={id:"assets/uploads/"+filename,name:(name||file.name).trim().slice(0,180),type:file.type};if(target==="profile"){db.siteSettings=db.siteSettings||{};db.siteSettings.profileImageId=item.id}else if(target==="siteLogo"){db.siteSettings=db.siteSettings||{};db.siteSettings.siteLogoId=item.id}else if(target.startsWith("tool:")){db.siteSettings=db.siteSettings||{};db.siteSettings.toolLogos=db.siteSettings.toolLogos||{};db.siteSettings.toolLogos[target.slice(5)]=item.id}else if(target.startsWith("hero:")){db.siteSettings=db.siteSettings||{};db.siteSettings.heroImages=db.siteSettings.heroImages||[];db.siteSettings.heroImages[Number(target.slice(5))]={id:item.id,name:item.name}}else{db.groups[currentCategory]=db.groups[currentCategory]||[];db.groups[currentCategory].unshift(item)}pending();setStatus("อัปโหลดรูปสำเร็จ! กด “เผยแพร่การเปลี่ยนแปลง” เพื่อแสดงบนเว็บไซต์","success");refresh();
+let item={id:"assets/uploads/"+filename,name:(name||file.name).trim().slice(0,180),type:file.type};if(target==="profile"){db.siteSettings=db.siteSettings||{};db.siteSettings.profileImageId=item.id}else if(target==="siteLogo"){db.siteSettings=db.siteSettings||{};db.siteSettings.siteLogoId=item.id}else if(target.startsWith("tool:")){db.siteSettings=db.siteSettings||{};db.siteSettings.toolLogos=db.siteSettings.toolLogos||{};db.siteSettings.toolLogos[target.slice(5)]=item.id}else if(target.startsWith("hero:")){db.siteSettings=db.siteSettings||{};db.siteSettings.heroImages=db.siteSettings.heroImages||[];db.siteSettings.heroImages[Number(target.slice(5))]={id:item.id,name:item.name}}else if(target.startsWith("contact:")){db.siteSettings=db.siteSettings||{};db.siteSettings.contactLogos=db.siteSettings.contactLogos||{};db.siteSettings.contactLogos[target.slice(8)]=item.id}else{db.groups[currentCategory]=db.groups[currentCategory]||[];db.groups[currentCategory].unshift(item)}pending();setStatus("อัปโหลดรูปสำเร็จ! กด “เผยแพร่การเปลี่ยนแปลง” เพื่อแสดงบนเว็บไซต์","success");refresh();
 }catch(e){setStatus("อัปโหลดไม่สำเร็จ: "+e.message,"error")}finally{busy=false}}
 if(window.WorachitPin&&window.WorachitPin.has()){
  window.WorachitPin.guard().then(async ok=>{if(!ok){window.location.href="../?page=home";return}if(window.WorachitPin.hasToken())await login()})
