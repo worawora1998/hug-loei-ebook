@@ -3,7 +3,7 @@
 "use strict";
 var dataNode=document.getElementById("portfolio-data"),mount=document.getElementById("app");
 if(!dataNode||!mount)return;
-var D;try{D=JSON.parse(dataNode.textContent)}catch(e){mount.innerHTML="<div class='shell'><h1>ไม่สามารถอ่านข้อมูลผลงานได้</h1><a href='?page=home'>กลับหน้าแรก</a></div>";return}
+var D;try{D=JSON.parse(dataNode.textContent)}catch(e){mount.innerHTML="<div class='shell'><h1>ไม่สามารถอ่านข้อมูลผลงานได้</h1><a href='?page=home'>กลับหน้าแรก</a></div>";if(window.WorachitIntro)window.WorachitIntro.fail();return}
 var cats=D.categories||[],groups=D.groups||{},featuredData=D.selected||[],assets=D.decor||[],profiles=D.profile||[],siteSettings=D.siteSettings||{};
 var query=new URLSearchParams(window.location.search),requested=query.get("page")||"home",page=requested==="contact"?"about":requested;
 if(["home","selected","categories","gallery","about","pricing","services"].indexOf(page)<0)page="home";
@@ -261,6 +261,7 @@ applySiteChrome();
 var contents=page==="home"?home():page==="selected"?featured():page==="categories"?categories():page==="gallery"?gallery():page==="pricing"?pricing():page==="services"?services():about();
 document.body.classList.add("route-"+page);
 mount.innerHTML=contents;
+if(window.WorachitIntro&&window.WorachitIntro.ready){(window.requestAnimationFrame||function(f){f()})(function(){window.WorachitIntro.ready()})}
 document.querySelectorAll("[data-nav]").forEach(function(el){var currentNav=page==="gallery"?"selected":page;if(el.dataset.nav===currentNav)el.setAttribute("aria-current","page");else el.removeAttribute("aria-current")});
 if(page==="gallery"){var active=document.querySelector(".category-chip[aria-current='page']");if(active&&active.scrollIntoView)active.scrollIntoView({block:"nearest",inline:"center"})}
 if(page==="about"&&(requested==="contact"||window.location.hash==="#contact"))window.setTimeout(function(){var x=document.getElementById("contact");if(x)x.scrollIntoView({block:"start",behavior:"auto"})},100);
