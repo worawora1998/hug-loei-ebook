@@ -168,7 +168,33 @@ function renderHero(){
 function renderPricing(){
 if(!db.pricePackages)db.pricePackages=JSON.parse(JSON.stringify(defaults));
 let layout=elem("div","price-groups");const def={general:["General Ads","ภาพโฆษณา ร้านค้า และสื่อออนไลน์"],concert:["Concert Ads","โปสเตอร์คอนเสิร์ตและภาพโปรโมต"]};
-for(const type of ["general","concert"]){let c=elem("section","price-card "+type);append(c,elem("h3",null,def[type][0]),elem("p","helper",def[type][1]));let rows=db.pricePackages[type]||defaults[type];rows.forEach((p,i)=>{let line=elem("div","price-item"),label=elem("label",null,p[0]+" ภาพ"),inp=elem("input");inp.type="number";inp.min="1";inp.max="10000000";inp.step="1";inp.value=p[1];inp.setAttribute("aria-label","ราคา "+def[type][0]+" "+p[0]+" ภาพ");inp.addEventListener("input",()=>{let v=Number(inp.value);p[1]=inp.value.trim()!==""&&Number.isSafeInteger(v)&&v>0?v:NaN;pending();if(!Number.isSafeInteger(p[1]))setStatus("กรุณาใส่ราคาเป็นจำนวนเต็มมากกว่า 0 ก่อนเผยแพร่","error")});append(line,label,inp);c.append(line)});layout.append(c)}panel.append(layout);panel.append(append(box("คำแนะนำ"),elem("p","helper","ราคาทั้งหมดเป็นเงินบาท ระบบคำนวณแสดงราคาและจำนวนภาพจากข้อมูลนี้โดยอัตโนมัติ หลังบันทึกแล้ว Render จะเผยแพร่แพ็กเกจใหม่")))
+for(const type of ["general","concert"]){
+ let c=elem("section","price-card "+type);append(c,elem("h3",null,def[type][0]),elem("p","helper",def[type][1]+" — เพิ่ม ลบ และตั้งชื่อแพ็กเกจเองได้"));
+ let rows=db.pricePackages[type]||(db.pricePackages[type]=JSON.parse(JSON.stringify(defaults[type])));
+ rows.forEach((pkg,i)=>{
+  let card=elem("div","v18-price-editor");
+  const header=elem("div","v18-price-title");
+  append(header,elem("strong",null,"แพ็กเกจ "+(i+1)),button("ลบแพ็กเกจ",()=>{
+   if(rows.length<2){setStatus("ต้องมีแพ็กเกจอย่างน้อย 1 รายการต่อหมวด","error");return}
+   if(!confirm("ลบแพ็กเกจรายการนี้?"))return;rows.splice(i,1);pending();refresh()
+  },"mini-btn danger"));
+  card.append(header);
+  const number=elem("div","form-row");
+  function numeric(label,index){
+   let box=elem("div","input-wrap"),hint=elem("label",null,label),input=elem("input");
+   input.type="number";input.min="1";input.step="1";input.max=index===0?"1000":"10000000";input.value=Number.isFinite(pkg[index])?pkg[index]:"";
+   input.addEventListener("input",()=>{const v=Number(input.value);pkg[index]=input.value.trim()&&Number.isSafeInteger(v)&&v>0?v:NaN;pending()});
+   append(box,hint,input);return box
+  }
+  append(number,numeric("จำนวนภาพ",0),numeric("ราคา (บาท)",1));card.append(number);
+  card.append(field("ชื่อแพ็กเกจ / โปรโมชัน (เว้นว่างให้ระบบตั้งชื่อ)",pkg[2]||"",v=>pkg[2]=v.slice(0,90)));
+  c.append(card)
+ });
+ let add=button("＋ เพิ่มแพ็กเกจใหม่",()=>{if(rows.length>=30){setStatus("จำกัดไม่เกิน 30 แพ็กเกจต่อหมวด","error");return}rows.push([rows.length+1,1000,"โปรโมชันใหม่"]);pending();refresh()},"btn btn-blue");
+ c.append(add);layout.append(c)
+}
+panel.append(layout);
+let note=box("วิธีใช้งานแพ็กเกจ");append(note,elem("p","helper","ทุกแพ็กเกจสามารถแก้จำนวนภาพ ราคา และชื่อได้อย่างอิสระ (เช่น PROMO 1 POSTER + 4 PROMO) ถ้าชื่อว่าง ระบบจะสร้างชื่อจากจำนวนภาพให้เอง"));panel.append(note)
 }
 function renderSettings(){
 db.siteSettings=db.siteSettings||{};let s=db.siteSettings;let wrap=elem("div","settings-grid");
@@ -214,7 +240,7 @@ async function loadData(){let file=await github("repos/"+OWNER+"/"+REPO+"/conten
 async function login(){if(busy)return;if(window.WorachitPin&&!(await window.WorachitPin.guard()))return;let input=$("token"),candidate=input.value.trim();$("loginError").textContent="";let restored=false;if(!candidate&&window.WorachitPin?.hasToken()){candidate=await window.WorachitPin.unlockToken();restored=!!candidate}if(!candidate){$("loginError").textContent="ครั้งแรกให้วาง GitHub Token หรือหาก Token ที่เคยบันทึกหมดอายุ ให้สร้างใหม่";return}access=candidate;input.value="";busy=true;$("loginBtn").disabled=true;$("loginBtn").textContent="กำลังตรวจสอบสิทธิ์...";try{let me=await github("user");if(String(me.login||"").toLowerCase()!==OWNER.toLowerCase())throw Error("บัญชีนี้ไม่ใช่เจ้าของเว็บไซต์ กรุณาใช้ Token ของ "+OWNER);await loadData();if(window.WorachitPin&&!window.WorachitPin.has()){if(!(await window.WorachitPin.setup()))throw Error("กรุณาตั้ง PIN 6 หลักสำหรับอุปกรณ์นี้ก่อนใช้งาน")}if(!restored&&$("rememberToken")?.checked&&window.WorachitPin?.rememberToken){try{await window.WorachitPin.rememberToken(candidate)}catch(e){setStatus("ไม่สามารถบันทึก Token แบบเข้ารหัสได้","error")}}overlay.hidden=true;dashboard.hidden=false;$("connectedUser").textContent="@"+me.login;switchTab("overview");setStatus("เชื่อมต่อสำเร็จ พร้อมจัดการเว็บไซต์","success")}catch(e){access="";$("loginError").textContent=e.message||"เข้าสู่ระบบไม่ได้"}finally{busy=false;$("loginBtn").disabled=false;$("loginBtn").textContent="เชื่อมต่อ GitHub ↗"}}
 async function publish(){if(busy)return;if(!dirty){setStatus("ยังไม่มีการแก้ไขใหม่ที่ต้องเผยแพร่");return}
 const line=String(db.siteSettings?.lineId||"worachit98");if(!/^[a-zA-Z0-9_.~-]{2,100}$/.test(line)){setStatus("รูปแบบ LINE ID ไม่ถูกต้อง","error");return}
-for(const key of ["general","concert"]){let rows=db.pricePackages?.[key]||defaults[key];if(rows.some(x=>!Number.isSafeInteger(x[1])||x[1]<=0)){setStatus("กรุณาตรวจสอบราคาแพ็กเกจทั้งหมด","error");return}}
+for(const key of ["general","concert"]){let rows=db.pricePackages?.[key]||defaults[key];if(!Array.isArray(rows)||!rows.length||rows.length>30||rows.some(x=>!Number.isSafeInteger(x[0])||x[0]<=0||x[0]>1000||!Number.isSafeInteger(x[1])||x[1]<=0||x[1]>10000000||typeof(x[2]||"")!=="string"||(x[2]||"").length>90)){setStatus("กรุณาตรวจจำนวนภาพ ราคา และชื่อแพ็กเกจก่อนเผยแพร่","error");return}}
 for(const field of ["facebookPersonal","facebookPage","instagram"]){let v=db.siteSettings?.[field];if(v&&(!/^https:\/\//i.test(v)||v.length>350)){setStatus("ลิงก์ "+field+" ต้องขึ้นต้นด้วย https:// และไม่ยาวเกินไป","error");return}}
 if(!confirm("เผยแพร่การแก้ไขขึ้นเว็บไซต์จริงผ่าน GitHub?"))return;busy=true;$("publishBtn").disabled=true;$("publishBtn").textContent="กำลังเผยแพร่...";
 try{db.categories.forEach(x=>x.count=(db.groups[x.key]||[]).length);let json=JSON.stringify(db).replace(/</g,"\\u003c");let re=/(<script id="portfolio-data" type="application\/json">)[\s\S]*?(<\/script>)/;if(!re.test(snapshot))throw Error("ไม่พบจุดเก็บข้อมูล");
