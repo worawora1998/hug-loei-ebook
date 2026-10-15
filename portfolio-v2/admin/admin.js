@@ -42,20 +42,62 @@ stats.forEach(([label,n,variant])=>{let c=box(label,variant);append(c,elem("div"
 let guide=box("เริ่มใช้งานอย่างไร?","panel-wide");append(guide,elem("p",null,"เลือก “จัดการผลงาน” เพื่อเพิ่มรูปเข้าแต่ละหมวด เลือก “งานเด่นหน้าแรก” เพื่อเปลี่ยน 6 ภาพแรก แล้วกดปุ่มเผยแพร่ด้านบน"),elem("p",null,"ระบบจะบันทึกการเปลี่ยนแปลงไว้ใน GitHub พร้อมประวัติย้อนหลัง และ Render จะเผยแพร่เว็บไซต์ตามการตั้งค่าปัจจุบัน"));let acts=elem("div","inline-actions");append(acts,button("เพิ่มภาพผลงาน ↗",()=>switchTab("artworks"),"btn btn-blue"),button("แก้ราคาแพ็กเกจ ↗",()=>switchTab("pricing"),"btn btn-lime"));guide.append(acts);let utils=elem("div","inline-actions");append(utils,button("สำรองข้อมูล JSON ↓",downloadBackup,"btn btn-ghost"),button("โหลดข้อมูลล่าสุด ↻",reloadData,"btn btn-ghost"));guide.append(utils);cards.append(guide);
 let warning=box("ข้อควรรู้","panel-wide");append(warning,elem("p",null,"เผยแพร่เฉพาะการเปลี่ยนแปลงที่ต้องการจริง ๆ เพราะการกดแต่ละครั้งสร้าง Commit ใหม่ใน GitHub"),elem("p",null,"การเอาผลงานออกจากหมวดจะไม่ลบไฟล์ภาพต้นฉบับ ส่วนภาพที่อัปโหลดใหม่จะถูกเก็บในโฟลเดอร์ assets/uploads ของ Repository"));cards.append(warning);panel.append(cards)
 }
+
 function renderArtworks(){
-let stack=elem("div","stack"), top=box("เลือกหมวดผลงาน");const row=elem("div","form-row"), catWrap=elem("div","input-wrap");append(catWrap,elem("label",null,"หมวดที่ต้องการจัดการ"));let choose=elem("select");(db.categories||[]).forEach(c=>{let opt=elem("option",null,c.title+" · "+c.en);opt.value=c.key;choose.append(opt)});if(!db.groups[currentCategory])currentCategory=db.categories[0].key;choose.value=currentCategory;choose.addEventListener("change",()=>{currentCategory=choose.value;refresh()});catWrap.append(choose);
-let cat=db.categories.find(c=>c.key===currentCategory);let count=box("จำนวนภาพในหมวด");append(count,elem("div","big-number",(db.groups[currentCategory]||[]).length));append(row,catWrap,count);top.append(row);
-let meta=elem("div","form-row");append(meta,field("ชื่อหมวดภาษาไทย",cat.title,v=>cat.title=v),field("ชื่อหมวดภาษาอังกฤษ",cat.en,v=>cat.en=v));append(top,meta,field("คำอธิบายหมวด",cat.desc,v=>cat.desc=v,true));stack.append(top);
-let upload=box("เพิ่มผลงานใหม่","upload-card");append(upload,elem("p",null,"เลือกรูป JPG / PNG / WebP จากเครื่อง (ไม่เกิน 5 MB ต่อภาพ) แล้วอัปโหลด ระบบจะเตรียมไว้ในหมวดที่เลือก"));let files=elem("input");files.type="file";files.accept="image/png,image/jpeg,image/webp";let name=field("ชื่อผลงาน", "",()=>{},false,false);let nameInput=name.querySelector("input");
-let send=button("อัปโหลดรูปภาพ ↗",async()=>{await uploadImage(files.files[0],nameInput.value)},"btn btn-blue");append(upload,files,name,send);stack.append(upload);
-let listPanel=box("รูปผลงานในหมวด"), band=heading("จัดเรียงและแก้ไข","ทั้งหมด "+(db.groups[currentCategory]||[]).length+" ภาพ"),list=elem("div","art-list");listPanel.append(band);
-(db.groups[currentCategory]||[]).forEach((it,i)=>{let c=elem("article","art-card"),fig=elem("figure");fig.append(imageNode(it.id,it.name));let content=elem("div","art-card-body");append(content,elem("span","art-card-name",it.name||"ภาพผลงาน "+(i+1)));let acts=elem("div","art-card-actions");append(acts,
-button("↑",()=>move(i,-1),i===0?"mini-btn":"mini-btn"),
-button("↓",()=>move(i,1),"mini-btn"),
-button("แก้ชื่อ",()=>{let n=prompt("ชื่อผลงานใหม่",it.name||"");if(n!==null&&n.trim()){it.name=n.trim().slice(0,180);pending();refresh()}}),
-button("งานเด่น",()=>{setSelected(it);pending();refresh()},"mini-btn marked"),
-button("นำออก",()=>removeArtwork(i),"mini-btn danger"));content.append(acts);append(c,fig,content);list.append(c)});
-listPanel.append(list);stack.append(listPanel);panel.append(stack)
+let stack=elem("div","stack"),top=box("หมวดผลงาน");let bar=elem("div","form-row"),catWrap=elem("div","input-wrap");
+append(catWrap,elem("label",null,"เลือกหมวดผลงาน"));let choose=elem("select");
+(db.categories||[]).forEach(c=>{let opt=elem("option",null,c.title+" · "+c.en);opt.value=c.key;choose.append(opt)});
+if(!db.groups[currentCategory])currentCategory=db.categories[0].key;choose.value=currentCategory;
+choose.addEventListener("change",()=>{currentCategory=choose.value;refresh()});catWrap.append(choose);
+let cat=db.categories.find(c=>c.key===currentCategory);
+let count=box("จำนวนรูป");append(count,elem("div","big-number",(db.groups[currentCategory]||[]).length));
+append(bar,catWrap,count);top.append(bar);
+let metadata=elem("div","form-row");append(metadata,field("ชื่อหมวดภาษาไทย",cat.title,v=>cat.title=v),field("ชื่อหมวดภาษาอังกฤษ",cat.en,v=>cat.en=v));append(top,metadata,field("คำอธิบายหมวด",cat.desc,v=>cat.desc=v,true));stack.append(top);
+let upload=box("เพิ่มภาพใหม่","upload-card");
+append(upload,elem("p",null,"เลือกภาพจากคอมพิวเตอร์ JPG / PNG / WebP ขนาดไม่เกิน 5 MB แล้วกดอัปโหลด"));
+let files=elem("input");files.type="file";files.accept="image/png,image/jpeg,image/webp";
+let name=field("ชื่อผลงาน (ไม่ใส่ก็ได้)", "",()=>{},false,false);let nameInput=name.querySelector("input");
+append(upload,files,name,button("อัปโหลดรูปภาพ ↗",async()=>uploadImage(files.files[0],nameInput.value),"btn btn-blue"));
+stack.append(upload);
+let section=box("จัดเรียงภาพ — ลากได้เลย");
+append(section,elem("p","helper","จับที่ปุ่ม ↕ บนภาพ แล้วลากไปวางตำแหน่งใหม่ได้ทั้งเมาส์และหน้าจอสัมผัส หรือใช้ “ขึ้นแรก” เพื่อย้ายทันที"));
+const tools=elem("div","v17-sortbar"),filter=elem("input","v17-search");filter.placeholder="ค้นหาชื่อผลงาน...";filter.setAttribute("aria-label","ค้นหาผลงาน");
+tools.append(filter,elem("span","chip",(db.groups[currentCategory]||[]).length+" ภาพ"));section.append(tools);
+let grid=elem("div","art-list v17-sortgrid");
+function draw(query=""){
+ grid.replaceChildren();let values=db.groups[currentCategory]||[];let found=0;
+ values.forEach((it,i)=>{
+ if(query&&!(it.name||"").toLowerCase().includes(query.toLowerCase()))return;found++;
+ let card=elem("article","art-card v17-dragcard");card.dataset.artIndex=i;card.draggable=true;
+ let fig=elem("figure");fig.append(imageNode(it.id,it.name));
+ let body=elem("div","art-card-body");append(body,elem("span","art-card-name",it.name||"ภาพที่ "+(i+1)));
+ let n=elem("span","v17-sequence","ลำดับ "+(i+1));body.append(n);
+ let actions=elem("div","art-card-actions"),handle=button("↕ ลากจัดเรียง",()=>{},"mini-btn v17-draghandle");
+ handle.setAttribute("aria-label","ลากรูปที่ "+(i+1)+" เพื่อจัดเรียง");handle.dataset.dragIndex=i;
+ append(actions,handle,button("ขึ้นแรก",()=>reorderArt(i,0),"mini-btn marked"),
+ button("แก้ชื่อ",()=>{let name=prompt("ชื่อผลงานใหม่",it.name||"");if(name!==null&&name.trim()){it.name=name.trim().slice(0,180);pending();refresh()}}),
+ button("งานเด่น",()=>{setSelected(it);pending();refresh()},"mini-btn"),
+ button("นำออก",()=>removeArtwork(i),"mini-btn danger"));
+ body.append(actions);append(card,fig,body);grid.append(card);
+ card.addEventListener("dragstart",e=>{dragFrom=i;card.classList.add("is-moving");if(e.dataTransfer){e.dataTransfer.effectAllowed="move";e.dataTransfer.setData("text/plain",String(i))}});
+ card.addEventListener("dragend",()=>{dragFrom=-1;grid.querySelectorAll(".is-moving,.drop-target").forEach(x=>x.classList.remove("is-moving","drop-target"))});
+ card.addEventListener("dragover",e=>{e.preventDefault();card.classList.add("drop-target");if(e.dataTransfer)e.dataTransfer.dropEffect="move"});
+ card.addEventListener("dragleave",()=>card.classList.remove("drop-target"));
+ card.addEventListener("drop",e=>{e.preventDefault();let from=dragFrom>=0?dragFrom:Number(e.dataTransfer?.getData("text/plain"));dragFrom=-1;reorderArt(from,i)});
+ });
+ if(!found)grid.append(elem("p","helper","ไม่พบผลงานที่ค้นหา"));
+}
+let dragFrom=-1;draw();filter.addEventListener("input",()=>draw(filter.value));
+section.append(grid);stack.append(section);panel.append(stack);
+let active=-1;
+grid.addEventListener("pointerdown",e=>{let handle=e.target.closest?.(".v17-draghandle");if(!handle)return;active=Number(handle.dataset.dragIndex);handle.setPointerCapture?.(e.pointerId);grid.classList.add("dragging-active")});
+grid.addEventListener("pointermove",e=>{if(active<0)return;grid.querySelectorAll(".drop-target").forEach(x=>x.classList.remove("drop-target"));let target=document.elementFromPoint?.(e.clientX,e.clientY)?.closest?.("[data-art-index]");if(target)target.classList.add("drop-target")});
+grid.addEventListener("pointerup",e=>{if(active<0)return;let from=active;active=-1;grid.classList.remove("dragging-active");let target=document.elementFromPoint?.(e.clientX,e.clientY)?.closest?.("[data-art-index]");grid.querySelectorAll(".drop-target").forEach(x=>x.classList.remove("drop-target"));if(target)reorderArt(from,Number(target.dataset.artIndex))});
+grid.addEventListener("pointercancel",()=>{active=-1;grid.classList.remove("dragging-active")});
+}
+function reorderArt(from,to){
+let works=db.groups[currentCategory];if(!Number.isInteger(from)||!Number.isInteger(to)||from<0||to<0||from>=works.length||to>=works.length||from===to)return;
+let [it]=works.splice(from,1);works.splice(to,0,it);pending();refresh()
 }
 function move(i,delta){let a=db.groups[currentCategory];let j=i+delta;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];pending();refresh()}
 function setSelected(it){let cat=db.categories.find(x=>x.key===currentCategory);db.selected=db.selected||[];let found=db.selected.findIndex(x=>x.key===currentCategory);let value={key:currentCategory,id:it.id,title:cat.title};if(found>=0)db.selected[found]=value;else db.selected.push(value);setStatus("ตั้งเป็นตัวแทนหมวด “"+cat.title+"” แล้ว อย่าลืมกดเผยแพร่");}
@@ -88,7 +130,7 @@ function utf8Base64(text){let bytes=new TextEncoder().encode(text),binary="";for
 function fromBase64(s){let raw=atob(s.replace(/\s/g,""));let a=Uint8Array.from(raw,c=>c.charCodeAt(0));return new TextDecoder("utf-8",{fatal:true}).decode(a)}
 async function github(path,options={}){const resp=await fetch("https://api.github.com/"+path,{...options,headers:{"Authorization":"Bearer "+access,"Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28","Content-Type":"application/json",...(options.headers||{})},cache:"no-store"});let json;try{json=await resp.json()}catch{json={}}if(!resp.ok)throw Error("GitHub "+resp.status+": "+(json.message||"เชื่อมต่อไม่สำเร็จ"));return json}
 async function loadData(){let file=await github("repos/"+OWNER+"/"+REPO+"/contents/"+CONTENT+"?ref="+encodeURIComponent(BRANCH));if(!file.content)throw Error("GitHub ไม่ส่งเนื้อหา index.html");let source=fromBase64(file.content);let m=source.match(/<script id="portfolio-data" type="application\/json">([\s\S]*?)<\/script>/);if(!m)throw Error("ไม่พบข้อมูล Portfolio ใน index.html");let data=JSON.parse(m[1]);if(!data.groups||!data.categories)throw Error("โครงสร้างข้อมูลไม่ถูกต้อง");snapshot=source;fileSha=file.sha;db=data;dirty=false}
-async function login(){if(busy)return;let input=$("token"),candidate=input.value.trim();$("loginError").textContent="";if(!candidate){$("loginError").textContent="โปรดวาง GitHub Token ก่อน";return}access=candidate;input.value="";busy=true;$("loginBtn").disabled=true;$("loginBtn").textContent="กำลังตรวจสอบสิทธิ์...";try{let me=await github("user");if(String(me.login||"").toLowerCase()!==OWNER.toLowerCase())throw Error("บัญชีนี้ไม่ใช่เจ้าของเว็บไซต์ กรุณาใช้ Token ของ "+OWNER);await loadData();overlay.hidden=true;dashboard.hidden=false;$("connectedUser").textContent="@"+me.login;switchTab("overview");setStatus("เชื่อมต่อสำเร็จ พร้อมจัดการเว็บไซต์","success")}catch(e){access="";$("loginError").textContent=e.message||"เข้าสู่ระบบไม่ได้"}finally{busy=false;$("loginBtn").disabled=false;$("loginBtn").textContent="เชื่อมต่อ GitHub ↗"}}
+async function login(){if(busy)return;if(window.WorachitPin&&!(await window.WorachitPin.guard()))return;let input=$("token"),candidate=input.value.trim();$("loginError").textContent="";if(!candidate){$("loginError").textContent="โปรดวาง GitHub Token ก่อน";return}access=candidate;input.value="";busy=true;$("loginBtn").disabled=true;$("loginBtn").textContent="กำลังตรวจสอบสิทธิ์...";try{let me=await github("user");if(String(me.login||"").toLowerCase()!==OWNER.toLowerCase())throw Error("บัญชีนี้ไม่ใช่เจ้าของเว็บไซต์ กรุณาใช้ Token ของ "+OWNER);await loadData();if(window.WorachitPin&&!window.WorachitPin.has()){if(!(await window.WorachitPin.setup()))throw Error("กรุณาตั้ง PIN 6 หลักสำหรับอุปกรณ์นี้ก่อนใช้งาน")}overlay.hidden=true;dashboard.hidden=false;$("connectedUser").textContent="@"+me.login;switchTab("overview");setStatus("เชื่อมต่อสำเร็จ พร้อมจัดการเว็บไซต์","success")}catch(e){access="";$("loginError").textContent=e.message||"เข้าสู่ระบบไม่ได้"}finally{busy=false;$("loginBtn").disabled=false;$("loginBtn").textContent="เชื่อมต่อ GitHub ↗"}}
 async function publish(){if(busy)return;if(!dirty){setStatus("ยังไม่มีการแก้ไขใหม่ที่ต้องเผยแพร่");return}
 const line=String(db.siteSettings?.lineId||"worachit98");if(!/^[a-zA-Z0-9_.~-]{2,100}$/.test(line)){setStatus("รูปแบบ LINE ID ไม่ถูกต้อง","error");return}
 for(const key of ["general","concert"]){let rows=db.pricePackages?.[key]||defaults[key];if(rows.some(x=>!Number.isSafeInteger(x[1])||x[1]<=0)){setStatus("กรุณาตรวจสอบราคาแพ็กเกจทั้งหมด","error");return}}
