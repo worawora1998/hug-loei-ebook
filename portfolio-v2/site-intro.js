@@ -21,8 +21,7 @@ function appReady(){ready=true;setText("v19-stage-label","READY TO EXPLORE");fin
 function fail(){setText("v19-stage-label","โหลดข้อมูลขัดข้อง · ลองโหลดหน้าอีกครั้ง");var btn=document.getElementById("v19-retry");if(btn)btn.hidden=false}
 window.WorachitIntro={ready:appReady,fail:fail};
 if(!intro){elapsed=true;return}
-if(seen){intro.style.display="none";elapsed=true}
-else if(reduced){intro.style.display="none";elapsed=true}
+if(seen||reduced){intro.classList.add("v19-intro-fast");elapsed=true}
 else{
  function validId(id){return typeof id==="string" && (/^[\w-]{18,}$/.test(id)||/^assets\/uploads\/[\w./-]+\.(?:png|jpe?g|webp)$/i.test(id))}
  function photoSrc(id){return id.indexOf("assets/uploads/")===0?"https://raw.githubusercontent.com/worawora1998/hug-loei-ebook/portfolio-v2-site/portfolio-v2/"+id:"https://drive.google.com/thumbnail?id="+encodeURIComponent(id)+"&sz=w360"}
