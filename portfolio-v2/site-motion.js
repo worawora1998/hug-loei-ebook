@@ -7,8 +7,17 @@ let observer;
 function init(){
  const app=document.getElementById("app");if(!app||!app.querySelector(".page-enter"))return;
  document.documentElement.classList.add("v17-motion-ready");
+ const ornamentHosts=app.querySelectorAll(".ed-page-hero,.ed-gallery-title");
+ ornamentHosts.forEach(host=>{
+  if(host.querySelector(".v18-interior-spark"))return;
+  const a=document.createElement("span"),b=document.createElement("span");
+  a.className="v18-interior-spark";a.textContent="✳";a.setAttribute("aria-hidden","true");
+  b.className="v18-interior-spark alt";b.textContent="✦";b.setAttribute("aria-hidden","true");
+  host.append(a,b);
+ });
+
  if(observer)observer.disconnect();
- const els=app.querySelectorAll(".b12-section-heading,.b12-work,.b12-cat,.b12-about-banner,.b12-price-banner,.b12-ending,.ed-page-hero,.ed-about-layout,.ed-services-list .ed-service-row,.ed-contact-card,.v10-package,.v10-pcard,.catalog-card,.ed-gallery-title,.portfolio-masonry .masonry-item");
+ const els=app.querySelectorAll(".b12-section-heading,.b12-work,.b12-cat,.b12-about-banner,.b12-price-banner,.b12-ending,.ed-page-hero,.ed-gallery-title,.ed-about-layout,.ed-about-photo,.ed-about-text,.ed-section-head,.ed-service-row,.ed-contact-card,.ed-services-list,.ed-service-scope,.v10-package,.v10-package-head,.v10-pcard,.v10-price-guide,.catalog-card,.masonry-item,.ed-gallery-breadcrumb,.ed-archive-label,.ed-archive-bottom,.ed-contact-end,.ed-contact-list");
  if("IntersectionObserver" in window){
   observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add("v17-visible");observer.unobserve(e.target)}})},{threshold:.06,rootMargin:"0px 0px 55px 0px"});
   els.forEach((el,i)=>{el.classList.add("v17-animate");el.style.setProperty("--v17-delay",Math.min(i%7,5)*45+"ms");observer.observe(el)})
