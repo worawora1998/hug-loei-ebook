@@ -309,3 +309,26 @@ a,button{touch-action:manipulation}
 
 /* V17 discrete admin access */
 .site-footer .admin-entry-dot{width:26px;height:26px;margin-left:9px;background:#e9e7f8;color:#675ce4!important;font-size:15px;border:1px solid #dad6fa}.site-footer .admin-entry-dot:hover{transform:rotate(45deg) scale(1.08);background:#d5ff47}
+
+/* V17 animated creative portfolio */
+.v17-brand-mark{width:31px;height:31px;object-fit:contain;border-radius:7px;vertical-align:middle;margin-right:7px}
+.v17-motion-ready .v17-animate{opacity:0;transform:translateY(23px) scale(.988);transition:opacity .55s cubic-bezier(.2,.75,.2,1),transform .58s cubic-bezier(.2,.75,.2,1);transition-delay:var(--v17-delay,0ms)}
+.v17-motion-ready .v17-animate.v17-visible{opacity:1;transform:translateY(0) scale(1)}
+.v17-motion-ready .b12-work.v17-visible,.v17-motion-ready .b12-cat.v17-visible,.v17-motion-ready .v10-pcard.v17-visible{transform:perspective(1000px) rotateX(var(--v17-y,0deg)) rotateY(var(--v17-x,0deg));transition:transform .22s ease,box-shadow .24s ease,border-color .24s ease,opacity .45s ease}
+.v17-motion-ready .b12-work.v17-visible:hover,.v17-motion-ready .b12-cat.v17-visible:hover,.v17-motion-ready .v10-pcard.v17-visible:hover{transform:perspective(1000px) translateY(-5px) rotateX(var(--v17-y,0deg)) rotateY(var(--v17-x,0deg))}
+.b12-hero-poster.b12-poster-one{animation:v17PosterOne 7s ease-in-out infinite}
+.b12-hero-poster.b12-poster-two{animation:v17PosterTwo 8s ease-in-out infinite}
+.b12-floating-star.a{animation:v17Star 9s linear infinite}
+.b12-floating-star.b{animation:v17Star 12s linear infinite reverse}
+.b12-hello-sticker{animation:v17Wobble 6s ease-in-out infinite}
+.b12-bg-orbit{animation:v17Orbit 14s ease-in-out infinite alternate}
+.b12-word-pill{animation:v17Pill 4.6s ease-in-out infinite}
+#site-header .head-cta,.b12-hero-cta .btn{transition:transform .22s,box-shadow .22s,background .22s}
+#site-header .head-cta:hover,.b12-hero-cta .btn:hover{transform:translateY(-3px);box-shadow:0 10px 22px #4131e62b}
+@keyframes v17PosterOne{0%,100%{transform:translateY(0) rotate(-13deg)}50%{transform:translateY(-12px) rotate(-10deg)}}
+@keyframes v17PosterTwo{0%,100%{transform:translateY(0) rotate(10deg)}50%{transform:translateY(12px) rotate(7deg)}}
+@keyframes v17Star{to{transform:rotate(360deg)}}
+@keyframes v17Wobble{0%,100%{transform:rotate(12deg)}50%{transform:rotate(20deg) scale(1.045)}}
+@keyframes v17Orbit{0%{transform:rotate(-20deg)}100%{transform:rotate(-13deg) scale(1.03)}}
+@keyframes v17Pill{0%,100%{transform:rotate(-1deg)}50%{transform:rotate(1.2deg)}}
+@media(prefers-reduced-motion:reduce){.v17-motion-ready .v17-animate{opacity:1!important;transform:none!important;transition:none!important}.b12-hero-poster,.b12-bg-orbit,.b12-hello-sticker,.b12-word-pill,.b12-floating-star{animation:none!important}}
