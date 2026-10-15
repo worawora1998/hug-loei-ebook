@@ -205,7 +205,7 @@ if(window.WorachitPin&&window.WorachitPin.has()&&!window.WorachitPin.unlocked())
  window.WorachitPin.guard().then(ok=>{if(!ok)window.location.href="../?page=home"})
 }
 $("loginBtn").addEventListener("click",login);$("token").addEventListener("keydown",e=>{if(e.key==="Enter")login()});
-$("publishBtn").addEventListener("click",publish);$("logoutBtn").addEventListener("click",()=>{if(dirty&&!confirm("มีข้อมูลที่ยังไม่ได้เผยแพร่ ต้องการออกจากระบบหรือไม่?"))return;access="";snapshot="";fileSha="";db=null;dirty=false;dashboard.hidden=true;overlay.hidden=false;setStatus("");$("loginError").textContent="";$("token").value=""});
+$("publishBtn").addEventListener("click",publish);$("logoutBtn").addEventListener("click",()=>{if(dirty&&!confirm("มีข้อมูลที่ยังไม่ได้เผยแพร่ ต้องการออกจากระบบหรือไม่?"))return;access="";snapshot="";fileSha="";db=null;dirty=false;if(window.WorachitPin)window.WorachitPin.lock();dashboard.hidden=true;overlay.hidden=false;setStatus("");$("loginError").textContent="";$("token").value=""});
 document.querySelectorAll("[data-tab]").forEach(tab=>tab.addEventListener("click",()=>switchTab(tab.dataset.tab)));
 window.addEventListener("beforeunload",e=>{if(dirty){e.preventDefault();e.returnValue=""}});
 })();
