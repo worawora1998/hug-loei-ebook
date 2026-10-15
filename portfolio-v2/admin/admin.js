@@ -144,6 +144,7 @@ for(const type of ["general","concert"]){let c=elem("section","price-card "+type
 }
 function renderSettings(){
 db.siteSettings=db.siteSettings||{};let s=db.siteSettings;let wrap=elem("div","settings-grid");
+let security=box("ความปลอดภัย / PIN 6 หลัก");append(security,elem("p","helper","PIN เป็นด่านเข้าหน้า Admin บนอุปกรณ์นี้เท่านั้น การแก้ไขจริงยังต้องยืนยัน GitHub"));append(security,button("เปลี่ยน PIN 6 หลัก",async()=>{if(!window.WorachitPin){setStatus("อุปกรณ์นี้ไม่รองรับ PIN","error");return}let ok=await window.WorachitPin.change();setStatus(ok?"เปลี่ยน PIN สำเร็จ":"ไม่ได้เปลี่ยน PIN",ok?"success":"") },"btn btn-ghost"));wrap.append(security);
 let intro=box("01 / ข้อความและรายละเอียดหน้าเว็บ");
 const fields=[
 ["ข้อความทักทายหน้าแรก","greeting","สวัสดีครับ! ยินดีต้อนรับสู่พอร์ตของผม"],
