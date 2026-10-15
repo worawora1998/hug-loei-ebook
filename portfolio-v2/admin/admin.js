@@ -108,9 +108,34 @@ pending();refresh()
 }
 function allArtworks(){let out=[];for(const c of db.categories){for(const it of db.groups[c.key]||[])out.push({id:it.id,name:it.name||c.title,label:c.title+" · "+(it.name||it.id).slice(0,50)})}return out}
 function renderFeatured(){
-let stack=elem("div","stack"),c=box("เลือกผลงานหน้าแรก");append(c,elem("p",null,"เลือก 6 ภาพที่แสดงบนหน้าแรก โดยเลือกจากทุกหมวดงาน (อาจเลือกภาพเดียวกันได้ แต่แนะนำให้เลือกไม่ซ้ำกัน)"));let works=allArtworks(),now=db.homePosterImages||[];
-for(let i=0;i<6;i++){let r=elem("div","feature-row");append(r,elem("b",null,String(i+1).padStart(2,"0")));let cur=now[i]||works[0]||{id:"",name:""};r.append(imageNode(cur.id,cur.name));let select=elem("select");works.forEach(w=>{let o=elem("option",null,w.label);o.value=w.id;select.append(o)});if(!works.some(x=>x.id===cur.id)&&cur.id){let o=elem("option",null,cur.name+" (เดิม)");o.value=cur.id;select.append(o)}select.value=cur.id;select.addEventListener("change",()=>{let art=works.find(x=>x.id===select.value);if(!art)return;while(now.length<6)now.push(art);now[i]={id:art.id,name:art.name};db.homePosterImages=now;pending();refresh()});r.append(select);c.append(r)}
-append(c,elem("p","helper","การเลือกใหม่นี้ยังไม่ขึ้นเว็บจนกว่าจะกด “เผยแพร่การเปลี่ยนแปลง”"));stack.append(c);panel.append(stack)
+db.homePosterImages=db.homePosterImages||[];let chosen=db.homePosterImages;
+let stack=elem("div","stack"),slots=box("01 / งานเด่น 6 ช่อง"),hint=elem("p","helper","แตะช่องที่ต้องการ แล้วแตะภาพจากคลังด้านล่าง หรือจับภาพลากไปวางบนช่องได้เลย");
+slots.append(hint);let stage=elem("div","v17-feature-slots");let selectedSlot=0;
+function redrawSlots(){stage.replaceChildren();for(let i=0;i<6;i++){let item=chosen[i];let slot=elem("button","v17-feature-slot"+(i===selectedSlot?" selected":""));slot.type="button";slot.dataset.slot=i;slot.draggable=!!item;
+slot.append(elem("span","v17-slot-index","0"+(i+1)));if(item){slot.append(imageNode(item.id,item.name));slot.append(elem("span","v17-slot-label",item.name||"งานเด่น"))}else slot.append(elem("span","v17-empty","＋ เลือกรูป"));
+slot.addEventListener("click",()=>{selectedSlot=i;redrawSlots()});
+slot.addEventListener("dragstart",e=>{if(!item)return;e.dataTransfer.setData("application/x-feature-slot",String(i));e.dataTransfer.effectAllowed="move"});
+slot.addEventListener("dragover",e=>{e.preventDefault();slot.classList.add("is-over")});
+slot.addEventListener("dragleave",()=>slot.classList.remove("is-over"));
+slot.addEventListener("drop",e=>{e.preventDefault();slot.classList.remove("is-over");let from=e.dataTransfer.getData("application/x-feature-slot"),artid=e.dataTransfer.getData("text/plain");
+if(from!==""){let j=Number(from);if(j>=0&&j<6&&j!==i){while(chosen.length<6)chosen.push(null);[chosen[i],chosen[j]]=[chosen[j],chosen[i]];pending();redrawSlots()}}else if(artid)chooseArt(artid,i)});
+stage.append(slot)}}
+function chooseArt(id,index){let art=allArtworks().find(x=>x.id===id);if(!art)return;let item={id:art.id,name:art.name};while(chosen.length<6)chosen.push(null);chosen[index]=item;db.homePosterImages=chosen;selectedSlot=Math.min(5,index+1);pending();redrawSlots()}
+redrawSlots();slots.append(stage);stack.append(slots);
+let lib=box("02 / คลังภาพ — เลือกจากหมวด");append(lib,elem("p","helper","คลิกภาพเพื่อใส่ในช่องที่มีกรอบน้ำเงิน หรือใช้เมาส์ลากรูปไปวางในช่องที่ต้องการ"));
+let ctl=elem("div","v17-pick-tools"),sel=elem("select");
+db.categories.forEach(c=>{let opt=elem("option",null,c.title);opt.value=c.key;sel.append(opt)});
+sel.value=currentCategory;sel.addEventListener("change",()=>{currentCategory=sel.value;drawGallery()});
+let search=elem("input");search.type="search";search.placeholder="ค้นหาภาพ...";search.addEventListener("input",drawGallery);append(ctl,sel,search);lib.append(ctl);
+let gallery=elem("div","v17-pick-gallery");
+function drawGallery(){gallery.replaceChildren();let count=0;for(let it of db.groups[currentCategory]||[]){if(search.value&&!(it.name||"").toLowerCase().includes(search.value.toLowerCase()))continue;
+count++;let tile=elem("button","v17-pick-tile");tile.type="button";tile.draggable=true;tile.append(imageNode(it.id,it.name),elem("span",null,it.name||"ผลงาน"));
+tile.addEventListener("click",()=>chooseArt(it.id,selectedSlot));
+tile.addEventListener("dragstart",e=>{e.dataTransfer.setData("text/plain",it.id);e.dataTransfer.effectAllowed="copy"});
+gallery.append(tile)}if(!count)gallery.append(elem("p","helper","ยังไม่มีรูปในหมวดนี้"))}
+drawGallery();lib.append(gallery);stack.append(lib);
+stack.append(append(box("เคล็ดลับ"),elem("p","helper","ลากช่องงานเด่นเพื่อสลับตำแหน่งได้ และบนมือถือแตะช่องก่อน แล้วแตะภาพจากคลัง ระบบจะบันทึกหลังจากกด “เผยแพร่การเปลี่ยนแปลง”")));
+panel.append(stack)
 }
 function renderPricing(){
 if(!db.pricePackages)db.pricePackages=JSON.parse(JSON.stringify(defaults));
