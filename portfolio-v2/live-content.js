@@ -6,8 +6,8 @@
 var data=document.getElementById("portfolio-data");
 function startApp(){
   var tag=document.createElement("script");
-  tag.src="./app-v12.js?v=20261015-v18";
-  tag.onerror=function(){var mount=document.getElementById("app");if(mount&&!mount.querySelector(".page-enter")){mount.textContent="ไม่สามารถโหลดเว็บไซต์ได้ในขณะนี้ กรุณารีเฟรชอีกครั้ง"}};
+  tag.src="./app-v12.js?v=20261015-v19";
+  tag.onerror=function(){var mount=document.getElementById("app");if(mount&&!mount.querySelector(".page-enter")){mount.textContent="ไม่สามารถโหลดเว็บไซต์ได้ในขณะนี้ กรุณารีเฟรชอีกครั้ง"}if(window.WorachitIntro)window.WorachitIntro.fail()};
   document.body.appendChild(tag);
 }
 if(!data||typeof fetch!=="function"){startApp();return;}
