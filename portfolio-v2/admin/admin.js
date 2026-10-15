@@ -12,7 +12,7 @@ function append(parent,...children){children.forEach(c=>{if(c!==null&&c!==undefi
 function button(label,action,cls="mini-btn"){const b=elem("button",cls,label);b.type="button";b.addEventListener("click",action);return b}
 function setStatus(message,type=""){status.textContent=message;status.className="statusbar"+(type?" is-"+type:"")}
 function pending(){dirty=true;setStatus("มีการแก้ไขที่ยังไม่ได้เผยแพร่ — กดปุ่ม “เผยแพร่การเปลี่ยนแปลง” เมื่อตรวจทานเรียบร้อย")}
-function imgSrc(id){return /^assets\/uploads\/[a-z0-9_./-]+\.(png|jpe?g|webp)$/i.test(id)? "../"+id : "https://drive.google.com/thumbnail?id="+encodeURIComponent(id)+"&sz=w420"}
+function imgSrc(id){return /^assets\/uploads\/[a-z0-9_./-]+\.(png|jpe?g|webp)$/i.test(id)? "https://raw.githubusercontent.com/worawora1998/hug-loei-ebook/portfolio-v2-site/portfolio-v2/"+id : "https://drive.google.com/thumbnail?id="+encodeURIComponent(id)+"&sz=w420"}
 function imageNode(id,label){let im=elem("img");im.alt=label||"ภาพผลงาน";im.loading="lazy";im.decoding="async";im.src=imgSrc(id);im.addEventListener("error",()=>{if(!im.dataset.retry&&!id.startsWith("assets/")){im.dataset.retry="1";im.src="https://lh3.googleusercontent.com/d/"+encodeURIComponent(id)+"=w420"}});return im}
 function field(labelText,value,onInput,area=false,trackChange=true){let w=elem("div","input-wrap"),l=elem("label",null,labelText),i=elem(area?"textarea":"input");if(!area)i.type="text";i.value=value||"";i.addEventListener("input",()=>{onInput(i.value);if(trackChange)pending()});append(w,l,i);return w}
 function heading(title,small){let wrap=elem("div","section-band");append(wrap,elem("h2",null,title),elem("span","chip",small||""));return wrap}
@@ -96,7 +96,7 @@ if(!confirm("เผยแพร่การแก้ไขขึ้นเว็�
 try{db.categories.forEach(x=>x.count=(db.groups[x.key]||[]).length);let json=JSON.stringify(db).replace(/</g,"\\u003c");let re=/(<script id="portfolio-data" type="application\/json">)[\s\S]*?(<\/script>)/;if(!re.test(snapshot))throw Error("ไม่พบจุดเก็บข้อมูล");
 let updated=snapshot.replace(re,(_,a,b)=>a+json+b);
 const reply=await github("repos/"+OWNER+"/"+REPO+"/contents/"+CONTENT,{method:"PUT",body:JSON.stringify({message:"Update portfolio content via WORACHIT ADMIN",content:utf8Base64(updated),sha:fileSha,branch:BRANCH})});
-snapshot=updated;fileSha=reply.content?.sha||fileSha;dirty=false;setStatus("เผยแพร่ข้อมูลไป GitHub เรียบร้อย! Render จะสร้างเว็บไซต์จาก Commit ล่าสุด โปรดรอสักครู่แล้วเปิดดูหน้าเว็บ","success");
+snapshot=updated;fileSha=reply.content?.sha||fileSha;dirty=false;setStatus("เผยแพร่ข้อมูลไป GitHub เรียบร้อย! เว็บไซต์จะอ่านข้อมูลล่าสุดจาก GitHub โดยตรง อาจใช้เวลาสั้น ๆ ในการอัปเดต","success");
 }catch(e){setStatus("เผยแพร่ไม่สำเร็จ: "+e.message+" — หากมีคนแก้โค้ดพร้อมกัน ให้รีโหลดหน้า Admin ก่อนบันทึก","error")}finally{busy=false;$("publishBtn").disabled=false;$("publishBtn").textContent="เผยแพร่การเปลี่ยนแปลง ↗"}}
 async function uploadImage(file,name,target="artwork"){if(busy)return;if(!file){setStatus("กรุณาเลือกไฟล์ภาพก่อน","error");return}
 const allowed={"image/jpeg":"jpg","image/png":"png","image/webp":"webp"};const ext=allowed[file.type];if(!ext){setStatus("รองรับเฉพาะ JPG, PNG หรือ WebP","error");return}if(file.size>5*1024*1024){setStatus("ไฟล์ใหญ่เกิน 5 MB กรุณาบีบอัดก่อนอัปโหลด","error");return}if(file.size===0){setStatus("ไฟล์ว่าง","error");return}
