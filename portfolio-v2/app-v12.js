@@ -12,8 +12,8 @@ var lightItems=[],lightIndex=0,focusBefore=null,touchX=0;
 var preloadImages=new Map();function preloadNear(i){if(!lightItems.length)return;[-1,1].forEach(function(offset){var it=lightItems[(i+offset+lightItems.length)%lightItems.length];if(!it)return;var url=src(it.id,850);if(preloadImages.has(url))return;var im=new Image();im.decoding='async';im.src=url;preloadImages.set(url,im);if(preloadImages.size>24)preloadImages.delete(preloadImages.keys().next().value)})}
 function clean(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
 function u(page,cat){return "?page="+encodeURIComponent(page)+(cat?"&cat="+encodeURIComponent(cat):"")}
-function src(id,width){if(/^assets\/uploads\/[a-z0-9_./-]+\.(?:png|jpe?g|webp)$/i.test(id))return "./"+id;return "https://drive.google.com/thumbnail?id="+encodeURIComponent(id)+"&sz=w"+(width||960)}
-function drive(id){if(/^assets\/uploads\/[a-z0-9_./-]+\.(?:png|jpe?g|webp)$/i.test(id))return "./"+id;return "https://drive.google.com/file/d/"+encodeURIComponent(id)+"/view"}
+function src(id,width){if(/^assets\/uploads\/[a-z0-9_./-]+\.(?:png|jpe?g|webp)$/i.test(id))return "https://raw.githubusercontent.com/worawora1998/hug-loei-ebook/portfolio-v2-site/portfolio-v2/"+id;return "https://drive.google.com/thumbnail?id="+encodeURIComponent(id)+"&sz=w"+(width||960)}
+function drive(id){if(/^assets\/uploads\/[a-z0-9_./-]+\.(?:png|jpe?g|webp)$/i.test(id))return "https://raw.githubusercontent.com/worawora1998/hug-loei-ebook/portfolio-v2-site/portfolio-v2/"+id;return "https://drive.google.com/file/d/"+encodeURIComponent(id)+"/view"}
 function image(id,alt,width,eager){return "<img class='art-image' data-file='"+clean(id)+"' alt='"+clean(alt)+"' src='"+src(id,width)+"' loading='"+(eager?"eager":"lazy")+"' decoding='async'"+(eager?" fetchpriority='high'":"")+">"}
 function fall(){return "<span class='art-fallback'><strong>ไม่สามารถแสดงภาพตัวอย่างได้</strong><span>ลองโหลดหน้านี้ใหม่อีกครั้ง</span></span>"}
 function decor(id,classes){return id?"<img aria-hidden='true' alt='' loading='lazy' class='"+classes+"' src='"+src(id,460)+"'>":""}
