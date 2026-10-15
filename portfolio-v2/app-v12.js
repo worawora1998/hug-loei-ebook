@@ -175,7 +175,7 @@ return shell("<section class='ed-page-hero'><span class='ed-section-label'>DESIG
 function categoryCard(c,i){
 var it=item(c.key);
 return "<a class='catalog-card catalog-card-v4 reveal' style='transition-delay:"+(i%3*65)+"ms' href='"+u("gallery",c.key)+"' aria-label='"+clean(c.en+" "+c.title)+"'>"+
-"<div class='catalog-thumb'>"+image(it.id,c.title,550)+fall()+"</div>"+
+"<div class='catalog-thumb'>"+(it?image(it.id,c.title,550)+fall():"<span class='art-fallback'>ยังไม่มีรูปในหมวดนี้</span>")+"</div>"+
 "<div class='catalog-info'><span class='catalog-mini-icon'>"+iconSVG(c.key)+"</span>"+
 labelPair(c,"catalog-bilingual")+"<span class='catalog-desc'>"+clean(c.desc)+"</span>"+
 "<span class='catalog-go'>ดูผลงาน <span aria-hidden='true'>↗</span></span></div></a>"
