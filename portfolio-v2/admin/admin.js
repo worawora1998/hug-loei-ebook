@@ -21,11 +21,12 @@ function refresh(){if(!db)return; const labels={
 overview:["YOUR CREATIVE CONTROL CENTER","ภาพรวมเว็บไซต์","รูปผลงาน หมวดงาน และการตั้งค่าต่าง ๆ อยู่ที่นี่"],
 artworks:["01 / CONTENT LIBRARY","จัดการผลงาน","เพิ่มภาพ ลบออกจากแกลเลอรี จัดลำดับ และแก้ชื่อหมวดงาน"],
 featured:["02 / FEATURED ART","งานเด่นหน้าแรก","เลือกโปสเตอร์ 6 ภาพที่ต้องการแสดงบนหน้าแรก"],
+hero:["02B / HERO IMAGES","ภาพใหญ่หน้าแรก","เปลี่ยนภาพที่เห็นทันทีเมื่อเข้าเว็บไซต์ เลือกจากผลงานหรืออัปโหลดใหม่"],
 pricing:["03 / PACKAGES","ราคาแพ็กเกจ","ปรับราคาโดยไม่ต้องแก้โค้ด และแบ่ง General Ads / Concert Ads ชัดเจน"],
 settings:["04 / WEBSITE SETTINGS","ข้อมูลเว็บไซต์","แก้ข้อความแนะนำตัวและ LINE ที่ลูกค้าใช้ติดต่อ"]
 };let v=labels[current];$("sectionEyebrow").textContent=v[0];$("sectionTitle").textContent=v[1];$("sectionHelp").textContent=v[2];panel.replaceChildren();
 document.querySelectorAll("[data-tab]").forEach(x=>x.classList.toggle("active",x.dataset.tab===current));
-if(current==="overview")renderOverview();if(current==="artworks")renderArtworks();if(current==="featured")renderFeatured();if(current==="pricing")renderPricing();if(current==="settings")renderSettings()
+if(current==="overview")renderOverview();if(current==="artworks")renderArtworks();if(current==="featured")renderFeatured();if(current==="hero")renderHero();if(current==="pricing")renderPricing();if(current==="settings")renderSettings()
 }
 function downloadBackup(){
 if(!db)return;try{const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json;charset=utf-8"}),href=URL.createObjectURL(blob),a=elem("a");a.href=href;a.download="worachit-portfolio-backup-"+new Date().toISOString().slice(0,10)+".json";document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(href),1000);setStatus("ดาวน์โหลดสำเนาข้อมูลเรียบร้อย ข้อมูลรูปที่จัดเก็บใน GitHub และ Drive ยังคงอยู่","success")}catch(e){setStatus("สำรองข้อมูลไม่สำเร็จ: "+e.message,"error")}
@@ -137,14 +138,67 @@ drawGallery();lib.append(gallery);stack.append(lib);
 stack.append(append(box("เคล็ดลับ"),elem("p","helper","ลากช่องงานเด่นเพื่อสลับตำแหน่งได้ และบนมือถือแตะช่องก่อน แล้วแตะภาพจากคลัง ระบบจะบันทึกหลังจากกด “เผยแพร่การเปลี่ยนแปลง”")));
 panel.append(stack)
 }
+function renderHero(){
+ db.siteSettings=db.siteSettings||{};let cfg=db.siteSettings;
+ cfg.heroImages=cfg.heroImages||[];
+ let area=elem("div","stack"),preview=box("ภาพ Hero 2 ตำแหน่ง");
+ append(preview,elem("p","helper","นี่คือโปสเตอร์ 2 ภาพที่ซ้อนอยู่บนหน้าแรก แยกจาก 6 ภาพผลงานเด่น กดเลือกตำแหน่งแล้วคลิกภาพในคลัง หรืออัปโหลดภาพใหม่"));
+ let slotList=elem("div","v18-hero-slots"),active=0;
+ function redraw(){
+ slotList.replaceChildren();
+ for(let i=0;i<2;i++){
+  let fallback=(db.homePosterImages||[])[i],current=cfg.heroImages[i]||fallback;
+  let slot=button(i===0?"ภาพหลัก (ด้านหน้า)":"ภาพรอง (ด้านหลัง)",()=>{active=i;redraw()},"v18-hero-slot"+(active===i?" active":""));
+  if(current)slot.prepend(imageNode(current.id,"ภาพ Hero "+(i+1)));
+  slot.append(elem("span","helper",active===i?"กำลังเลือกภาพนี้":"คลิกเพื่อเลือก"));
+  slotList.append(slot)
+ }}
+ redraw();preview.append(slotList);area.append(preview);
+ let picker=box("เลือกภาพจากผลงาน"),controls=elem("div","v17-pick-tools"),category=elem("select"),search=elem("input");search.type="search";search.placeholder="ค้นหาชื่อภาพ";
+ db.categories.forEach(c=>{let op=elem("option",null,c.title);op.value=c.key;category.append(op)});category.value=currentCategory;
+ let gallery=elem("div","v17-pick-gallery");
+ function draw(){gallery.replaceChildren();for(let im of db.groups[category.value]||[]){if(search.value&&!(im.name||"").toLowerCase().includes(search.value.toLowerCase()))continue;let tile=button(im.name||"ผลงาน",()=>{cfg.heroImages[active]={id:im.id,name:im.name||""};pending();redraw()},"v17-pick-tile");tile.prepend(imageNode(im.id,im.name));gallery.append(tile)}}
+ category.addEventListener("change",()=>{currentCategory=category.value;draw()});search.addEventListener("input",draw);
+ append(controls,category,search);append(picker,controls,gallery);draw();area.append(picker);
+ let upload=box("หรืออัปโหลดภาพ Hero ใหม่","upload-card");let file=elem("input");file.type="file";file.accept="image/jpeg,image/png,image/webp";
+ append(upload,elem("p","helper","รองรับ JPG / PNG / WebP ไม่เกิน 5 MB อัปโหลดเข้า Hero ตำแหน่งที่เลือกโดยตรง"),file,
+ button("อัปโหลดเป็นภาพ Hero ↗",()=>uploadImage(file.files[0],"Hero "+(active+1),"hero:"+active),"btn btn-blue"));
+ area.append(upload);panel.append(area)
+}
 function renderPricing(){
 if(!db.pricePackages)db.pricePackages=JSON.parse(JSON.stringify(defaults));
 let layout=elem("div","price-groups");const def={general:["General Ads","ภาพโฆษณา ร้านค้า และสื่อออนไลน์"],concert:["Concert Ads","โปสเตอร์คอนเสิร์ตและภาพโปรโมต"]};
-for(const type of ["general","concert"]){let c=elem("section","price-card "+type);append(c,elem("h3",null,def[type][0]),elem("p","helper",def[type][1]));let rows=db.pricePackages[type]||defaults[type];rows.forEach((p,i)=>{let line=elem("div","price-item"),label=elem("label",null,p[0]+" ภาพ"),inp=elem("input");inp.type="number";inp.min="1";inp.max="10000000";inp.step="1";inp.value=p[1];inp.setAttribute("aria-label","ราคา "+def[type][0]+" "+p[0]+" ภาพ");inp.addEventListener("input",()=>{let v=Number(inp.value);p[1]=inp.value.trim()!==""&&Number.isSafeInteger(v)&&v>0?v:NaN;pending();if(!Number.isSafeInteger(p[1]))setStatus("กรุณาใส่ราคาเป็นจำนวนเต็มมากกว่า 0 ก่อนเผยแพร่","error")});append(line,label,inp);c.append(line)});layout.append(c)}panel.append(layout);panel.append(append(box("คำแนะนำ"),elem("p","helper","ราคาทั้งหมดเป็นเงินบาท ระบบคำนวณแสดงราคาและจำนวนภาพจากข้อมูลนี้โดยอัตโนมัติ หลังบันทึกแล้ว Render จะเผยแพร่แพ็กเกจใหม่")))
+for(const type of ["general","concert"]){
+ let c=elem("section","price-card "+type);append(c,elem("h3",null,def[type][0]),elem("p","helper",def[type][1]+" — เพิ่ม ลบ และตั้งชื่อแพ็กเกจเองได้"));
+ let rows=db.pricePackages[type]||(db.pricePackages[type]=JSON.parse(JSON.stringify(defaults[type])));
+ rows.forEach((pkg,i)=>{
+  let card=elem("div","v18-price-editor");
+  const header=elem("div","v18-price-title");
+  append(header,elem("strong",null,"แพ็กเกจ "+(i+1)),button("ลบแพ็กเกจ",()=>{
+   if(rows.length<2){setStatus("ต้องมีแพ็กเกจอย่างน้อย 1 รายการต่อหมวด","error");return}
+   if(!confirm("ลบแพ็กเกจรายการนี้?"))return;rows.splice(i,1);pending();refresh()
+  },"mini-btn danger"));
+  card.append(header);
+  const number=elem("div","form-row");
+  function numeric(label,index){
+   let box=elem("div","input-wrap"),hint=elem("label",null,label),input=elem("input");
+   input.type="number";input.min="1";input.step="1";input.max=index===0?"1000":"10000000";input.value=Number.isFinite(pkg[index])?pkg[index]:"";
+   input.addEventListener("input",()=>{const v=Number(input.value);pkg[index]=input.value.trim()&&Number.isSafeInteger(v)&&v>0?v:NaN;pending()});
+   append(box,hint,input);return box
+  }
+  append(number,numeric("จำนวนภาพ",0),numeric("ราคา (บาท)",1));card.append(number);
+  card.append(field("ชื่อแพ็กเกจ / โปรโมชัน (เว้นว่างให้ระบบตั้งชื่อ)",pkg[2]||"",v=>pkg[2]=v.slice(0,90)));
+  c.append(card)
+ });
+ let add=button("＋ เพิ่มแพ็กเกจใหม่",()=>{if(rows.length>=30){setStatus("จำกัดไม่เกิน 30 แพ็กเกจต่อหมวด","error");return}rows.push([rows.length+1,1000,"โปรโมชันใหม่"]);pending();refresh()},"btn btn-blue");
+ c.append(add);layout.append(c)
+}
+panel.append(layout);
+let note=box("วิธีใช้งานแพ็กเกจ");append(note,elem("p","helper","ทุกแพ็กเกจสามารถแก้จำนวนภาพ ราคา และชื่อได้อย่างอิสระ (เช่น PROMO 1 POSTER + 4 PROMO) ถ้าชื่อว่าง ระบบจะสร้างชื่อจากจำนวนภาพให้เอง"));panel.append(note)
 }
 function renderSettings(){
 db.siteSettings=db.siteSettings||{};let s=db.siteSettings;let wrap=elem("div","settings-grid");
-let security=box("ความปลอดภัย / PIN 6 หลัก");append(security,elem("p","helper","PIN เป็นด่านเข้าหน้า Admin บนอุปกรณ์นี้เท่านั้น การแก้ไขจริงยังต้องยืนยัน GitHub"));append(security,button("เปลี่ยน PIN 6 หลัก",async()=>{if(!window.WorachitPin){setStatus("อุปกรณ์นี้ไม่รองรับ PIN","error");return}let ok=await window.WorachitPin.change();setStatus(ok?"เปลี่ยน PIN สำเร็จ":"ไม่ได้เปลี่ยน PIN",ok?"success":"") },"btn btn-ghost"));wrap.append(security);
+let security=box("ความปลอดภัย / PIN 6 หลัก");append(security,elem("p","helper","PIN เป็นด่านเข้าหน้า Admin บนอุปกรณ์นี้เท่านั้น การแก้ไขจริงยังต้องยืนยัน GitHub"));append(security,button("เปลี่ยน PIN 6 หลัก",async()=>{if(!window.WorachitPin){setStatus("อุปกรณ์นี้ไม่รองรับ PIN","error");return}let ok=await window.WorachitPin.change();setStatus(ok?"เปลี่ยน PIN สำเร็จ":"ไม่ได้เปลี่ยน PIN",ok?"success":"") },"btn btn-ghost"));append(security,elem("p","helper","ถ้าคุณเลือกจดจำ GitHub Token ระบบจะเก็บเฉพาะข้อมูลที่เข้ารหัสด้วย PIN 6 หลักบนอุปกรณ์นี้ ไม่แนะนำให้ใช้บนเครื่องสาธารณะ"),button("ลบการเชื่อมต่อที่จำไว้",()=>{window.WorachitPin?.forgetToken();setStatus("ลบ Token ที่จดจำไว้บนอุปกรณ์นี้แล้ว","success")},"btn btn-danger"));wrap.append(security);
 let intro=box("01 / ข้อความและรายละเอียดหน้าเว็บ");
 const fields=[
 ["ข้อความทักทายหน้าแรก","greeting","สวัสดีครับ! ยินดีต้อนรับสู่พอร์ตของผม"],
@@ -168,6 +222,20 @@ function photoUploader(parent,title,key,value,target){
  let block=box(title);if(value){let preview=imageNode(value,title);preview.className="profile-preview";block.append(preview)}else block.append(elem("p","helper","ยังไม่ได้ตั้งค่าโลโก้เว็บไซต์ ปัจจุบันแสดงชื่อ WORACHIT เป็นข้อความ"));append(block,elem("p","helper","รองรับ JPG, PNG, WebP ไม่เกิน 5 MB ต่อภาพ"));
  let file=elem("input");file.type="file";file.accept="image/png,image/jpeg,image/webp";append(block,file,button("เลือกอัปโหลดโลโก้ / รูปใหม่ ↗",()=>uploadImage(file.files[0],title,target),"btn btn-blue"));parent.append(block)
 }
+let contactIcons=box("06 / โลโก้ช่องทางติดต่อ");
+append(contactIcons,elem("p","helper","เปลี่ยนโลโก้ LINE / Facebook / Instagram / โทรศัพท์ ได้ด้วยไฟล์ของคุณเอง หากไม่ได้อัปโหลดจะใช้ไอคอนเดิมที่มีอยู่"));
+let contactGrid=elem("div","v18-contact-grid");
+const iconChoices=[["line","LINE"],["facebook","Facebook ส่วนตัว"],["facebookPage","Facebook Page"],["instagram","Instagram"],["phone","โทรศัพท์"]];
+for(const [key,label] of iconChoices){
+ let cell=elem("div","v17-logo-tile");let current=(s.contactLogos||{})[key];
+ if(current)cell.append(imageNode(current,label));else cell.append(elem("div","v18-no-icon","ไอคอนเดิม"));
+ cell.append(elem("strong",null,label));
+ let input=elem("input");input.type="file";input.accept="image/png,image/jpeg,image/webp";
+ append(cell,input,button("เปลี่ยนภาพโลโก้",()=>uploadImage(input.files[0],"โลโก้ "+label,"contact:"+key),"mini-btn"));
+ if(current)cell.append(button("กลับเป็นไอคอนเดิม",()=>{delete s.contactLogos[key];pending();refresh()},"mini-btn"));
+ contactGrid.append(cell)
+}
+contactIcons.append(contactGrid);wrap.append(contactIcons);
 photoUploader(wrap,"03 / โลโก้เว็บไซต์ (ด้านบน)", "siteLogoId",s.siteLogoId||"","siteLogo");
 photoUploader(wrap,"04 / รูปโปรไฟล์", "profileImageId",s.profileImageId||"1xdVr4OBE2O1dKQz724wRGNm4tKW7pzf8","profile");
 let logo=box("05 / โลโก้โปรแกรม (หน้าเกี่ยวกับ)");
@@ -183,10 +251,10 @@ function utf8Base64(text){let bytes=new TextEncoder().encode(text),binary="";for
 function fromBase64(s){let raw=atob(s.replace(/\s/g,""));let a=Uint8Array.from(raw,c=>c.charCodeAt(0));return new TextDecoder("utf-8",{fatal:true}).decode(a)}
 async function github(path,options={}){const resp=await fetch("https://api.github.com/"+path,{...options,headers:{"Authorization":"Bearer "+access,"Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28","Content-Type":"application/json",...(options.headers||{})},cache:"no-store"});let json;try{json=await resp.json()}catch{json={}}if(!resp.ok)throw Error("GitHub "+resp.status+": "+(json.message||"เชื่อมต่อไม่สำเร็จ"));return json}
 async function loadData(){let file=await github("repos/"+OWNER+"/"+REPO+"/contents/"+CONTENT+"?ref="+encodeURIComponent(BRANCH));if(!file.content)throw Error("GitHub ไม่ส่งเนื้อหา index.html");let source=fromBase64(file.content);let m=source.match(/<script id="portfolio-data" type="application\/json">([\s\S]*?)<\/script>/);if(!m)throw Error("ไม่พบข้อมูล Portfolio ใน index.html");let data=JSON.parse(m[1]);if(!data.groups||!data.categories)throw Error("โครงสร้างข้อมูลไม่ถูกต้อง");snapshot=source;fileSha=file.sha;db=data;dirty=false}
-async function login(){if(busy)return;if(window.WorachitPin&&!(await window.WorachitPin.guard()))return;let input=$("token"),candidate=input.value.trim();$("loginError").textContent="";if(!candidate){$("loginError").textContent="โปรดวาง GitHub Token ก่อน";return}access=candidate;input.value="";busy=true;$("loginBtn").disabled=true;$("loginBtn").textContent="กำลังตรวจสอบสิทธิ์...";try{let me=await github("user");if(String(me.login||"").toLowerCase()!==OWNER.toLowerCase())throw Error("บัญชีนี้ไม่ใช่เจ้าของเว็บไซต์ กรุณาใช้ Token ของ "+OWNER);await loadData();if(window.WorachitPin&&!window.WorachitPin.has()){if(!(await window.WorachitPin.setup()))throw Error("กรุณาตั้ง PIN 6 หลักสำหรับอุปกรณ์นี้ก่อนใช้งาน")}overlay.hidden=true;dashboard.hidden=false;$("connectedUser").textContent="@"+me.login;switchTab("overview");setStatus("เชื่อมต่อสำเร็จ พร้อมจัดการเว็บไซต์","success")}catch(e){access="";$("loginError").textContent=e.message||"เข้าสู่ระบบไม่ได้"}finally{busy=false;$("loginBtn").disabled=false;$("loginBtn").textContent="เชื่อมต่อ GitHub ↗"}}
+async function login(){if(busy)return;if(window.WorachitPin&&!(await window.WorachitPin.guard()))return;let input=$("token"),candidate=input.value.trim();$("loginError").textContent="";let restored=false;if(!candidate&&window.WorachitPin?.hasToken()){candidate=await window.WorachitPin.unlockToken();restored=!!candidate}if(!candidate){$("loginError").textContent="ครั้งแรกให้วาง GitHub Token หรือหาก Token ที่เคยบันทึกหมดอายุ ให้สร้างใหม่";return}access=candidate;input.value="";busy=true;$("loginBtn").disabled=true;$("loginBtn").textContent="กำลังตรวจสอบสิทธิ์...";try{let me=await github("user");if(String(me.login||"").toLowerCase()!==OWNER.toLowerCase())throw Error("บัญชีนี้ไม่ใช่เจ้าของเว็บไซต์ กรุณาใช้ Token ของ "+OWNER);await loadData();if(window.WorachitPin&&!window.WorachitPin.has()){if(!(await window.WorachitPin.setup()))throw Error("กรุณาตั้ง PIN 6 หลักสำหรับอุปกรณ์นี้ก่อนใช้งาน")}if(!restored&&$("rememberToken")?.checked&&window.WorachitPin?.rememberToken){try{await window.WorachitPin.rememberToken(candidate)}catch(e){setStatus("ไม่สามารถบันทึก Token แบบเข้ารหัสได้","error")}}overlay.hidden=true;dashboard.hidden=false;$("connectedUser").textContent="@"+me.login;switchTab("overview");setStatus("เชื่อมต่อสำเร็จ พร้อมจัดการเว็บไซต์","success")}catch(e){access="";$("loginError").textContent=e.message||"เข้าสู่ระบบไม่ได้"}finally{busy=false;$("loginBtn").disabled=false;$("loginBtn").textContent="เชื่อมต่อ GitHub ↗"}}
 async function publish(){if(busy)return;if(!dirty){setStatus("ยังไม่มีการแก้ไขใหม่ที่ต้องเผยแพร่");return}
 const line=String(db.siteSettings?.lineId||"worachit98");if(!/^[a-zA-Z0-9_.~-]{2,100}$/.test(line)){setStatus("รูปแบบ LINE ID ไม่ถูกต้อง","error");return}
-for(const key of ["general","concert"]){let rows=db.pricePackages?.[key]||defaults[key];if(rows.some(x=>!Number.isSafeInteger(x[1])||x[1]<=0)){setStatus("กรุณาตรวจสอบราคาแพ็กเกจทั้งหมด","error");return}}
+for(const key of ["general","concert"]){let rows=db.pricePackages?.[key]||defaults[key];if(!Array.isArray(rows)||!rows.length||rows.length>30||rows.some(x=>!Number.isSafeInteger(x[0])||x[0]<=0||x[0]>1000||!Number.isSafeInteger(x[1])||x[1]<=0||x[1]>10000000||typeof(x[2]||"")!=="string"||(x[2]||"").length>90)){setStatus("กรุณาตรวจจำนวนภาพ ราคา และชื่อแพ็กเกจก่อนเผยแพร่","error");return}}
 for(const field of ["facebookPersonal","facebookPage","instagram"]){let v=db.siteSettings?.[field];if(v&&(!/^https:\/\//i.test(v)||v.length>350)){setStatus("ลิงก์ "+field+" ต้องขึ้นต้นด้วย https:// และไม่ยาวเกินไป","error");return}}
 if(!confirm("เผยแพร่การแก้ไขขึ้นเว็บไซต์จริงผ่าน GitHub?"))return;busy=true;$("publishBtn").disabled=true;$("publishBtn").textContent="กำลังเผยแพร่...";
 try{db.categories.forEach(x=>x.count=(db.groups[x.key]||[]).length);let json=JSON.stringify(db).replace(/</g,"\\u003c");let re=/(<script id="portfolio-data" type="application\/json">)[\s\S]*?(<\/script>)/;if(!re.test(snapshot))throw Error("ไม่พบจุดเก็บข้อมูล");
@@ -199,10 +267,10 @@ const allowed={"image/jpeg":"jpg","image/png":"png","image/webp":"webp"};const e
 busy=true;setStatus("กำลังอัปโหลดภาพไป GitHub...");try{const binary=await new Promise((resolve,reject)=>{let reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(",")[1]);reader.onerror=()=>reject(Error("อ่านไฟล์ไม่ได้"));reader.readAsDataURL(file)});
 const filename=Date.now()+"-"+Math.random().toString(36).slice(2,10)+"."+ext,path=UPLOAD_DIR+filename;
 await github("repos/"+OWNER+"/"+REPO+"/contents/"+path,{method:"PUT",body:JSON.stringify({message:"Upload portfolio artwork via WORACHIT ADMIN",content:binary,branch:BRANCH})});
-let item={id:"assets/uploads/"+filename,name:(name||file.name).trim().slice(0,180),type:file.type};if(target==="profile"){db.siteSettings=db.siteSettings||{};db.siteSettings.profileImageId=item.id}else if(target==="siteLogo"){db.siteSettings=db.siteSettings||{};db.siteSettings.siteLogoId=item.id}else if(target.startsWith("tool:")){db.siteSettings=db.siteSettings||{};db.siteSettings.toolLogos=db.siteSettings.toolLogos||{};db.siteSettings.toolLogos[target.slice(5)]=item.id}else{db.groups[currentCategory]=db.groups[currentCategory]||[];db.groups[currentCategory].unshift(item)}pending();setStatus("อัปโหลดรูปสำเร็จ! กด “เผยแพร่การเปลี่ยนแปลง” เพื่อแสดงบนเว็บไซต์","success");refresh();
+let item={id:"assets/uploads/"+filename,name:(name||file.name).trim().slice(0,180),type:file.type};if(target==="profile"){db.siteSettings=db.siteSettings||{};db.siteSettings.profileImageId=item.id}else if(target==="siteLogo"){db.siteSettings=db.siteSettings||{};db.siteSettings.siteLogoId=item.id}else if(target.startsWith("tool:")){db.siteSettings=db.siteSettings||{};db.siteSettings.toolLogos=db.siteSettings.toolLogos||{};db.siteSettings.toolLogos[target.slice(5)]=item.id}else if(target.startsWith("hero:")){db.siteSettings=db.siteSettings||{};db.siteSettings.heroImages=db.siteSettings.heroImages||[];db.siteSettings.heroImages[Number(target.slice(5))]={id:item.id,name:item.name}}else if(target.startsWith("contact:")){db.siteSettings=db.siteSettings||{};db.siteSettings.contactLogos=db.siteSettings.contactLogos||{};db.siteSettings.contactLogos[target.slice(8)]=item.id}else{db.groups[currentCategory]=db.groups[currentCategory]||[];db.groups[currentCategory].unshift(item)}pending();setStatus("อัปโหลดรูปสำเร็จ! กด “เผยแพร่การเปลี่ยนแปลง” เพื่อแสดงบนเว็บไซต์","success");refresh();
 }catch(e){setStatus("อัปโหลดไม่สำเร็จ: "+e.message,"error")}finally{busy=false}}
-if(window.WorachitPin&&window.WorachitPin.has()&&!window.WorachitPin.unlocked()){
- window.WorachitPin.guard().then(ok=>{if(!ok)window.location.href="../?page=home"})
+if(window.WorachitPin&&window.WorachitPin.has()){
+ window.WorachitPin.guard().then(async ok=>{if(!ok){window.location.href="../?page=home";return}if(window.WorachitPin.hasToken())await login()})
 }
 $("loginBtn").addEventListener("click",login);$("token").addEventListener("keydown",e=>{if(e.key==="Enter")login()});
 $("publishBtn").addEventListener("click",publish);$("logoutBtn").addEventListener("click",()=>{if(dirty&&!confirm("มีข้อมูลที่ยังไม่ได้เผยแพร่ ต้องการออกจากระบบหรือไม่?"))return;access="";snapshot="";fileSha="";db=null;dirty=false;if(window.WorachitPin)window.WorachitPin.lock();dashboard.hidden=true;overlay.hidden=false;setStatus("");$("loginError").textContent="";$("token").value=""});

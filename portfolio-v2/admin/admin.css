@@ -58,3 +58,24 @@
 @media(max-width:1040px){.v17-feature-slots{grid-template-columns:repeat(3,minmax(0,1fr))}.v17-logo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:550px){.v17-feature-slots{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}.v17-pick-gallery{grid-template-columns:repeat(2,minmax(0,1fr))}.v17-pick-tile img{height:145px}.v17-logo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.v17-draghandle{width:100%}.v17-sortbar{gap:7px}}
 @media(prefers-reduced-motion:reduce){.v17-dragcard{animation:none}.v17-feature-slot,.v17-pick-tile{transition:none!important}}
+
+/* V18 admin: quick PIN login, hero artwork and flexible plans */
+.remember-choice{display:flex;gap:11px;align-items:flex-start;background:#f3f0ff;border:1px solid #d9d3fb;border-radius:14px;padding:12px 13px;font-size:13px;font-weight:750;color:#2c275d;margin:12px 0}
+.remember-choice input{margin:5px 0 0!important;width:19px!important;height:19px!important;flex:none;accent-color:#4836ea}
+.remember-choice span{line-height:1.5}
+.remember-choice small{display:block;color:#6a6883;font-size:11px;font-weight:400}
+.v18-hero-slots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;padding:6px 0}
+.v18-hero-slot{position:relative;display:flex;flex-direction:column;align-items:center;gap:9px;border:2px dashed #bfc0e5;border-radius:17px;background:#f6f7ff;padding:14px;color:#373950;font-weight:800;text-align:center;min-height:230px}
+.v18-hero-slot img{width:100%;height:250px;object-fit:contain;background:#282a35;border-radius:11px}
+.v18-hero-slot.active{border:3px solid #4734ec;background:#e8e6ff;box-shadow:0 0 0 4px #4734ec15}
+.v18-hero-slot:hover{transform:translateY(-3px);border-color:#4534e9}
+.v18-price-editor{padding:13px 13px 16px;margin:12px 0;border:1px solid #dce0eb;background:#ffffffb3;border-radius:14px}
+.v18-price-editor .form-row{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:9px 0}
+.v18-price-editor .input-wrap input{width:100%;min-width:0}
+.v18-price-title{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.v18-price-title strong{font-size:14px;color:#332879}
+.v18-price-title button{font-size:11px;padding:5px 9px}
+.v18-contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.v18-no-icon{width:76px;height:76px;display:grid;place-items:center;border-radius:14px;background:#edeaff;color:#5247a3;font-size:11px}
+@media(max-width:720px){.v18-hero-slots{gap:7px}.v18-hero-slot{padding:7px;min-height:160px;font-size:12px}.v18-hero-slot img{height:190px}.v18-price-editor .form-row{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.v18-hero-slot{transition:none!important}}
