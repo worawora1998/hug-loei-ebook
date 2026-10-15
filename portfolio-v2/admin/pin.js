@@ -51,6 +51,7 @@ async function guard(){if(!has()||unlocked())return true;return await dialog("ve
 async function setup(){return has()?true:dialog("setup")}
 async function change(){if(has()&&!(await dialog("verify")))return false;return dialog("setup")}
 function attachLink(){document.querySelectorAll('a[href="./admin/"],a[href="../admin/"]').forEach(link=>{link.addEventListener("click",async e=>{if(!has())return;e.preventDefault();let ok=await dialog("verify");if(ok)location.href=link.href})})}
-window.WorachitPin={has,unlocked,guard,setup,change,attachLink};
+function lock(){try{sessionStorage.removeItem(UNLOCK)}catch{}}
+window.WorachitPin={has,unlocked,guard,setup,change,lock,attachLink};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",attachLink);else attachLink();
 })();
