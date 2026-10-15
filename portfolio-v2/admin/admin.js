@@ -164,10 +164,10 @@ let contact=box("02 / ช่องทางติดต่อ");
 [["LINE ID","lineId","worachit98"],["Facebook ส่วนตัว (ลิงก์เต็ม)","facebookPersonal","https://www.facebook.com/WORACHIT1998"],["Facebook Page (ลิงก์เต็ม)","facebookPage","https://www.facebook.com/suksansrin8668"],["Instagram (ลิงก์เต็ม)","instagram","https://www.instagram.com/wora_chit98/"],["เบอร์โทรศัพท์","phone","082-872-3646"],["ชื่อแสดงใน Facebook","contactName","Worachit Pulaiyaw"]].forEach(([label,key,val])=>contact.append(field(label,s[key]||val,v=>s[key]=v)));
 append(contact,elem("p","helper","URL ต้องขึ้นต้นด้วย https:// เพื่อป้องกันลิงก์ผิดพลาด ตรวจสอบก่อนเผยแพร่"));wrap.append(contact);
 function photoUploader(parent,title,key,value,target){
- let block=box(title),preview=imageNode(value,title);preview.className="profile-preview";append(block,preview,elem("p","helper","รองรับ JPG, PNG, WebP ไม่เกิน 5 MB ต่อภาพ"));
+ let block=box(title);if(value){let preview=imageNode(value,title);preview.className="profile-preview";block.append(preview)}else block.append(elem("p","helper","ยังไม่ได้ตั้งค่าโลโก้เว็บไซต์ ปัจจุบันแสดงชื่อ WORACHIT เป็นข้อความ"));append(block,elem("p","helper","รองรับ JPG, PNG, WebP ไม่เกิน 5 MB ต่อภาพ"));
  let file=elem("input");file.type="file";file.accept="image/png,image/jpeg,image/webp";append(block,file,button("เลือกอัปโหลดโลโก้ / รูปใหม่ ↗",()=>uploadImage(file.files[0],title,target),"btn btn-blue"));parent.append(block)
 }
-photoUploader(wrap,"03 / โลโก้เว็บไซต์ (ด้านบน)", "siteLogoId",s.siteLogoId||"1opWMCoijL-jrBQ91eigI_Dww7ky6D6LZ","siteLogo");
+photoUploader(wrap,"03 / โลโก้เว็บไซต์ (ด้านบน)", "siteLogoId",s.siteLogoId||"","siteLogo");
 photoUploader(wrap,"04 / รูปโปรไฟล์", "profileImageId",s.profileImageId||"1xdVr4OBE2O1dKQz724wRGNm4tKW7pzf8","profile");
 let logo=box("05 / โลโก้โปรแกรม (หน้าเกี่ยวกับ)");
 append(logo,elem("p","helper","แตะเลือกโปรแกรม แล้วอัปโหลดโลโก้ใหม่ โลโก้เดิมจะยังอยู่จนกว่าจะกดเผยแพร่"));let logos=elem("div","v17-logo-grid");
