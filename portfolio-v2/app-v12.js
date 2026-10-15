@@ -66,11 +66,11 @@ if(siteSettings.footerNote){var f=document.querySelector(".site-footer .footer-i
 }
 function contactChannels(){
  return [
-  {name:"LINE",value:siteSettings.lineId||"worachit98",url:"https://line.me/ti/p/~"+encodeURIComponent(siteSettings.lineId||"worachit98"),icon:socialIcon("line","06C755","LINE")},
-  {name:"Facebook ส่วนตัว",value:siteSettings.contactName||"Worachit Pulaiyaw",url:siteSettings.facebookPersonal||"https://www.facebook.com/WORACHIT1998",icon:socialIcon("facebook","0866FF","f")},
-  {name:"Facebook Page",value:"Facebook Page",url:siteSettings.facebookPage||"https://www.facebook.com/suksansrin8668",icon:socialIcon("facebook","0866FF","f")},
-  {name:"INSTAGRAM",value:"Instagram",url:siteSettings.instagram||"https://www.instagram.com/wora_chit98/",icon:socialIcon("instagram","E4405F","IG")},
-  {name:"โทรศัพท์",value:siteSettings.phone||"082-872-3646",url:"tel:"+String(siteSettings.phone||"0828723646").replace(/[^0-9+]/g,""),icon:"<span class='contact-icon phone-icon' aria-hidden='true'><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'><path d='M22 16.9v3a2 2 0 0 1-2.2 2A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7l.5 3a2 2 0 0 1-.6 1.7L7.1 10a16 16 0 0 0 6.9 6.9l1.6-1.9a2 2 0 0 1 1.7-.6l3 .5A2 2 0 0 1 22 16.9Z'/></svg></span>"}
+  {key:"line",name:"LINE",value:siteSettings.lineId||"worachit98",url:"https://line.me/ti/p/~"+encodeURIComponent(siteSettings.lineId||"worachit98"),icon:socialIcon("line","06C755","LINE")},
+  {key:"facebook",name:"Facebook ส่วนตัว",value:siteSettings.contactName||"Worachit Pulaiyaw",url:siteSettings.facebookPersonal||"https://www.facebook.com/WORACHIT1998",icon:socialIcon("facebook","0866FF","f")},
+  {key:"facebookPage",name:"Facebook Page",value:"Facebook Page",url:siteSettings.facebookPage||"https://www.facebook.com/suksansrin8668",icon:socialIcon("facebook","0866FF","f")},
+  {key:"instagram",name:"INSTAGRAM",value:"Instagram",url:siteSettings.instagram||"https://www.instagram.com/wora_chit98/",icon:socialIcon("instagram","E4405F","IG")},
+  {key:"phone",name:"โทรศัพท์",value:siteSettings.phone||"082-872-3646",url:"tel:"+String(siteSettings.phone||"0828723646").replace(/[^0-9+]/g,""),icon:"<span class='contact-icon phone-icon' aria-hidden='true'><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'><path d='M22 16.9v3a2 2 0 0 1-2.2 2A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7l.5 3a2 2 0 0 1-.6 1.7L7.1 10a16 16 0 0 0 6.9 6.9l1.6-1.9a2 2 0 0 1 1.7-.6l3 .5A2 2 0 0 1 22 16.9Z'/></svg></span>"}
  ];
 }
 
@@ -81,14 +81,14 @@ function teamLineCard(){
 
 
 function home(){
-var posters=D.homePosterImages||groups.poster||[];
+var posters=D.homePosterImages||groups.poster||[];var customHero=siteSettings.heroImages||[];var heroPosters=[customHero[0]||posters[0],customHero[1]||posters[1]];
 function visual(i,extra){var art=posters[i];return art?"<button type='button' class='b12-work "+(extra||"")+"' data-home-poster='"+i+"' aria-label='เปิดดูผลงานโปสเตอร์ "+(i+1)+"'><span class='b12-work-img'>"+image(art.id,"ผลงานโปสเตอร์ "+(i+1),1050,i===0)+fall()+"</span><span class='b12-work-foot'><b>POSTER PROJECT / "+String(i+1).padStart(2,"0")+"</b><span>↗</span></span></button>":""}
 var intro="<section class='b12-hero'><div class='b12-hero-top'><span>✳ WORACHIT / CREATIVE SPACE</span><span>FREELANCE GRAPHIC DESIGNER · THAILAND</span></div>"+
 "<div class='b12-hero-body'><div class='b12-hero-text'><div class='b12-chip'><span class='b12-chip-dot'></span> "+clean(siteSettings.greeting||"สวัสดีครับ! ยินดีต้อนรับสู่พอร์ตของผม")+"</div><h1>GRAPHIC<br><span class='b12-word-pill'>DESIGNER <i>✳</i></span><br><em>PORTFOLIO.</em></h1>"+
 "<p class='b12-hero-intro'>"+clean(siteSettings.heroTagline||"งานกราฟิกที่สนุก มีสไตล์ และตอบโจทย์การใช้งานจริง")+"</p><p class='b12-hero-detail'>"+clean(siteSettings.heroDescription||"ผมสุข วรชิต ภูลายยาว นักออกแบบกราฟิกฟรีแลนซ์ รับออกแบบโปสเตอร์คอนเสิร์ต งานโฆษณา และสื่อออนไลน์")+"</p>"+
 "<div class='b12-hero-cta'>"+btn("ดูผลงานของผม ↗",u("selected"))+directLine("ทัก LINE คุยงาน","line-link")+"</div>"+
 "<div class='b12-mini-note'><span>✦</span> "+clean(siteSettings.heroNote||"ทำงานออนไลน์ · รับงานทั่วประเทศ · ตั้งแต่ปี 2017")+"</div></div>"+
-"<div class='b12-hero-visual'><div class='b12-bg-orbit'></div><span class='b12-floating-star a' aria-hidden='true'>✳</span><span class='b12-floating-star b' aria-hidden='true'>✦</span><div class='b12-hero-poster b12-poster-one'>"+(posters[0]?image(posters[0].id,"ผลงานโปสเตอร์เด่น",1050,true):"")+"</div><div class='b12-hero-poster b12-poster-two'>"+(posters[1]?image(posters[1].id,"ผลงานโปสเตอร์เด่นชิ้นที่สอง",700,true):"")+"</div><span class='b12-hello-sticker'>SUK<br>DESIGN! <b>↗</b></span><span class='b12-visual-label'>POSTER / ADVERTISING / CREATIVE</span></div></div>"+
+"<div class='b12-hero-visual'><div class='b12-bg-orbit'></div><span class='b12-floating-star a' aria-hidden='true'>✳</span><span class='b12-floating-star b' aria-hidden='true'>✦</span><div class='b12-hero-poster b12-poster-one'>"+(heroPosters[0]?image(heroPosters[0].id,"ผลงานโปสเตอร์เด่น",1050,true):"")+"</div><div class='b12-hero-poster b12-poster-two'>"+(heroPosters[1]?image(heroPosters[1].id,"ผลงานโปสเตอร์เด่นชิ้นที่สอง",700,true):"")+"</div><span class='b12-hello-sticker'>SUK<br>DESIGN! <b>↗</b></span><span class='b12-visual-label'>POSTER / ADVERTISING / CREATIVE</span></div></div>"+
 "<div class='b12-hero-bottom'><span>SCROLL TO EXPLORE ↓</span><span>CREATIVE PORTFOLIO — 2026</span></div></section>";
 var ribbon="<div class='b12-ribbon' aria-label='ประเภทงานออกแบบ'><div class='b12-ribbon-run' aria-hidden='true'>"+Array(3).fill("<span>✳ POSTER DESIGN</span><span>✦ ADVERTISING</span><span>✳ VISUAL DESIGN</span><span>✦ SOCIAL MEDIA</span>").join("")+"</div></div>";
 var works="<section class='b12-section b12-featured'><div class='b12-section-top'><span>01 / HANDPICKED PROJECTS</span><span class='b12-section-mark'>✳</span></div><div class='b12-section-heading'><div><h2>ผลงานที่<br><em>อยากให้คุณดู.</em></h2><p>รวมงานโปสเตอร์และงานออกแบบที่คัดเลือกมาให้เห็นสไตล์การทำงาน</p></div>"+btn("ดูทุกผลงาน ↗",u("selected"),"soft")+"</div><div class='b12-work-grid'>"+[0,1,2,3,4,5].map(function(i){return visual(i,i===0?"b12-first":"")}).join("")+"</div></section>";
@@ -118,7 +118,7 @@ var concert=D.pricePackages&&Array.isArray(D.pricePackages.concert)?D.pricePacka
 function money(n){return Number(n).toLocaleString("th-TH")}
 function priceCard(entry,type,index){
   var n=entry[0],total=entry[1],isConcert=type==="concert",featured=n===5;
-  var contents=isConcert?(n===1?"1 POSTER":"1 POSTER + "+(n-1)+" PROMO"):n+" ภาพโฆษณา";
+  var contents=entry[2]?clean(entry[2]):isConcert?(n===1?"1 POSTER":"1 POSTER + "+(n-1)+" PROMO"):n+" ภาพโฆษณา";
   var explain=isConcert?(n===1?"โปสเตอร์หลักสำหรับประชาสัมพันธ์งาน":"โปสเตอร์หลัก 1 ภาพ และภาพโปรโมตในธีมเดียวกัน"):(n===1?"สำหรับโฆษณาหรือประชาสัมพันธ์หนึ่งชิ้น":"ชุดภาพสำหรับแบรนด์หรือแคมเปญเดียวกัน");
   var caption=isConcert?"CONCERT PACKAGE / "+String(index+1).padStart(2,"0"):"DESIGN SET / "+String(index+1).padStart(2,"0");
   return "<article class='v10-pcard "+(isConcert?"v10-concert-card":"v10-general-card")+(featured?" v10-recommended":"")+"'>"+
@@ -225,7 +225,7 @@ var portrait=siteSettings.profileImageId||'1xdVr4OBE2O1dKQz724wRGNm4tKW7pzf8',co
 return shell("<section class='ed-page-hero ed-about-hero'><span class='ed-section-label'>ABOUT / WORACHIT PULAIYAW</span><h1>"+clean(siteSettings.aboutTitle||"ยินดีที่รู้จักครับ!")+"</h1><p>"+clean(siteSettings.aboutSubtitle||"นักออกแบบกราฟิกอิสระ ที่ชอบเปลี่ยนโจทย์ให้กลายเป็นงานภาพที่ชัดเจนและมีเอกลักษณ์")+"</p></section>"+
 "<section class='ed-about-layout'><div class='ed-about-photo v10-photo-frame'><span class='v10-photo-stamp' aria-hidden='true'>SUK. / GRAPHIC DESIGNER</span>"+image(portrait,"สุข วรชิต ภูลายยาว",1000)+fall()+"</div><div class='ed-about-text'><span class='ed-section-label'>INDEPENDENT DESIGNER · SINCE 2017</span><h2>วรชิต ภูลายยาว<br><em>FREELANCE GRAPHIC DESIGNER</em></h2><p>"+clean(siteSettings.aboutDescription||"ผมทำงานด้านกราฟิกดีไซน์มาตั้งแต่ปี 2017 โดยเน้นโปสเตอร์คอนเสิร์ต งานอีเวนต์ ภาพโฆษณา และสื่อประชาสัมพันธ์ รับงานออนไลน์ทั้งในประเทศไทยและต่างประเทศ")+"</p><p>ทุกโปรเจกต์พูดคุยเรื่องรูปแบบ งานที่ต้องใช้ และกำหนดส่งร่วมกันได้โดยตรง</p><div class='ed-about-facts'><span>2017 — PRESENT</span><span>GRAPHIC / ADVERTISING / POSTER</span></div></div></section>"+
 "<section class='ed-section ed-tools-section'><div class='ed-section-head'><div><span class='ed-section-label'>TOOLS & WORKFLOW</span><h2>DESIGN <i>TOOLKIT.</i></h2><p>งานกราฟิกเป็นความเชี่ยวชาญหลัก ส่วนงานวิดีโอมีทีมตัดต่อช่วยดำเนินการ</p></div></div>"+skillCards()+"</section>"+
-"<section class='ed-contact-section' id='contact'><div class='ed-section-head'><div><span class='ed-section-label'>CONTACT / LET'S CONNECT</span><h2>LET'S <i>CONNECT.</i></h2><p>"+clean(siteSettings.contactIntro||"เลือกช่องทางติดต่อที่สะดวก หรือทัก LINE เพื่อคุยเรื่องงานได้โดยตรง")+"</p></div></div><div class='ed-contact-list'>"+contacts.map(function(c){return "<a class='ed-contact-card' href='"+clean(c.url)+"' "+(c.url.indexOf("http")===0?"target='_blank' rel='noopener noreferrer'":"")+">"+c.icon+"<span><small>"+c.name+"</small><strong>"+clean(c.value)+"</strong></span><i>↗</i></a>"}).join("")+"</div></section>")
+"<section class='ed-contact-section' id='contact'><div class='ed-section-head'><div><span class='ed-section-label'>CONTACT / LET'S CONNECT</span><h2>LET'S <i>CONNECT.</i></h2><p>"+clean(siteSettings.contactIntro||"เลือกช่องทางติดต่อที่สะดวก หรือทัก LINE เพื่อคุยเรื่องงานได้โดยตรง")+"</p></div></div><div class='ed-contact-list'>"+contacts.map(function(c){return "<a class='ed-contact-card' href='"+clean(c.url)+"' "+(c.url.indexOf("http")===0?"target='_blank' rel='noopener noreferrer'":"")+">"+(siteSettings.contactLogos&&siteSettings.contactLogos[c.key]?"<span class='v18-contact-custom'>"+image(siteSettings.contactLogos[c.key],"โลโก้ "+c.name,240)+"</span>":c.icon)+"<span><small>"+c.name+"</small><strong>"+clean(c.value)+"</strong></span><i>↗</i></a>"}).join("")+"</div></section>")
 }
 
 function reveal(){
