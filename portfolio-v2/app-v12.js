@@ -4,7 +4,7 @@
 var dataNode=document.getElementById("portfolio-data"),mount=document.getElementById("app");
 if(!dataNode||!mount)return;
 var D;try{D=JSON.parse(dataNode.textContent)}catch(e){mount.innerHTML="<div class='shell'><h1>ไม่สามารถอ่านข้อมูลผลงานได้</h1><a href='?page=home'>กลับหน้าแรก</a></div>";return}
-var cats=D.categories||[],groups=D.groups||{},featuredData=D.selected||[],assets=D.decor||[],profiles=D.profile||[];
+var cats=D.categories||[],groups=D.groups||{},featuredData=D.selected||[],assets=D.decor||[],profiles=D.profile||[],siteSettings=D.siteSettings||{};
 var query=new URLSearchParams(window.location.search),requested=query.get("page")||"home",page=requested==="contact"?"about":requested;
 if(["home","selected","categories","gallery","about","pricing","services"].indexOf(page)<0)page="home";
 var key=query.get("cat")||"poster",current=cats.find(function(x){return x.key===key})||cats[0];
@@ -12,15 +12,15 @@ var lightItems=[],lightIndex=0,focusBefore=null,touchX=0;
 var preloadImages=new Map();function preloadNear(i){if(!lightItems.length)return;[-1,1].forEach(function(offset){var it=lightItems[(i+offset+lightItems.length)%lightItems.length];if(!it)return;var url=src(it.id,850);if(preloadImages.has(url))return;var im=new Image();im.decoding='async';im.src=url;preloadImages.set(url,im);if(preloadImages.size>24)preloadImages.delete(preloadImages.keys().next().value)})}
 function clean(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
 function u(page,cat){return "?page="+encodeURIComponent(page)+(cat?"&cat="+encodeURIComponent(cat):"")}
-function src(id,width){return "https://drive.google.com/thumbnail?id="+encodeURIComponent(id)+"&sz=w"+(width||960)}
-function drive(id){return "https://drive.google.com/file/d/"+encodeURIComponent(id)+"/view"}
+function src(id,width){if(/^assets\/uploads\/[a-z0-9_./-]+\.(?:png|jpe?g|webp)$/i.test(id))return "./"+id;return "https://drive.google.com/thumbnail?id="+encodeURIComponent(id)+"&sz=w"+(width||960)}
+function drive(id){if(/^assets\/uploads\/[a-z0-9_./-]+\.(?:png|jpe?g|webp)$/i.test(id))return "./"+id;return "https://drive.google.com/file/d/"+encodeURIComponent(id)+"/view"}
 function image(id,alt,width,eager){return "<img class='art-image' data-file='"+clean(id)+"' alt='"+clean(alt)+"' src='"+src(id,width)+"' loading='"+(eager?"eager":"lazy")+"' decoding='async'"+(eager?" fetchpriority='high'":"")+">"}
-function fall(){return "<span class='art-fallback'><strong>ไม่สามารถแสดงภาพตัวอย่างได้</strong><span>ภาพต้นฉบับยังอยู่ใน Google Drive</span></span>"}
+function fall(){return "<span class='art-fallback'><strong>ไม่สามารถแสดงภาพตัวอย่างได้</strong><span>ลองโหลดหน้านี้ใหม่อีกครั้ง</span></span>"}
 function decor(id,classes){return id?"<img aria-hidden='true' alt='' loading='lazy' class='"+classes+"' src='"+src(id,460)+"'>":""}
 function shell(x){return "<div class='shell page-enter'>"+x+"</div>"}
 function grad(x){return "<span class='gradient-text'>"+x+"</span>"}
 function btn(label,link,kind){return "<a class='btn "+(kind||"primary")+"' href='"+clean(link)+"'>"+label+"</a>"}
-function directLine(label,kind){return "<a class='btn "+(kind||"primary")+"' href='https://line.me/ti/p/~worachit98' target='_blank' rel='noopener noreferrer'>"+label+"</a>"}
+function directLine(label,kind){var line=String(siteSettings.lineId||'worachit98').replace(/[^\w.~-]/g,'');return "<a class='btn "+(kind||"primary")+"' href='https://line.me/ti/p/~"+line+"' target='_blank' rel='noopener noreferrer'>"+label+"</a>"}
 function header(en,title,description,panel){return "<header class='"+(panel?"page-hero":"page-head")+"'><div class='"+(panel?"page-head":"")+"'><div class='eyebrow'>"+en+"</div><h1 class='section-title'>"+title+"</h1><p class='section-sub'>"+description+"</p></div>"+(panel?decor(assets[page==="about"?8:page==="selected"?3:page==="gallery"?9:6],"decor parallax-decor"):"")+"</header>"}
 function title(en,text,link){return "<header class='section-kicker'><div><div class='eyebrow'>"+en+"</div><h2 class='section-title'>"+text+"</h2></div>"+(link?btn("ดูทั้งหมด ↗",link,"soft"):"")+"</header>"}
 
@@ -62,7 +62,7 @@ function labelPair(c,variant){
 function item(cat){return (groups[cat]||[])[0]}
 function contactChannels(){
  return [
-  {name:"LINE",value:"worachit98",url:"https://line.me/ti/p/~worachit98",icon:socialIcon("line","06C755","LINE")},
+  {name:"LINE",value:siteSettings.lineId||"worachit98",url:"https://line.me/ti/p/~"+encodeURIComponent(siteSettings.lineId||"worachit98"),icon:socialIcon("line","06C755","LINE")},
   {name:"Facebook ส่วนตัว",value:"Worachit Pulaiyaw",url:"https://www.facebook.com/WORACHIT1998",icon:socialIcon("facebook","0866FF","f")},
   {name:"Facebook Page",value:"Facebook Page",url:"https://www.facebook.com/suksansrin8668",icon:socialIcon("facebook","0866FF","f")},
   {name:"INSTAGRAM",value:"@wora_chit98",url:"https://www.instagram.com/wora_chit98/",icon:socialIcon("instagram","E4405F","IG")},
@@ -81,7 +81,7 @@ var posters=D.homePosterImages||groups.poster||[];
 function visual(i,extra){var art=posters[i];return art?"<button type='button' class='b12-work "+(extra||"")+"' data-home-poster='"+i+"' aria-label='เปิดดูผลงานโปสเตอร์ "+(i+1)+"'><span class='b12-work-img'>"+image(art.id,"ผลงานโปสเตอร์ "+(i+1),1050,i===0)+fall()+"</span><span class='b12-work-foot'><b>POSTER PROJECT / "+String(i+1).padStart(2,"0")+"</b><span>↗</span></span></button>":""}
 var intro="<section class='b12-hero'><div class='b12-hero-top'><span>✳ WORACHIT / CREATIVE SPACE</span><span>FREELANCE GRAPHIC DESIGNER · THAILAND</span></div>"+
 "<div class='b12-hero-body'><div class='b12-hero-text'><div class='b12-chip'><span class='b12-chip-dot'></span> สวัสดีครับ! ยินดีต้อนรับสู่พอร์ตของผม</div><h1>GRAPHIC<br><span class='b12-word-pill'>DESIGNER <i>✳</i></span><br><em>PORTFOLIO.</em></h1>"+
-"<p class='b12-hero-intro'>งานกราฟิกที่สนุก มีสไตล์<br>และตอบโจทย์การใช้งานจริง</p><p class='b12-hero-detail'>ผมสุข วรชิต ภูลายยาว นักออกแบบกราฟิกฟรีแลนซ์ รับออกแบบโปสเตอร์คอนเสิร์ต งานโฆษณา และสื่อออนไลน์</p>"+
+"<p class='b12-hero-intro'>งานกราฟิกที่สนุก มีสไตล์<br>และตอบโจทย์การใช้งานจริง</p><p class='b12-hero-detail'>"+clean(siteSettings.heroDescription||"ผมสุข วรชิต ภูลายยาว นักออกแบบกราฟิกฟรีแลนซ์ รับออกแบบโปสเตอร์คอนเสิร์ต งานโฆษณา และสื่อออนไลน์")+"</p>"+
 "<div class='b12-hero-cta'>"+btn("ดูผลงานของผม ↗",u("selected"))+directLine("ทัก LINE คุยงาน","line-link")+"</div>"+
 "<div class='b12-mini-note'><span>✦</span> ทำงานออนไลน์ · รับงานทั่วประเทศ · ตั้งแต่ปี 2017</div></div>"+
 "<div class='b12-hero-visual'><div class='b12-bg-orbit'></div><span class='b12-floating-star a' aria-hidden='true'>✳</span><span class='b12-floating-star b' aria-hidden='true'>✦</span><div class='b12-hero-poster b12-poster-one'>"+(posters[0]?image(posters[0].id,"ผลงานโปสเตอร์เด่น",1050,true):"")+"</div><div class='b12-hero-poster b12-poster-two'>"+(posters[1]?image(posters[1].id,"ผลงานโปสเตอร์เด่นชิ้นที่สอง",700,true):"")+"</div><span class='b12-hello-sticker'>SUK<br>DESIGN! <b>↗</b></span><span class='b12-visual-label'>POSTER / ADVERTISING / CREATIVE</span></div></div>"+
@@ -91,7 +91,7 @@ var works="<section class='b12-section b12-featured'><div class='b12-section-top
 var kinds=[["poster","โปสเตอร์คอนเสิร์ต","CONCERT POSTERS","✳"],["product","ภาพโฆษณา","ADVERTISING","↗"],["logo","โลโก้และแบรนด์","BRAND IDENTITY","✦"],["lineup","ตารางศิลปิน","EVENT LINEUP","◉"],["cover","ภาพปกออนไลน์","SOCIAL MEDIA","✿"],["promo","งานโปรโมชัน","PROMOTIONS","★"]];
 var categories="<section class='b12-section b12-collection'><div class='b12-section-top'><span>02 / WORK CATEGORIES</span><span>CHOOSE YOUR INTEREST ↘</span></div><div class='b12-section-heading'><div><h2>งานหลากหลาย<br><em>สไตล์เดียวกัน.</em></h2><p>เลือกประเภทงานที่สนใจ แล้วดูภาพจริงในแต่ละหมวดได้เลย</p></div>"+btn("ครบทั้ง 15 หมวด ↗",u("categories"),"soft")+"</div><div class='b12-categories'>"+kinds.map(function(c,i){var art=item(c[0]);return "<a class='b12-cat' href='"+u("gallery",c[0])+"'><span class='b12-cat-index'>0"+(i+1)+"/</span><span class='b12-cat-pic'>"+(art?image(art.id,c[1],450):"")+"</span><span class='b12-cat-name'><b>"+c[1]+"</b><small>"+c[2]+"</small></span><span class='b12-cat-arrow'>↗</span></a>"}).join("")+"</div></section>";
 var about="<section class='b12-about-banner'><div><span class='b12-overline'>03 / NICE TO MEET YOU!</span><h2>ดีไซน์ดี ๆ เริ่มจาก<br><em>การคุยกัน.</em></h2><p>ทำงานร่วมกันแบบตรงไปตรงมา อธิบายบรีฟได้ง่าย ส่งตัวอย่างที่ชอบมาได้เลยครับ</p>"+btn("ทำความรู้จักผม ↗",u("about"),"soft")+"</div><div class='b12-about-photo'><span class='b12-about-sun'>✳</span>"+image('1xdVr4OBE2O1dKQz724wRGNm4tKW7pzf8',"รูปต้นฉบับของนักออกแบบ",950)+"<span class='b12-about-label'>HELLO, I'M SUK!</span></div></section>";
-var fees="<section class='b12-price-banner'><div><span>04 / SIMPLE & CLEAR PRICING</span><h2>มีไอเดียแล้ว<br><em>เริ่มงานกันเลย!</em></h2><p>ภาพโฆษณาเริ่มต้น 300 บาท · โปสเตอร์คอนเสิร์ตเริ่มต้น 600 บาท</p></div>"+btn("ดูแพ็กเกจราคา ↗",u("pricing"))+"</section>";
+var fees="<section class='b12-price-banner'><div><span>04 / SIMPLE & CLEAR PRICING</span><h2>มีไอเดียแล้ว<br><em>เริ่มงานกันเลย!</em></h2><p>ภาพโฆษณาเริ่มต้น "+(D.pricePackages&&D.pricePackages.general?D.pricePackages.general[0][1].toLocaleString("th-TH"):"300")+" บาท · โปสเตอร์คอนเสิร์ตเริ่มต้น "+(D.pricePackages&&D.pricePackages.concert?D.pricePackages.concert[0][1].toLocaleString("th-TH"):"600")+" บาท</p></div>"+btn("ดูแพ็กเกจราคา ↗",u("pricing"))+"</section>";
 var contact="<section class='b12-ending'><div><span>HAVE SOMETHING IN MIND?</span><h2>มาออกแบบ<br><em>อะไรสนุก ๆ กัน!</em></h2><p>พูดคุยรายละเอียดและขอประเมินราคาก่อนได้เลยครับ</p></div>"+directLine("LINE · ทักมาคุยกัน ↗","line-link")+"</section>";
 return shell(intro+ribbon+works+categories+about+fees+contact)
 }
@@ -109,8 +109,8 @@ return "<section class='section pricing-teaser reveal'><div class='pricing-tease
 
 
 function pricing(){
-var general=[[1,300],[5,1400],[10,2700],[20,5200],[30,7500]];
-var concert=[[1,600],[2,1150],[3,1650],[4,2100],[5,2550],[6,3000]];
+var general=D.pricePackages&&Array.isArray(D.pricePackages.general)?D.pricePackages.general:[[1,300],[5,1400],[10,2700],[20,5200],[30,7500]];
+var concert=D.pricePackages&&Array.isArray(D.pricePackages.concert)?D.pricePackages.concert:[[1,600],[2,1150],[3,1650],[4,2100],[5,2550],[6,3000]];
 function money(n){return Number(n).toLocaleString("th-TH")}
 function priceCard(entry,type,index){
   var n=entry[0],total=entry[1],isConcert=type==="concert",featured=n===5;
@@ -202,7 +202,7 @@ cats.map(function(c){return "<a class='category-chip' "+(active===c.key?"aria-cu
 function gallery(){
 var works=groups[current.key]||[];lightItems=works;
 var intro="<section class='ed-gallery-title'><div class='ed-gallery-breadcrumb'><a href='"+u("selected")+"'>ผลงาน</a><span>/</span><a href='"+u("categories")+"'>หมวดทั้งหมด</a><span>/</span><strong>"+clean(current.title)+"</strong></div><span class='ed-section-label'>"+clean(current.en)+" / PORTFOLIO</span><h1>"+clean(current.en)+"</h1><p>"+clean(current.title)+" · "+clean(current.desc)+"</p></section>"+categoryRail(current.key);
-var cards=current.key==="mascot"?
+var cards=!works.length?"<div class='ed-empty-gallery'>ยังไม่มีผลงานในหมวดนี้ สามารถเพิ่มได้จากระบบจัดการเว็บไซต์</div>":current.key==="mascot"?
 "<div class='mascot-showcase'><button class='mascot-display gallery-item' type='button' data-light-index='0' aria-label='ขยายภาพมาสคอต'>"+image(works[0].id,"ผลงานมาสคอต",1750)+fall()+"</button><div class='mascot-info'><h3>งานออกแบบมาสคอต</h3><p>ตัวอย่างงานออกแบบตัวละคร</p></div></div>":
 "<div class='portfolio-masonry gallery-masonry'>"+works.map(function(w,i){return artworkCard(w,current,i,false)}).join("")+"</div>";
 return shell(intro+"<section class='ed-archive ed-gallery-archive'>"+cards+"<div class='ed-archive-bottom'>"+btn("ดูหมวดผลงานอื่น ↗",u("categories"),"soft")+"</div></section>")
@@ -219,7 +219,7 @@ function socialIcon(icon,color,backup){
 function about(){
 var portrait='1xdVr4OBE2O1dKQz724wRGNm4tKW7pzf8',contacts=contactChannels();
 return shell("<section class='ed-page-hero ed-about-hero'><span class='ed-section-label'>ABOUT / WORACHIT PULAIYAW</span><h1>ยินดีที่<br><em>รู้จักครับ!</em></h1><p>นักออกแบบกราฟิกอิสระ ที่ชอบเปลี่ยนโจทย์ให้กลายเป็นงานภาพที่ชัดเจนและมีเอกลักษณ์</p></section>"+
-"<section class='ed-about-layout'><div class='ed-about-photo v10-photo-frame'><span class='v10-photo-stamp' aria-hidden='true'>SUK. / GRAPHIC DESIGNER</span>"+image(portrait,"สุข วรชิต ภูลายยาว",1000)+fall()+"</div><div class='ed-about-text'><span class='ed-section-label'>INDEPENDENT DESIGNER · SINCE 2017</span><h2>วรชิต ภูลายยาว<br><em>FREELANCE GRAPHIC DESIGNER</em></h2><p>ผมทำงานด้านกราฟิกดีไซน์มาตั้งแต่ปี 2017 โดยเน้นโปสเตอร์คอนเสิร์ต งานอีเวนต์ ภาพโฆษณา และสื่อประชาสัมพันธ์ รับงานออนไลน์ทั้งในประเทศไทยและต่างประเทศ</p><p>ทุกโปรเจกต์พูดคุยเรื่องรูปแบบ งานที่ต้องใช้ และกำหนดส่งร่วมกันได้โดยตรง</p><div class='ed-about-facts'><span>2017 — PRESENT</span><span>GRAPHIC / ADVERTISING / POSTER</span></div></div></section>"+
+"<section class='ed-about-layout'><div class='ed-about-photo v10-photo-frame'><span class='v10-photo-stamp' aria-hidden='true'>SUK. / GRAPHIC DESIGNER</span>"+image(portrait,"สุข วรชิต ภูลายยาว",1000)+fall()+"</div><div class='ed-about-text'><span class='ed-section-label'>INDEPENDENT DESIGNER · SINCE 2017</span><h2>วรชิต ภูลายยาว<br><em>FREELANCE GRAPHIC DESIGNER</em></h2><p>"+clean(siteSettings.aboutDescription||"ผมทำงานด้านกราฟิกดีไซน์มาตั้งแต่ปี 2017 โดยเน้นโปสเตอร์คอนเสิร์ต งานอีเวนต์ ภาพโฆษณา และสื่อประชาสัมพันธ์ รับงานออนไลน์ทั้งในประเทศไทยและต่างประเทศ")+"</p><p>ทุกโปรเจกต์พูดคุยเรื่องรูปแบบ งานที่ต้องใช้ และกำหนดส่งร่วมกันได้โดยตรง</p><div class='ed-about-facts'><span>2017 — PRESENT</span><span>GRAPHIC / ADVERTISING / POSTER</span></div></div></section>"+
 "<section class='ed-section ed-tools-section'><div class='ed-section-head'><div><span class='ed-section-label'>TOOLS & WORKFLOW</span><h2>DESIGN <i>TOOLKIT.</i></h2><p>งานกราฟิกเป็นความเชี่ยวชาญหลัก ส่วนงานวิดีโอมีทีมตัดต่อช่วยดำเนินการ</p></div></div>"+skillCards()+"</section>"+
 "<section class='ed-contact-section' id='contact'><div class='ed-section-head'><div><span class='ed-section-label'>CONTACT / LET'S CONNECT</span><h2>LET'S <i>CONNECT.</i></h2><p>เลือกช่องทางติดต่อที่สะดวก หรือทัก LINE เพื่อคุยเรื่องงานได้โดยตรง</p></div></div><div class='ed-contact-list'>"+contacts.map(function(c){return "<a class='ed-contact-card' href='"+clean(c.url)+"' "+(c.url.indexOf("http")===0?"target='_blank' rel='noopener noreferrer'":"")+">"+c.icon+"<span><small>"+c.name+"</small><strong>"+clean(c.value)+"</strong></span><i>↗</i></a>"}).join("")+"</div></section>")
 }
@@ -234,6 +234,7 @@ function apply(){els.forEach(function(el){var r=el.getBoundingClientRect();if(r.
 window.addEventListener("scroll",function(){if(!busy){busy=true;window.requestAnimationFrame(apply)}},{passive:true});apply()}
 function imageError(im){
 if(!im.classList.contains("art-image"))return;var n=Number(im.dataset.retry||0),id=im.dataset.file;
+if(/^assets\/uploads\//.test(id)){if(im.id==="lbImage"){lb.classList.add("image-failed");document.getElementById("lbSource").href=drive(id)}else{im.parentElement.classList.add("has-fallback")}return}
 if(n===0){im.dataset.retry="1";im.src="https://lh3.googleusercontent.com/d/"+encodeURIComponent(id)+"=w1600";return}
 if(n===1){im.dataset.retry="2";im.src="https://drive.google.com/uc?export=view&id="+encodeURIComponent(id);return}
 if(im.id==="lbImage"){lb.classList.add("image-failed");document.getElementById("lbSource").href=drive(id);return}im.parentElement.classList.add("has-fallback");if(im.parentElement.tagName==="A"&&im.parentElement.classList.contains("hero-work"))im.parentElement.href=drive(id)}
@@ -251,6 +252,7 @@ if(lb){lb.addEventListener("click",function(ev){if(ev.target===lb||ev.target===l
 document.addEventListener("keydown",function(e){if(!lb||!lb.classList.contains("open"))return;if(e.key==="Escape"){closeLight();e.preventDefault()}else if(e.key==="ArrowRight"){changeLight(1);e.preventDefault()}else if(e.key==="ArrowLeft"){changeLight(-1);e.preventDefault()}else if(e.key==="Tab"){var fs=["lbClose","lbZoom","lbPrev","lbNext"].map(function(id){return document.getElementById(id)}).filter(function(el){return el&&el.style.display!=="none"}),i=fs.indexOf(document.activeElement);if(e.shiftKey&&i===0){fs[fs.length-1].focus();e.preventDefault()}else if(!e.shiftKey&&i===fs.length-1){fs[0].focus();e.preventDefault()}}});
 mount.addEventListener("click",function(e){var copyBtn=e.target.closest("[data-copy-line]");if(copyBtn){var id=copyBtn.getAttribute("data-copy-line");var ok=function(){copyBtn.textContent="คัดลอกแล้ว ✓";copyBtn.setAttribute("aria-label","คัดลอก LINE ID สำเร็จ")};var fallback=function(){var temp=document.createElement("textarea");temp.value=id;temp.style.position="fixed";temp.style.opacity="0";document.body.appendChild(temp);temp.select();var success=false;try{success=document.execCommand("copy")}catch(error){}document.body.removeChild(temp);if(success)ok();else window.prompt("คัดลอก LINE ID:",id)};if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(id).then(ok).catch(fallback)}else fallback();return}var homePoster=e.target.closest("[data-home-poster]");if(homePoster){lightItems=D.homePosterImages||groups.poster||[];openLight(Number(homePoster.dataset.homePoster));return}var b=e.target.closest("[data-light-index]");if(!b)return;var n=Number(b.dataset.lightIndex);if(b.classList.contains("has-fallback")){window.open(drive(lightItems[n].id),"_blank","noopener");return}openLight(n)});
 var menu=document.getElementById("menuToggle"),nav=document.getElementById("siteNav");if(menu&&nav){menu.addEventListener("click",function(){var opened=nav.classList.toggle("open");menu.setAttribute("aria-expanded",opened?"true":"false");menu.textContent=opened?"×":"☰"})}
+if(siteSettings.lineId){document.querySelectorAll("[data-live-line]").forEach(function(a){a.href="https://line.me/ti/p/~"+encodeURIComponent(siteSettings.lineId)})}
 var contents=page==="home"?home():page==="selected"?featured():page==="categories"?categories():page==="gallery"?gallery():page==="pricing"?pricing():page==="services"?services():about();
 document.body.classList.add("route-"+page);
 mount.innerHTML=contents;

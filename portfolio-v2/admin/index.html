@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="theme-color" content="#f5f6fb">
+<title>WORACHIT ADMIN — จัดการเว็บไซต์</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://drive.google.com https://lh3.googleusercontent.com https://raw.githubusercontent.com data: blob:; connect-src https://api.github.com; base-uri 'none'; form-action 'none'; object-src 'none'">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="./admin.css?v=20261015b">
+<script src="./admin.js?v=20261015b" defer></script>
+</head>
+<body>
+<a class="skip" href="#content">ข้ามไปยังเนื้อหา</a>
+<div id="authOverlay" class="auth-overlay">
+  <section class="login-card" aria-labelledby="loginTitle">
+    <div class="mini-brand"><span class="brand-star">✳</span> WORACHIT<span class="brand-dot">.</span> <span class="label-admin">ADMIN</span></div>
+    <div class="login-art" aria-hidden="true"><span>YOUR<br>CREATIVE<br>SPACE<span class="asterisk">✦</span></span></div>
+    <div class="login-copy">
+      <div class="eyebrow">PRIVATE CONTENT MANAGER</div>
+      <h1 id="loginTitle">สวัสดีครับ<br><em>ยินดีต้อนรับ!</em></h1>
+      <p>จัดการรูปผลงาน หมวดงาน ราคา และข้อความบนเว็บไซต์ โดยใช้บัญชี GitHub ที่มีสิทธิ์แก้ไข Repository เท่านั้น</p>
+      <label class="field-label" for="token">GitHub Fine-grained Personal Access Token</label>
+      <input type="password" id="token" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="github_pat_••••••••••" aria-describedby="tokenHint">
+      <p id="tokenHint" class="help">Token ใช้เฉพาะในหน้านี้ ส่งไปที่ api.github.com เท่านั้น และไม่บันทึกไว้ในเครื่องหรือในโค้ดเว็บไซต์</p>
+      <button class="btn btn-blue full" type="button" id="loginBtn">เชื่อมต่อ GitHub <span>↗</span></button>
+      <p class="login-error" id="loginError" role="alert"></p>
+      <details class="token-help"><summary>สร้าง Token ฟรีอย่างไร?</summary>
+        <p>ไปที่ GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token เลือก Repository <b>hug-loei-ebook</b> เฉพาะรายการนี้ กำหนดสิทธิ์ <b>Contents: Read and write</b> แล้วตั้งวันหมดอายุสั้น ๆ คัดลอก Token มาใส่ด้านบน</p>
+        <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">เปิดหน้า GitHub เพื่อสร้าง Token ↗</a>
+      </details>
+      <a class="back-link" href="../?page=home">← กลับหน้าเว็บไซต์</a>
+    </div>
+  </section>
+</div>
+<div id="dashboard" hidden>
+ <header class="topbar">
+  <a href="../?page=home" class="admin-brand" aria-label="กลับเว็บไซต์ WORACHIT"><span class="brand-star">✳</span> WORACHIT<span class="brand-dot">.</span> <small>ADMIN</small></a>
+  <div class="top-actions"><span class="connected-label" id="connectedUser">เชื่อมต่อแล้ว</span><a href="../?page=home" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">ดูเว็บไซต์ ↗</a><button class="btn btn-ghost" id="logoutBtn">ออกจากระบบ</button></div>
+ </header>
+ <div class="workspace">
+  <aside class="sidebar">
+   <p class="nav-heading">WORKSPACE / MANAGE</p>
+   <nav aria-label="เมนูจัดการ" id="tabs">
+    <button type="button" data-tab="overview" class="tab active">◫ <span>ภาพรวม</span></button>
+    <button type="button" data-tab="artworks" class="tab">▧ <span>จัดการผลงาน</span></button>
+    <button type="button" data-tab="featured" class="tab">✳ <span>งานเด่นหน้าแรก</span></button>
+    <button type="button" data-tab="pricing" class="tab">฿ <span>ราคาแพ็กเกจ</span></button>
+    <button type="button" data-tab="settings" class="tab">✎ <span>ข้อมูลเว็บไซต์</span></button>
+   </nav>
+   <div class="sidebar-note"><b>FREE / SELF-MANAGED</b><p>ข้อมูลและรูปภาพจะถูกบันทึกใน GitHub ของคุณ</p></div>
+  </aside>
+  <main class="workspace-main" id="content">
+   <div class="top-heading"><div><span class="eyebrow" id="sectionEyebrow">YOUR CREATIVE CONTROL CENTER</span><h1 id="sectionTitle">ภาพรวมเว็บไซต์</h1><p id="sectionHelp">จัดการทุกอย่างได้จากที่นี่ ไม่ต้องแก้โค้ดเอง</p></div><button class="btn btn-blue" id="publishBtn">เผยแพร่การเปลี่ยนแปลง ↗</button></div>
+   <div class="statusbar" id="status" role="status" aria-live="polite"></div>
+   <section id="panel" aria-label="เครื่องมือจัดการ"></section>
+   <footer class="admin-footer"><span>✳ WORACHIT CONTENT STUDIO</span><span>GitHub-powered / No monthly CMS fee</span></footer>
+  </main>
+ </div>
+</div>
+</body>
+</html>
