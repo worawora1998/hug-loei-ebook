@@ -21,11 +21,12 @@ function refresh(){if(!db)return; const labels={
 overview:["YOUR CREATIVE CONTROL CENTER","ภาพรวมเว็บไซต์","รูปผลงาน หมวดงาน และการตั้งค่าต่าง ๆ อยู่ที่นี่"],
 artworks:["01 / CONTENT LIBRARY","จัดการผลงาน","เพิ่มภาพ ลบออกจากแกลเลอรี จัดลำดับ และแก้ชื่อหมวดงาน"],
 featured:["02 / FEATURED ART","งานเด่นหน้าแรก","เลือกโปสเตอร์ 6 ภาพที่ต้องการแสดงบนหน้าแรก"],
+hero:["02B / HERO IMAGES","ภาพใหญ่หน้าแรก","เปลี่ยนภาพที่เห็นทันทีเมื่อเข้าเว็บไซต์ เลือกจากผลงานหรืออัปโหลดใหม่"],
 pricing:["03 / PACKAGES","ราคาแพ็กเกจ","ปรับราคาโดยไม่ต้องแก้โค้ด และแบ่ง General Ads / Concert Ads ชัดเจน"],
 settings:["04 / WEBSITE SETTINGS","ข้อมูลเว็บไซต์","แก้ข้อความแนะนำตัวและ LINE ที่ลูกค้าใช้ติดต่อ"]
 };let v=labels[current];$("sectionEyebrow").textContent=v[0];$("sectionTitle").textContent=v[1];$("sectionHelp").textContent=v[2];panel.replaceChildren();
 document.querySelectorAll("[data-tab]").forEach(x=>x.classList.toggle("active",x.dataset.tab===current));
-if(current==="overview")renderOverview();if(current==="artworks")renderArtworks();if(current==="featured")renderFeatured();if(current==="pricing")renderPricing();if(current==="settings")renderSettings()
+if(current==="overview")renderOverview();if(current==="artworks")renderArtworks();if(current==="featured")renderFeatured();if(current==="hero")renderHero();if(current==="pricing")renderPricing();if(current==="settings")renderSettings()
 }
 function downloadBackup(){
 if(!db)return;try{const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json;charset=utf-8"}),href=URL.createObjectURL(blob),a=elem("a");a.href=href;a.download="worachit-portfolio-backup-"+new Date().toISOString().slice(0,10)+".json";document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(href),1000);setStatus("ดาวน์โหลดสำเนาข้อมูลเรียบร้อย ข้อมูลรูปที่จัดเก็บใน GitHub และ Drive ยังคงอยู่","success")}catch(e){setStatus("สำรองข้อมูลไม่สำเร็จ: "+e.message,"error")}
@@ -137,6 +138,33 @@ drawGallery();lib.append(gallery);stack.append(lib);
 stack.append(append(box("เคล็ดลับ"),elem("p","helper","ลากช่องงานเด่นเพื่อสลับตำแหน่งได้ และบนมือถือแตะช่องก่อน แล้วแตะภาพจากคลัง ระบบจะบันทึกหลังจากกด “เผยแพร่การเปลี่ยนแปลง”")));
 panel.append(stack)
 }
+function renderHero(){
+ db.siteSettings=db.siteSettings||{};let cfg=db.siteSettings;
+ cfg.heroImages=cfg.heroImages||[];
+ let area=elem("div","stack"),preview=box("ภาพ Hero 2 ตำแหน่ง");
+ append(preview,elem("p","helper","นี่คือโปสเตอร์ 2 ภาพที่ซ้อนอยู่บนหน้าแรก แยกจาก 6 ภาพผลงานเด่น กดเลือกตำแหน่งแล้วคลิกภาพในคลัง หรืออัปโหลดภาพใหม่"));
+ let slotList=elem("div","v18-hero-slots"),active=0;
+ function redraw(){
+ slotList.replaceChildren();
+ for(let i=0;i<2;i++){
+  let fallback=(db.homePosterImages||[])[i],current=cfg.heroImages[i]||fallback;
+  let slot=button(i===0?"ภาพหลัก (ด้านหน้า)":"ภาพรอง (ด้านหลัง)",()=>{active=i;redraw()},"v18-hero-slot"+(active===i?" active":""));
+  if(current)slot.prepend(imageNode(current.id,"ภาพ Hero "+(i+1)));
+  slot.append(elem("span","helper",active===i?"กำลังเลือกภาพนี้":"คลิกเพื่อเลือก"));
+  slotList.append(slot)
+ }}
+ redraw();preview.append(slotList);area.append(preview);
+ let picker=box("เลือกภาพจากผลงาน"),controls=elem("div","v17-pick-tools"),category=elem("select"),search=elem("input");search.type="search";search.placeholder="ค้นหาชื่อภาพ";
+ db.categories.forEach(c=>{let op=elem("option",null,c.title);op.value=c.key;category.append(op)});category.value=currentCategory;
+ let gallery=elem("div","v17-pick-gallery");
+ function draw(){gallery.replaceChildren();for(let im of db.groups[category.value]||[]){if(search.value&&!(im.name||"").toLowerCase().includes(search.value.toLowerCase()))continue;let tile=button(im.name||"ผลงาน",()=>{cfg.heroImages[active]={id:im.id,name:im.name||""};pending();redraw()},"v17-pick-tile");tile.prepend(imageNode(im.id,im.name));gallery.append(tile)}}
+ category.addEventListener("change",()=>{currentCategory=category.value;draw()});search.addEventListener("input",draw);
+ append(controls,category,search);append(picker,controls,gallery);draw();area.append(picker);
+ let upload=box("หรืออัปโหลดภาพ Hero ใหม่","upload-card");let file=elem("input");file.type="file";file.accept="image/jpeg,image/png,image/webp";
+ append(upload,elem("p","helper","รองรับ JPG / PNG / WebP ไม่เกิน 5 MB อัปโหลดเข้า Hero ตำแหน่งที่เลือกโดยตรง"),file,
+ button("อัปโหลดเป็นภาพ Hero ↗",()=>uploadImage(file.files[0],"Hero "+(active+1),"hero:"+active),"btn btn-blue"));
+ area.append(upload);panel.append(area)
+}
 function renderPricing(){
 if(!db.pricePackages)db.pricePackages=JSON.parse(JSON.stringify(defaults));
 let layout=elem("div","price-groups");const def={general:["General Ads","ภาพโฆษณา ร้านค้า และสื่อออนไลน์"],concert:["Concert Ads","โปสเตอร์คอนเสิร์ตและภาพโปรโมต"]};
@@ -199,7 +227,7 @@ const allowed={"image/jpeg":"jpg","image/png":"png","image/webp":"webp"};const e
 busy=true;setStatus("กำลังอัปโหลดภาพไป GitHub...");try{const binary=await new Promise((resolve,reject)=>{let reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(",")[1]);reader.onerror=()=>reject(Error("อ่านไฟล์ไม่ได้"));reader.readAsDataURL(file)});
 const filename=Date.now()+"-"+Math.random().toString(36).slice(2,10)+"."+ext,path=UPLOAD_DIR+filename;
 await github("repos/"+OWNER+"/"+REPO+"/contents/"+path,{method:"PUT",body:JSON.stringify({message:"Upload portfolio artwork via WORACHIT ADMIN",content:binary,branch:BRANCH})});
-let item={id:"assets/uploads/"+filename,name:(name||file.name).trim().slice(0,180),type:file.type};if(target==="profile"){db.siteSettings=db.siteSettings||{};db.siteSettings.profileImageId=item.id}else if(target==="siteLogo"){db.siteSettings=db.siteSettings||{};db.siteSettings.siteLogoId=item.id}else if(target.startsWith("tool:")){db.siteSettings=db.siteSettings||{};db.siteSettings.toolLogos=db.siteSettings.toolLogos||{};db.siteSettings.toolLogos[target.slice(5)]=item.id}else{db.groups[currentCategory]=db.groups[currentCategory]||[];db.groups[currentCategory].unshift(item)}pending();setStatus("อัปโหลดรูปสำเร็จ! กด “เผยแพร่การเปลี่ยนแปลง” เพื่อแสดงบนเว็บไซต์","success");refresh();
+let item={id:"assets/uploads/"+filename,name:(name||file.name).trim().slice(0,180),type:file.type};if(target==="profile"){db.siteSettings=db.siteSettings||{};db.siteSettings.profileImageId=item.id}else if(target==="siteLogo"){db.siteSettings=db.siteSettings||{};db.siteSettings.siteLogoId=item.id}else if(target.startsWith("tool:")){db.siteSettings=db.siteSettings||{};db.siteSettings.toolLogos=db.siteSettings.toolLogos||{};db.siteSettings.toolLogos[target.slice(5)]=item.id}else if(target.startsWith("hero:")){db.siteSettings=db.siteSettings||{};db.siteSettings.heroImages=db.siteSettings.heroImages||[];db.siteSettings.heroImages[Number(target.slice(5))]={id:item.id,name:item.name}}else{db.groups[currentCategory]=db.groups[currentCategory]||[];db.groups[currentCategory].unshift(item)}pending();setStatus("อัปโหลดรูปสำเร็จ! กด “เผยแพร่การเปลี่ยนแปลง” เพื่อแสดงบนเว็บไซต์","success");refresh();
 }catch(e){setStatus("อัปโหลดไม่สำเร็จ: "+e.message,"error")}finally{busy=false}}
 if(window.WorachitPin&&window.WorachitPin.has()){
  window.WorachitPin.guard().then(async ok=>{if(!ok){window.location.href="../?page=home";return}if(window.WorachitPin.hasToken())await login()})
